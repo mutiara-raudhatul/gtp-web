@@ -1,0 +1,64 @@
+
+/* Set the size of the div element that contains the map */
+.googlemaps {
+    height: 500px;
+    /* The height is 400 pixels */
+    width: 100%;
+    /* The width is the width of the web page */
+}
+
+.maps-detail {
+    height: 500px;
+    /* The height is 400 pixels */
+    width: 100%;
+    /* The width is the width of the web page */
+}
+
+#table-user {
+    max-height: 600px;
+}
+
+#table-result-nearby {
+    max-height: 320px;
+}
+
+.rating-color {
+    color:#fbc634 !important;
+}
+
+.submenu-marker::marker{
+    content: none;
+}
+
+.star-checked{
+    color: gold;
+}
+
+.datepicker td,th{
+    text-align: center;
+    padding: 6px 8px;
+    font-size: 1rem;
+}
+
+#legend {
+    background: #fff;
+    padding: 10px;
+    margin: 10px;
+    border: 2px solid #000;
+}
+
+#legend img {
+    max-height: 25px;
+    vertical-align: middle;
+}
+
+#avatar-sidebar img{
+    width: 150px;
+    height: auto;
+    max-height: 125px;
+}
+
+#avatar-container img{
+    width: 300px;
+    height: 300px;
+}
