@@ -25,7 +25,7 @@
             <div class="col-12" id="list-rg-col">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title text-center">List Package</h5>
+                        <h5 class="card-title text-center">List Homestay</h5>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive overflow-auto" id="table-user">

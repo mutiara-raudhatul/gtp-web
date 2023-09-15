@@ -4,12 +4,18 @@ namespace App\Controllers\Web;
 
 use App\Models\HomestayModel;
 use App\Models\GalleryHomestayModel;
+use App\Models\UnitHomestayModel;
+use App\Models\FacilityUnitModel;
+use App\Models\FacilityUnitDetailModel;
 use CodeIgniter\RESTful\ResourcePresenter;
 
 class Homestay extends ResourcePresenter
 {
     protected $homestayModel;
     protected $galleryHomestayModel;
+    protected $unitHomestayModel;
+    protected $facilityUnitModel;
+    protected $facilityUnitDetailModel;
 
     protected $helpers = ['auth', 'url', 'filesystem'];
 
@@ -17,6 +23,9 @@ class Homestay extends ResourcePresenter
     {
         $this->homestayModel = new HomestayModel();
         $this->galleryHomestayModel = new GalleryHomestayModel();
+        $this->unitHomestayModel = new UnitHomestayModel();
+        $this->facilityUnitModel = new FacilityUnitModel();
+        $this->facilityUnitDetailModel = new FacilityUnitDetailModel();
     }
 
     /**
@@ -26,6 +35,13 @@ class Homestay extends ResourcePresenter
      */
     public function index()
     {
+        $contents = $this->homestayModel->get_list_homestay()->getResultArray();
+        $data = [
+            'title' => 'Homestay',
+            'data' => $contents,
+        ];
+
+        return view('web/list_homestay', $data);
     }
 
     /**
@@ -50,15 +66,36 @@ class Homestay extends ResourcePresenter
         }
         $homestay['gallery'] = $galleries;
 
+        // $list_unit = $this->unitHomestayModel->get_unit_homestay($id)->getRowArray();
+        $list_unit = $this->unitHomestayModel->get_unit_homestay($id)->getResultArray();
+
+        $unithomes = array();
+        foreach ($list_unit as $unithome) {
+            $unithomes[] = $unithome['id'];
+        }
+        $homestay['unithomes'] = $unithomes;
+
+        $facilities = array();
+        foreach ($homestay['unithomes'] as $uh_id) {
+            $unit_homestay_id=$uh_id;
+            $list_facility = $this->facilityUnitDetailModel->get_facility_unit_detail($unit_homestay_id)->getResultArray();
+            $facilities[]=$list_facility;
+        }
+        $fc = $facilities;
+
         $data = [
             'title' => $homestay['name'],
             'data' => $homestay,
+            'unit' => $list_unit,
+            'facility' => $fc,
             'folder' => 'homestay'
         ];
 
+        // dd($data);
+
         if (url_is('*dashboard*')) {
-            return view('dashboard/detail_homestay', $data);
+            return view('dashboard/detail_homestay', $data, $unit);
         }
-        return view('web/detail_homestay', $data);
+        return view('web/detail_homestay',$data);
     }
 }

@@ -56,6 +56,10 @@ class DetailPackageModel extends Model
         return $insert;
     }
 
+    function get_object(){
+        $query = $this->db->get('attraction');
+        return $query;  
+    }
 
     // public function add_new_detail_service($id, array $detailService)
     // {

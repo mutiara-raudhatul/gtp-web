@@ -54,7 +54,6 @@ class Package extends ResourceController
 
         $response = [
             'data' => $package,
-            'culinary' => $culinary,
             'status' => 200,
             'message' => [
                 "Success display detail information of Package"

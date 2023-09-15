@@ -111,4 +111,25 @@ class AttractionModel extends Model
             ->update();
         return $query;
     }
+
+    function get_object(){
+        $query = $this->db->table($this->table)->select('name')->get;
+        return $query;  
+    }
+
+    function get_attraction(){
+
+        $object="<option value='0'>--pilih--</pilih>";
+        
+        $this->db->order_by('name','ASC');
+        $ob= $this->db->get();
+        
+        foreach ($ob->result_array() as $data ){
+        $object.= "<option value='$data[id]'>$data[name]</option>";
+        }
+        
+        return $object;
+        
+        }
+        
 }

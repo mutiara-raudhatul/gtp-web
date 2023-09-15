@@ -210,15 +210,26 @@ $edit = in_array('edit', $uri);
                                                             <div class="row g-4">
                                                                 <div class="col-md-3">
                                                                     <label for="activity">Activity</label>
-                                                                    <input type="number" class="form-control" id="activity" name="activity">
+                                                                    <input type="number" min='1' class="form-control" id="activity" name="activity">
                                                                 </div>
                                                                 <div class="col-md-4">
                                                                     <label for="activity_type">Activity Type</label>
-                                                                    <input type="text" class="form-control" id="activity_type" name="activity_type">
+                                                                    <select class="form-control" name="activity_type" id="activity_type">
+                                                                        <option disabled selected>Select Type</option>
+                                                                        <option value="CP">Culinary</option>
+                                                                        <option value="SP">Souvenir Place</option>
+                                                                        <option value="HO">Homestay</option>
+                                                                        <option value="FC">Facility</option>
+                                                                        <option value="A">Attraction</option>
+                                                                        <option value="EV">Event</option>
+                                                                    </select>
                                                                 </div>
                                                                 <div class="col-md-5">
                                                                     <label for="object">Object</label>
-                                                                    <input type="number" class="form-control" id="object" name="object">
+                                                                    <select class="form-control" name="object" id="object">
+                                                                        <option disabled selected>Select Object</option>
+                                                                        <option value=""></option>
+                                                                    </select>                                                                
                                                                 </div>
                                                             </div><br>
                                                             <div class="row g-4">
@@ -456,5 +467,64 @@ $(document).ready(function(){
     });
 });
 </script>
+
+
+        <script type="text/javascript" src="<?php echo base_url().'assets/js/jquery-3.3.1.js'?>"></script>
+        <script type="text/javascript" src="<?php echo base_url().'assets/js/bootstrap.js'?>"></script>
+        <script type="text/javascript">
+            $(document).ready(function(){
+ 
+                $('#activity_type').change(function(){ 
+                var id=$(this).val();
+                $.ajax({
+                    url : "<?php echo site_url('Web/DetailPackage/get_object');?>",
+                    method : "POST",
+                    data : {id: id},
+                    async : true,
+                    dataType : 'json',
+                    success: function(data){
+                         
+                        var html = '';
+                        var i;
+                        for(i=0; i<data.length; i++){
+                            html += '<option value='+data[i].id+'>'+data[i].name+'</option>';
+                        }
+                        $('#object').html(html);
+ 
+                    }
+                });
+                return false;
+            }); 
+             
+                });
+        </script>
+
+
+        <script type="text/javascript">
+
+            $(function(){
+
+                $.ajaxSetup({
+                    type:"POST",
+                    url: "<?php echo base_url('detail-package-form.php/detailPackage/ambil_data') ?>",
+                    cache: false,
+                });
+
+                $("#activity_type").change(function(){
+
+                    var value=$(this).val();
+                    if(value>0){
+                        $.ajax({
+                            data:{modul:'attraction',id:value},
+                            success: function(respond){
+                                $("#object").html(respond);
+                            }
+                        })
+                    }
+
+                 });
+
+            })
+        </script>
 
 <?= $this->endSection() ?>

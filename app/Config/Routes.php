@@ -72,6 +72,9 @@ $routes->group('web', ['namespace' => 'App\Controllers\Web'], function ($routes)
     $routes->presenter('event');
     $routes->presenter('package');
     $routes->presenter('ulakan');
+    $routes->presenter('reservation');
+    $routes->resource('reservation');
+    $routes->resource('homestay');
     $routes->presenter('homestay');
     $routes->presenter('culinaryPlace');
     $routes->presenter('souvenirPlace');

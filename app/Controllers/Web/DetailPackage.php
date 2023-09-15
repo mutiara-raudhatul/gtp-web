@@ -3,12 +3,14 @@
 namespace App\Controllers\Web;
 
 use App\Models\DetailPackageModel;
+use App\Models\AttractionModel;
 use CodeIgniter\RESTful\ResourcePresenter;
 use CodeIgniter\Files\File;
 
 class DetailPackage extends ResourcePresenter
 {
     protected $detailPackageModel;
+    protected $attractionModel;
 
     /**
      * Instance of the main Request object.
@@ -22,6 +24,7 @@ class DetailPackage extends ResourcePresenter
     public function __construct()
     {
         $this->detailPackageModel = new DetailPackageModel();
+        $this->attractionModel = new AttractionModel();
     }
 
     /**
@@ -66,6 +69,31 @@ class DetailPackage extends ResourcePresenter
         ];
         return view('dashboard/detail-package-form', $data);
     }
+
+    // get object by code type 
+    public function get_object(){
+        $data = $this->attractionModel->get_object()->result();
+        echo json_encode($data);
+    }
+
+
+    function ambil_data(){
+
+        $modul=$this->input->post('activity_type');
+        $id=$this->input->post('id');
+        
+        if($modul=="A"){
+            echo $this->attractionModel->get_attraction();
+        }
+        else if($modul=="kecamatan"){
+        
+        }
+        else if($modul=="kelurahan"){
+        
+        }
+    }
+
+
 
     /**
      * Process the creation/insertion of a new resource object.

@@ -4,28 +4,13 @@
 
 <section class="section">
     <div class=" row">
-    <!--map-->
-    <div class="col-md-7 col-12">
-        <div class="card">
-            <div class="card-header">
-                <div class="row align-items-center">
-                    <div class="col-md-auto">
-                        <h5 class="card-title">Google Maps with Location</h5>
-                    </div>
-                    <?= $this->include('web/layouts/map-head'); ?>
-                </div>
-            </div>
-            <?= $this->include('web/layouts/map-body'); ?>
-        </div>
-    </div>
-
-    <div class="col-md-5 col-12">
+    <div class="col-md-12">
         <div class="row">
-            <!-- List Object -->
+            <!-- List Reservation -->
             <div class="col-12" id="list-rg-col">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title text-center">List Package</h5>
+                        <h5 class="card-title text-center">List Reservation</h5>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive overflow-auto" id="table-user">
@@ -38,7 +23,10 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Name</th>
+                                        <th>Reservation Date</th>
+                                        <th>Check In</th>
+                                        <th>Check Out</th>
+                                        <th>Status</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -47,14 +35,14 @@
                                         <?php $i = 1; ?>
                                         <?php foreach ($data as $item) : ?>
                                             <tr>
-                                                <script>
-                                                    objectMarker("<?= esc($item['id']); ?>", <?= esc($item['lat']); ?>, <?= esc($item['lng']); ?>);
-                                                </script>
                                                 <td><?= esc($i); ?></td>
-                                                <td><?= esc($item['name']); ?></td>
+                                                <td><?= date('d F Y, h:i:s A', strtotime($item['reservation_date'])); ?></td>
+                                                <td><?= date('d F Y, h:i:s A', strtotime($item['check_in'])); ?></td>
+                                                <td><?= date('d F Y, h:i:s A', strtotime($item['check_out'])); ?></td>
+                                                <td><?= esc($item['status']); ?></td>
                                                 <td>
-                                                    <a data-bs-toggle="tooltip" data-bs-placement="bottom" title="More Info" class="btn icon btn-primary mx-1" onclick="focusObject(`<?= esc($item['id']); ?>`);">
-                                                        <span class="material-symbols-outlined">info</span>
+                                                    <a data-bs-toggle="tooltip" data-bs-placement="bottom" title="More Info" class="btn icon btn-outline-primary mx-1" href="<?= current_url() . '/' . esc($item['id']); ?>">
+                                                        <i class="fa-solid fa-circle-info"></i>
                                                     </a>
                                                 </td>
                                                 <?php $i++ ?>
@@ -70,25 +58,12 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Nearby section -->
-            <?= $this->include('web/layouts/nearby'); ?>
         </div>
     </div>
     </div>
-
-    <!-- Direction section -->
-    <?= $this->include('web/layouts/direction'); ?>
 </section>
 
 <?= $this->endSection() ?>
 
 <?= $this->section('javascript') ?>
-<script>
-    $('#direction-row').hide();
-    $('#check-track-col').hide();
-    $('#check-nearby-col').hide();
-    $('#result-track-col').hide();
-    $('#result-nearby-col').hide();
-</script>
 <?= $this->endSection() ?>

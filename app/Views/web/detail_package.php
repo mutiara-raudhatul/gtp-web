@@ -49,10 +49,9 @@
                 
                 </div>
             </div>
-            
             <div class="card">
   <div class="card-header">
-    Quote
+     <h4 class="card-title text-center">Package Activity</h4>
   </div>
   <div class="card-body">
     <blockquote class="blockquote mb-0">
