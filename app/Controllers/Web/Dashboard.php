@@ -9,6 +9,7 @@ use App\Models\EventModel;
 use App\Models\PackageModel;
 use App\Models\FacilityModel;
 use App\Models\ServicePackageModel;
+use App\Models\HomestayModel;
 use App\Controllers\BaseController;
 
 class Dashboard extends BaseController
@@ -20,6 +21,7 @@ class Dashboard extends BaseController
     protected $packageModel;
     protected $facilityModel;
     protected $servicePackageModel;
+    protected $homestayModel;
 
     public function __construct()
     {
@@ -30,6 +32,7 @@ class Dashboard extends BaseController
         $this->packageModel = new PackageModel();
         $this->facilityModel = new FacilityModel();
         $this->servicePackageModel = new ServicePackageModel();
+        $this->homestayModel = new HomestayModel();
 
     }
     public function index()
@@ -118,4 +121,17 @@ class Dashboard extends BaseController
 
         return view('dashboard/manage-page', $data);
     }
+
+    public function homestay()
+    {
+        $contents = $this->homestayModel->get_list_homestay()->getResultArray();
+        $data = [
+            'title' => 'Manage Homestay',
+            'manage' => 'Homestay',
+            'data' => $contents,
+        ];
+
+        return view('dashboard/manage-page', $data);
+    }
+    
 }

@@ -79,4 +79,19 @@ class Homestay extends ResourceController
         ];
         return $this->respond($response);
     }
+
+    public function delete($id = null)
+    {
+        $deleteGHM = $this->galleryHomestayModel->delete(['homestay_id' => $id]);
+        $deleteHM = $this->homestayModel->delete(['id' => $id]);
+        if ($deleteHM) {
+            $response = [
+                'status' => 200,
+                'message' => [
+                    "Success delete homestay"
+                ]
+            ];
+            return $this->respondDeleted($response);
+        }
+    }
 }

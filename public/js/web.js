@@ -1891,6 +1891,9 @@ function deleteObject(id = null, name = null, user = false) {
     } else if (id.substring(0,1) === 'S') {
         content = 'Service Package';
         apiUri = 'servicepackage/'
+    } else if (id.substring(0,2) === 'HO') {
+        content = 'Homestay';
+        apiUri = 'homestay/'
     } else if (id.substring(0,1) === 'S') {
         content = 'Admin';
         apiUri = 'admin/'

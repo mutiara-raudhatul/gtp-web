@@ -44,6 +44,7 @@ class FacilityModel extends Model
             ->where('facility.id', $id)
             ->join('facility_type', 'facility.type_id = facility_type.id')
             ->get();
+
         return $query;
     }
 

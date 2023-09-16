@@ -97,10 +97,14 @@ $routes->group('dashboard', ['namespace' => 'App\Controllers\Web', 'filter' => '
     $routes->post('packageday/createactivity/(:segment)', 'Packageday::createactivity/$1');//--------
     $routes->delete('packageday/delete/(:any)', 'Packageday::delete/$1');
 
+    $routes->get('homestay', 'Dashboard::homestay');
+    $routes->resource('homestay');
+    $routes->presenter('homestay');
+    $routes->post('homestay/createfacility/(:segment)', 'Homestay::createfacility/$1');//--------
+
     $routes->get('admin', 'Adminuser::index');
     $routes->get('admin/index', 'Adminuser::index');
     $routes->get('admin/(:num)', 'Adminuser::show/$1', ['filter' => 'role:admin']);
-
 
     $routes->presenter('gtp');
     $routes->presenter('attraction');

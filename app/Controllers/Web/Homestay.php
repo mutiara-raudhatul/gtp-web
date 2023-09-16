@@ -7,7 +7,10 @@ use App\Models\GalleryHomestayModel;
 use App\Models\UnitHomestayModel;
 use App\Models\FacilityUnitModel;
 use App\Models\FacilityUnitDetailModel;
+use App\Models\FacilityHomestayModel;
+use App\Models\FacilityHomestayDetailModel;
 use CodeIgniter\RESTful\ResourcePresenter;
+use CodeIgniter\Files\File;
 
 class Homestay extends ResourcePresenter
 {
@@ -16,7 +19,9 @@ class Homestay extends ResourcePresenter
     protected $unitHomestayModel;
     protected $facilityUnitModel;
     protected $facilityUnitDetailModel;
-
+    protected $facilityHomestayModel;
+    protected $facilityHomestayDetailModel;
+    
     protected $helpers = ['auth', 'url', 'filesystem'];
 
     public function __construct()
@@ -26,6 +31,8 @@ class Homestay extends ResourcePresenter
         $this->unitHomestayModel = new UnitHomestayModel();
         $this->facilityUnitModel = new FacilityUnitModel();
         $this->facilityUnitDetailModel = new FacilityUnitDetailModel();
+        $this->facilityHomestayModel = new FacilityHomestayModel();
+        $this->facilityHomestayDetailModel = new FacilityHomestayDetailModel();
     }
 
     /**
@@ -94,8 +101,188 @@ class Homestay extends ResourcePresenter
         // dd($data);
 
         if (url_is('*dashboard*')) {
-            return view('dashboard/detail_homestay', $data, $unit);
+            return view('dashboard/detail_homestay', $data);
         }
         return view('web/detail_homestay',$data);
+    }
+
+    public function new()
+    {
+        $facility = $this->facilityHomestayModel->get_list_facility_homestay()->getResultArray();
+        $id = $this->homestayModel->get_new_id();
+
+        $data = [
+            'title' => 'New Homestay',
+            'homestay_id'=>$id,
+            'facility' => $facility
+        ];
+
+        return view('dashboard/homestay-form', $data);
+    }
+
+    /**
+     * Process the creation/insertion of a new resource object.
+     * This should be a POST.
+     *
+     * @return mixed
+     */
+    public function create()
+    {
+        $request = $this->request->getPost();
+
+        $id = $this->homestayModel->get_new_id();
+
+        $requestData = [
+            'id' => $id,
+            'name' => $request['name'],
+            'address' => $request['address'],
+            'price' => $request['price'],
+            'contact_person' => $request['contact_person'],
+            'description' => $request['description'],
+        ];
+        foreach ($requestData as $key => $value) {
+            if (empty($value)) {
+                unset($requestData[$key]);
+            }
+        }
+
+        $geom = $request['multipolygon'];
+        $geojson = $request['geo-json'];
+
+        $addHM = $this->homestayModel->add_new_homestay($requestData, $geom);
+
+        if (isset($request['gallery'])) {
+            $folders = $request['gallery'];
+            $gallery = array();
+            foreach ($folders as $folder) {
+                $filepath = WRITEPATH . 'uploads/' . $folder;
+                $filenames = get_filenames($filepath);
+                $fileImg = new File($filepath . '/' . $filenames[0]);
+                $fileImg->move(FCPATH . 'media/photos/homestay');
+                delete_files($filepath);
+                rmdir($filepath);
+                $gallery[] = $fileImg->getFilename();
+            }
+            $this->galleryHomestayModel->add_new_gallery($id, $gallery);
+        }
+
+        if ($addHM) {
+            return redirect()->to(base_url('dashboard/homestay'));
+        } else {
+            return redirect()->back()->withInput();
+        }
+    }
+
+    public function createafacilityhomestay($id)
+    {
+        $request = $this->request->getPost();
+        $id = $this->homestayModel->get_new_id();
+
+        $requestData = [
+            'facility_homestay_id' => $request['facility_homestay_id'],
+            'homestay_id' => $id,
+            'description' => $request['description']
+        ];
+
+        foreach ($requestData as $key => $value) {
+            if (empty($value)) {
+                unset($requestData[$key]);
+            }
+        }
+
+        $addFH = $this->facilityHomestayDetailModel->add_new_facilityHomestayDetail($requestData);
+       
+        if ($addFH) {
+            return redirect()->to(base_url('dashboard/homestay/new/').$id);
+        } else {
+            return redirect()->back()->withInput();
+        }
+
+        // if ($addFH) {
+        //     // return view('dashboard/detail-package-form');
+        //     $facilityHomestay = $this->packageModel->get_package_by_id($id)->getRowArray();
+        //     $facilityHomestay = $this->homestayModel->get_facility_homestay_by_id($id)->getRowArray();
+
+        //     $id=$facilityHomestay['id'];
+        //     $data = [
+        //         'title' => 'New Facility Homestay',
+        //         'data' => $facilityHomestay
+        //     ];
+            
+        //     // return view('dashboard/detail-package-form', $data);
+
+        //     return redirect()->to(base_url('dashboard/packageday/').$id);
+        // } else {
+        //     return redirect()->back()->withInput();
+        // }
+    }
+
+
+    public function edit($id = null)
+    {
+        $homestay = $this->homestayModel->get_homestay_by_id($id)->getRowArray();
+        if (empty($homestay)) {
+            return redirect()->to('dashboard/homestay');
+        }
+
+        $list_gallery = $this->galleryHomestayModel->get_gallery($id)->getResultArray();
+        $galleries = array();
+        foreach ($list_gallery as $gallery) {
+            $galleries[] = $gallery['url'];
+        }
+        $homestay['gallery'] = $galleries;
+
+        $data = [
+            'title' => 'Edit Homestay',
+            'data' => $homestay,
+        ];
+        return view('dashboard/homestay-form', $data);
+    }
+
+    public function update($id = null)
+    {
+        $request = $this->request->getPost();
+        $requestData = [
+            'id' => $id,
+            'name' => $request['name'],
+            'address' => $request['address'],
+            'price' => $request['price'],
+            'contact_person' => $request['contact_person'],
+            'description' => $request['description'],
+        ];
+        foreach ($requestData as $key => $value) {
+            if (empty($value)) {
+                unset($requestData[$key]);
+            }
+        }
+
+        $geom = $request['multipolygon'];
+        // $geojson = $request['geo-json'];
+
+        $updateHM = $this->homestayModel->update_homestay($id, $requestData);
+        $updateGeom = $this->homestayModel->update_geom($id, $geom);
+
+        if (isset($request['gallery'])) {
+            $folders = $request['gallery'];
+            $gallery = array();
+            foreach ($folders as $folder) {
+                $filepath = WRITEPATH . 'uploads/' . $folder;
+                $filenames = get_filenames($filepath);
+                $fileImg = new File($filepath . '/' . $filenames[0]);
+                $fileImg->move(FCPATH . 'media/photos/homestay');
+                delete_files($filepath);
+                rmdir($filepath);
+                $gallery[] = $fileImg->getFilename();
+            }
+            $this->galleryHomestayModel->update_gallery($id, $gallery);
+        } else {
+            $this->galleryHomestayModel->delete_gallery($id);
+        }
+
+        if ($updateHM) {
+            return redirect()->to(base_url('dashboard/homestay') . '/' . $id);
+        } else {
+            return redirect()->back()->withInput();
+        }
     }
 }

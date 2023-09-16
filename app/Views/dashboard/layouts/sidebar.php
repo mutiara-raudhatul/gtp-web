@@ -91,10 +91,19 @@ $uri3 = $uri[3] ?? '';
                     <?php if (in_groups(['admin'])) : ?>
                         <li class="sidebar-item <?= ($uri1 == 'servicepackage') ? 'active' : '' ?>">
                             <a href="<?= base_url('dashboard/servicepackage'); ?>" class="sidebar-link">
-                                <i class="fa-solid fa-square-poll-horizontal"></i><span>Manage Service Package</span>
+                                <i class="fa-solid fa-puzzle-piece"></i><span>Manage Service Package</span>
                             </a>
                         </li>
                     <?php endif; ?>
+
+                    <?php if (in_groups(['admin'])) : ?>
+                        <li class="sidebar-item <?= ($uri1 == 'homestay') ? 'active' : '' ?>">
+                            <a href="<?= base_url('dashboard/homestay'); ?>" class="sidebar-link">
+                                <i class="fa-solid fa-bed"></i><span>Manage Homestay</span>
+                            </a>
+                        </li>
+                    <?php endif; ?>
+
                     <?php if (in_groups(['admin'])) :
                     ?>
                         <li class="sidebar-item <?= ($uri1 == 'facility') ? 'active' : ''
