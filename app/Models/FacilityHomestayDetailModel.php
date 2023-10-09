@@ -34,19 +34,27 @@ class FacilityHomestayDetailModel extends Model
         return $query;
     }
 
-    public function get_detailFacilityHomestay_by_id($homestay_id = null)
+    public function get_detailFacilityHomestay_by_id($id = null)
     {
         $query = $this->db->table($this->table)
             ->select("*")
-            ->where('homestay_id', $homestay_id)
+            ->join('facility_homestay', 'facility_homestay_detail.facility_homestay_id = facility_homestay.id')
+            ->where('facility_homestay_detail.homestay_id', $id)
             ->get();
         return $query;
     }
 
-    public function add_new_facilityHomestayDetail($facilityHomestay = null)
+    public function add_new_facilityHomestayDetail($id, $requestData)
     {
+        $query = false;
+        $content = [
+            'facility_homestay_id' => $requestData['facility_homestay_id'],
+            'homestay_id' => $requestData['homestay_id'],
+            'description' => $requestData['description']
+        ];
+
         $insert = $this->db->table($this->table)
-            ->insert($facilityHomestay);
+            ->insert($content);
         return $insert;
     }
 

@@ -694,6 +694,7 @@ function boundToObject() {
         let pos = new google.maps.LatLng(-0.7102134517843606, 100.19420485758688);
         map.panTo(pos);
     }
+    
 }
 
 // Render map to contains route and its markers

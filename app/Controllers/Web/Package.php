@@ -120,11 +120,13 @@ class Package extends ResourcePresenter
     {
         $type = $this->packageTypeModel->get_list_type()->getResultArray();
         $service = $this->servicePackageModel->get_list_service_package()->getResultArray();
+        $id = $this->packageModel->get_new_id();
 
         $data = [
             'title' => 'New Package',
             'type' => $type,
-            'service' => $service
+            'service' => $service,
+            'id'=> $id
         ];
 
         return view('dashboard/package-form', $data);
@@ -170,15 +172,16 @@ class Package extends ResourcePresenter
             rmdir($filepath);
             $requestData['video_url'] = $vidFile->getFilename();
         }
+        
         $addPA = $this->packageModel->add_new_package($requestData, $geom);
 
-        $detailService=$request['service'];
+        // $detailService=$request['service'];
 
-        $requestDetailService = [
-            'service' => $request['service']
-        ];
+        // $requestDetailService = [
+        //     'service' => $request['service']
+        // ];
 
-        $addDS = $this->detailServicePackageModel->add_new_detail_service($id, $requestDetailService);
+        // $addDS = $this->detailServicePackageModel->add_new_detail_service($id, $requestDetailService);
 
         if (isset($request['gallery'])) {
             $folders = $request['gallery'];
@@ -209,8 +212,10 @@ class Package extends ResourcePresenter
         // }
 
         if ($addPA) {
-            return redirect()->to(base_url('dashboard/packageday') . '/' . $id);
-            // return redirect()->to(base_url('dashboard/package') . '/' . $id);
+            // $this->load->view('new_form');
+            // return view('web/new_form');
+
+            return redirect()->to(base_url('dashboard/package/edit') . '/' . $id);
         } else {
             return redirect()->back()->withInput();
         } 
@@ -244,12 +249,14 @@ class Package extends ResourcePresenter
         $datases = $datase['package'];
         $package['datase'] = $datases;
 
+        $servicepackage = $this->detailServicePackageModel->get_detailServicePackage_by_id($id)->getResultArray();
 
         $data = [
-            'title' => 'Edit package',
+            'title' => 'Package',
+            'id' => $id,
             'data' => $package,
             'type' => $type,
-            // 'detailservice' => $detailservice,
+            'detailservice' => $servicepackage,
             'service' => $package['datase'],
             'servicelist' => $servicelist
         ];

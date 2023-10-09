@@ -97,10 +97,20 @@ $routes->group('dashboard', ['namespace' => 'App\Controllers\Web', 'filter' => '
     $routes->post('packageday/createactivity/(:segment)', 'Packageday::createactivity/$1');//--------
     $routes->delete('packageday/delete/(:any)', 'Packageday::delete/$1');
 
+    $routes->post('facilityhomestay/createfacility/(:segment)', 'Facilityhomestay::createfacility/$1');//--------
+    $routes->post('facilityhomestay/createfacilityhomestay/(:segment)', 'Facilityhomestay::createfacilityhomestay/$1');//--------
+    $routes->delete('facilityhomestay/delete/(:any)', 'Facilityhomestay::delete/$1');
+
     $routes->get('homestay', 'Dashboard::homestay');
     $routes->resource('homestay');
     $routes->presenter('homestay');
-    $routes->post('homestay/createfacility/(:segment)', 'Homestay::createfacility/$1');//--------
+    $routes->post('homestay/createfacility/', 'Homestay::createfacility');//--------
+
+    $routes->get('unithomestay/new/(:segment)', 'UnitHomestay::new/$1');//--------
+    $routes->delete('unithomestay/delete/(:any)', 'UnitHomestay::delete/$1');
+    $routes->delete('unithomestay/deletefacilityunit/(:any)', 'UnitHomestay::deletefacilityunit/$1');
+    $routes->resource('unit');
+    $routes->presenter('unit');
 
     $routes->get('admin', 'Adminuser::index');
     $routes->get('admin/index', 'Adminuser::index');
@@ -113,6 +123,14 @@ $routes->group('dashboard', ['namespace' => 'App\Controllers\Web', 'filter' => '
     $routes->presenter('facility');
     $routes->presenter('servicepackage');
     $routes->resource('servicepackage');
+    $routes->post('servicepackage/createservicepackage/(:segment)', 'ServicePackage::createservicepackage/$1');//--------
+    $routes->delete('servicepackage/delete/(:any)', 'ServicePackage::delete/$1');//--------
+
+    $routes->presenter('unithomestay');
+    $routes->post('unithomestay/createunit/(:segment)', 'UnitHomestay::createunit/$1');//--------
+    $routes->post('unithomestay/createfacility/(:segment)', 'UnitHomestay::createfacility/$1');//--------
+    $routes->post('unithomestay/createfacilityunit/(:segment)', 'UnitHomestay::createfacilityunit/$1');//--------
+
     $routes->presenter('packageday');
     // $routes->resource('packageday');
 

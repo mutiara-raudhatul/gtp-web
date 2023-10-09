@@ -114,9 +114,9 @@ class Homestay extends ResourcePresenter
         $data = [
             'title' => 'New Homestay',
             'homestay_id'=>$id,
-            'facility' => $facility
+            'facility' => $facility,
         ];
-
+        
         return view('dashboard/homestay-form', $data);
     }
 
@@ -138,7 +138,7 @@ class Homestay extends ResourcePresenter
             'address' => $request['address'],
             'price' => $request['price'],
             'contact_person' => $request['contact_person'],
-            'description' => $request['description'],
+            'description' => $request['description']
         ];
         foreach ($requestData as $key => $value) {
             if (empty($value)) {
@@ -167,7 +167,7 @@ class Homestay extends ResourcePresenter
         }
 
         if ($addHM) {
-            return redirect()->to(base_url('dashboard/homestay'));
+            return redirect()->to(base_url('dashboard/homestay/').$id.'/edit');
         } else {
             return redirect()->back()->withInput();
         }
@@ -176,12 +176,12 @@ class Homestay extends ResourcePresenter
     public function createafacilityhomestay($id)
     {
         $request = $this->request->getPost();
-        $id = $this->homestayModel->get_new_id();
+        // $id = $this->homestayModel->get_new_id();
 
         $requestData = [
             'facility_homestay_id' => $request['facility_homestay_id'],
             'homestay_id' => $id,
-            'description' => $request['description']
+            'description' => $request['description_facility']
         ];
 
         foreach ($requestData as $key => $value) {
@@ -220,6 +220,8 @@ class Homestay extends ResourcePresenter
 
     public function edit($id = null)
     {
+        $facility = $this->facilityHomestayModel->get_list_facility_homestay()->getResultArray();
+
         $homestay = $this->homestayModel->get_homestay_by_id($id)->getRowArray();
         if (empty($homestay)) {
             return redirect()->to('dashboard/homestay');
@@ -232,15 +234,22 @@ class Homestay extends ResourcePresenter
         }
         $homestay['gallery'] = $galleries;
 
+        $facilityHomestay= $this->facilityHomestayDetailModel->get_detailFacilityHomestay_by_id($id)->getResultArray();
+
         $data = [
-            'title' => 'Edit Homestay',
+            'title' => 'Homestay',
             'data' => $homestay,
+            'facility' => $facility,
+            'facility_homestay'=>$facilityHomestay
+
         ];
+
         return view('dashboard/homestay-form', $data);
     }
 
     public function update($id = null)
     {
+
         $request = $this->request->getPost();
         $requestData = [
             'id' => $id,

@@ -26,6 +26,84 @@ $edit = in_array('edit', $uri);
             currentUrl = '<?= current_url(); ?>';
         </script>
 
+        <!-- ADD DATA FACILITY -->
+        <div class="modal fade" id="facilityModal" tabindex="-1" aria-labelledby="facilityModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="facilityModalLabel">Data Facility</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form class="row g-3" action="<?= ($edit) ? base_url('dashboard/facilityhomestay/createfacility'). '/' . $data['id'] : base_url('dashboard/facilityhomestay/createfacility'). '/' . $homestay_id; ?>" method="post" enctype="multipart/form-data">
+                            <div class="modal-body">
+                                <div class="card-header">
+                                    <?php @csrf_field(); ?>
+                                    <div class="row g-4">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="facility_name">Facility Name</label>
+                                                <input type="text" class="form-control" id="facility_name" name="facility_name">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+                                <button type="submit" class="btn btn-outline-primary me-1 mb-1"><i class="fa-solid fa-add"></i></button>
+                                <button type="reset" class="btn btn-outline-danger me-1 mb-1"><i class="fa-solid fa-trash-can"></i> </button>
+                            </div>
+                        </form>
+                        </div>
+                    </div>
+                </div>
+            <!-- end menambahkan data fasilitas -->
+
+
+            <!-- Menambahkan Aktivitas -->
+                <!-- <button type="button" class="btn btn-info add-new"><i class="fa fa-plus"></i> Activity</button> -->
+                <div class="modal fade" id="facilityHomestayModal" tabindex="-1" aria-labelledby="facilityHomestayModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="facilityHomestayModalLabel">Facility Homestay</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <form class="row g-3" action="<?= ($edit) ? base_url('dashboard/facilityhomestay/createfacilityhomestay'). '/' . $data['id'] : base_url('dashboard/facilityhomestay/createfacilityhomestay'). '/' . $homestay_id;  ?>" method="post" >
+                            <div class="modal-body">
+                                <div class="card-header">
+                                    <?php @csrf_field(); ?>
+                                    <div class="row g-4">
+                                        <div class="col-md-12">
+                                            <label for="facilityHomestay">Facility Homestay</label>
+                                            <select class="form-select" name="facility">
+                                                    <option selected disabled>Select the facility</option>
+                                                    <?php foreach ($facility as $item => $keyy) : ?>
+                                                        <option value="<?= esc($keyy['id']); ?>"><?= esc($keyy['name']); ?></option>                                                                
+                                                    <?php endforeach; ?>
+                                            </select>
+                                        </div>
+                                    </div><br>
+                                    <div class="row g-4">
+                                        <div class="col-md-12">
+                                            <label for="description_facility">Description</label>
+                                            <textarea  class="form-control" id="description_facility" name="description_facility" cols="30" rows="10"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+                                <button type="submit" class="btn btn-outline-primary me-1 mb-1"><i class="fa-solid fa-add"></i></button>
+                                <button type="reset" class="btn btn-outline-danger me-1 mb-1"><i class="fa-solid fa-trash-can"></i> </button>
+                            </div>
+                        </form>
+                        </div>
+                    </div>
+                </div>
+            <!-- end Menambahkan Aktivitas -->
+
         <!-- Object Detail Information -->
         <div class="col-md-6 col-12">
             <div class="card">
@@ -72,7 +150,10 @@ $edit = in_array('edit', $uri);
                                 <input class="form-control" accept="video/*, .mkv" type="file" name="video" id="video">
                             </div>
                             <button type="reset" class="btn btn-light-secondary me-1 mb-1">Reset</button>
-                            <button type="submit" class="btn btn-primary me-1 mb-1">Add Facility</button>
+                            <button type="submit" class="btn btn-primary me-1 mb-1">Save & Add Facility</button>
+                            <?php if($edit) : ?>
+                                <a href="<?= base_url('dashboard/unithomestay/new'); ?>/<?= $data['id']; ?>" class="btn btn-info"> Add Unit</a>
+                            <?php endif; ?>
                         </div>
                     </form>
                 </div>
@@ -90,13 +171,13 @@ $edit = in_array('edit', $uri);
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="latitude">Latitude</label>
-                                <input type="text" class="form-control" id="latitude" name="latitude" placeholder="eg. -0.52435750">
+                                <input type="text" class="form-control" id="latitude" name="latitude" value="<?= ($edit) ? $data['lat'] : old('lat'); ?>" placeholder="eg. -0.52435750">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="latitude">Longitude</label>
-                                <input type="text" class="form-control" id="longitude" name="longitude" placeholder="eg. 100.49234850">
+                                <input type="text" class="form-control" id="longitude" name="longitude" value="<?= ($edit) ? $data['lng'] : old('lng'); ?>" placeholder="eg. 100.49234850">
                             </div>
                         </div>
                         <div class="col-auto mx-1">
@@ -118,7 +199,62 @@ $edit = in_array('edit', $uri);
                 </script>
             </div>
             <!-- Object Media -->
+
+            <?php if ($edit): ?>
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-group mb-4">
+                        <label for="facility" class="mb-2">Facility</label>
+                        <div class="col-auto ">
+                            <div class="btn-group float-right" role="group">
+                                <button type="button" class="btn btn-outline-primary " data-bs-toggle="modal" data-bs-target="#facilityModal" data-bs-whatever="@getbootstrap"><i class="fa fa-plus"></i> New Facility</button>
+                                <button type="button" class="btn btn-outline-info " data-bs-toggle="modal" data-bs-target="#facilityHomestayModal" data-bs-whatever="@getbootstrap"><i class="fa fa-plus"></i> Add Facility Homestay</button>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <div class="table-wrapper">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Facility</th>
+                                            <th>Description</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php if (isset($facility_homestay)) : ?>
+                                            <?php foreach ($facility_homestay as $item => $value) : ?>
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td><?= esc($value['name']); ?></td>
+                                                        <td><?= esc($value['description']); ?></td>
+                                                        <td>
+                                                            <div class="btn-group" role="group" aria-label="Basic example">
+                                                                <button type="button" class="btn btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap"><i class="material-icons">&#xE254;</i></button>                                                            
+                                                                <form action="<?= base_url('dashboard/facilityhomestay/delete/').$value['homestay_id']; ?>" method="post" class="d-inline">
+                                                                    <?= csrf_field(); ?>
+                                                                    <input type="hidden" name="homestay_id" value="<?= esc($value['homestay_id']); ?>">
+                                                                    <input type="hidden" name="facility_homestay_id" value="<?= esc($value['facility_homestay_id']); ?>">
+                                                                    <input type="hidden" name="description" value="<?= esc($value['description']); ?>">
+                                                                    <input type="hidden" name="_method" value="DELETE">
+                                                                    <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('apakah anda yakin akan menghapus?');"><i class="material-icons">&#xE872;</i></button>
+                                                                </form>
+                                                            </div>
+                                                        </td> 
+                                                    </tr>              
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            </div>
+            <?php endif; ?>
         </div>
+        
         
     </div>
 </section>

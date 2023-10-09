@@ -81,8 +81,7 @@
             <!-- Object Media -->
             <?= $this->include('web/layouts/our_gallery'); ?>
 
-            <!-- Object Media -->
-            <?= $this->include('web/layouts/review'); ?>
+
         </div>
 
         <div class="col-md-5 col-12">

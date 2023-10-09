@@ -113,8 +113,17 @@ $uri3 = $uri[3] ?? '';
                                 <i class="fa-solid fa-map-pin"></i><span>Manage Facility</span>
                             </a>
                         </li>
-                    <?php endif;
+                        <?php endif;
                     ?>
+
+                    <?php if (in_groups(['admin'])) : ?>
+                        <li class="sidebar-item <?= ($uri1 == 'reservation') ? 'active' : '' ?>">
+                            <a href="<?= base_url('dashboard/reservation'); ?>" class="sidebar-link">
+                                <i class="fa-solid fa-bullhorn"></i><span>Manage Reservation</span>
+                            </a>
+                        </li>
+                    <?php endif; ?>
+                    
                 </ul>
             </div>
 

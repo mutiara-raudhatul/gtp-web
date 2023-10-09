@@ -34,4 +34,18 @@ class FacilityUnitDetailModel extends Model
         return $query;
     }
 
+    public function add_new_facilityUnitDetail($id, $requestData)
+    {
+        $query = false;
+        $content = [
+            'facility_unit_id' => $requestData['facility_unit_id'],
+            'unit_homestay_id' => $requestData['unit_homestay_id'],
+            'description' => $requestData['description']
+        ];
+
+        $insert = $this->db->table($this->table)
+            ->insert($content);
+        return $insert;
+    }
+
 }

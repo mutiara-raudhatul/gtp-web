@@ -33,67 +33,20 @@ class FacilityHomestayModel extends Model
         return $query;
     }
 
-    public function get_listservicePackage_by_id(array $data)
-    {
-
-        foreach ($data as $key => $value) {
-            if (empty($value)) {
-                unset($data[$key]);
-            }
-
-            $query = $this->db->table($this->table)
-                ->select('name')
-                ->where('id', $value)
-                ->get();
-        }
-            
-        return $query;
-
-        
-        // foreach ($list_service as  $key){
-        //     $query = $this->db->table($this->table)
-        //         ->select("*")
-        //         ->where('id', $key)
-        //         ->get();
-        // }
-    }
-
-    public function get_servicePackage_by_id($id = null)
-    {
-        $query = $this->db->table($this->table)
-            ->select("*")
-            ->where('id', $id)
-            ->get();
-        return $query;
-    }
     
     public function get_new_id()
     {
         $lastId = $this->db->table($this->table)->select('id')->orderBy('id', 'ASC')->get()->getLastRow('array');
-        $count = (int)substr($lastId['id'], 1);
-        $id = sprintf('S%1d', $count + 1);
+        $count = (int)substr($lastId['id'], 2);
+        $id = sprintf('FH%02d', $count + 1);
         return $id;
     }
 
-    public function add_new_servicePackage($servicePackage = null)
+    public function add_new_facilityHomestay($facilityHomestay)
     {
         $insert = $this->db->table($this->table)
-            ->insert($servicePackage);
+            ->insert($facilityHomestay);
         return $insert;
     }
-
-    public function update_servicePackage($id = null, $servicePackage = null)
-    {
-        foreach ($servicePackage as $key => $value) {
-            if (empty($value)) {
-                unset($servicePackage[$key]);
-            }
-        }
-        $query = $this->db->table($this->table)
-            ->where('id', $id)
-            ->update($servicePackage);
-        return $query;
-    }
-
 
 }

@@ -3,12 +3,14 @@
 namespace App\Controllers\Web;
 
 use App\Models\ServicePackageModel;
+use App\Models\DetailServicePackageModel;
 use CodeIgniter\RESTful\ResourcePresenter;
 use CodeIgniter\Files\File;
 
 class ServicePackage extends ResourcePresenter
 {
     protected $servicePackageModel;
+    protected $detailServicePackageModel;
 
     /**
      * Instance of the main Request object.
@@ -22,6 +24,7 @@ class ServicePackage extends ResourcePresenter
     public function __construct()
     {
         $this->servicePackageModel = new ServicePackageModel();
+        $this->detailServicePackageModel = new DetailServicePackageModel();
     }
 
     /**
@@ -83,6 +86,7 @@ class ServicePackage extends ResourcePresenter
             'id' => $id,
             'name' => $request['name'],
         ];
+
         foreach ($requestData as $key => $value) {
             if (empty($value)) {
                 unset($requestData[$key]);
@@ -92,7 +96,7 @@ class ServicePackage extends ResourcePresenter
         $addSP = $this->servicePackageModel->add_new_servicePackage($requestData);
 
         if ($addSP) {
-            return redirect()->to(base_url('dashboard/servicepackage'));
+            return redirect()->back();
         } else {
             return redirect()->back()->withInput();
         }
@@ -101,6 +105,7 @@ class ServicePackage extends ResourcePresenter
     public function edit($id = null)
     {
         $sp = $this->servicePackageModel->get_servicePackage_by_id($id)->getRowArray();
+
         if (empty($sp)) {
             return redirect()->to('dashboard/service-package');
         }
@@ -122,6 +127,7 @@ class ServicePackage extends ResourcePresenter
             'id' => $id,
             'name' => $request['name'],
         ];
+
         foreach ($requestData as $key => $value) {
             if (empty($value)) {
                 unset($requestData[$key]);
@@ -131,9 +137,59 @@ class ServicePackage extends ResourcePresenter
         $updateSP = $this->servicePackageModel->update_servicePackage($id, $requestData);
 
         if ($updateSP) {
-            return redirect()->to(base_url('dashboard/servicepackage') . '/' . $id);
+            return redirect()->back();
         } else {
             return redirect()->back()->withInput();
+        }
+    }
+
+    public function createservicepackage($id)
+    {
+        $request = $this->request->getPost();
+
+        $requestData = [
+            'service_package_id' => $request['id_service'],
+            'status' => $request['status_service'],
+            'package_id' => $id,
+        ];
+
+        $addSP = $this->detailServicePackageModel->add_new_detail_service($id, $requestData);
+
+        if ($addSP) {
+            return redirect()->back();
+        } else {
+            return redirect()->back()->withInput();
+        }
+    }
+
+    public function delete($id=null)
+    {
+        $request = $this->request->getPost();
+
+        $package_id=$request['package_id'];
+        $service_package_id=$request['service_package_id'];
+        $name=$request['name'];
+        $status=$request['status'];
+
+        $array = array('package_id' => $package_id, 'service_package_id' => $service_package_id, 'status' => $status);
+        $detailServicePackage = $this->detailServicePackageModel->where($array)->find();
+        $deleteDSP= $this->detailServicePackageModel->where($array)->delete();
+
+        if ($deleteDSP) {
+            session()->setFlashdata('pesan', 'Service "'.$name.'" Berhasil di Hapus.');
+           
+            return redirect()->back();
+
+            // return view('dashboard/detail-package-form', $data, $package, $packageDay, $detailPackage);
+
+        } else {
+            $response = [
+                'status' => 404,
+                'message' => [
+                    "Package not found"
+                ]
+            ];
+            return $this->failNotFound($response);
         }
     }
 }

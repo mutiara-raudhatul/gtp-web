@@ -10,7 +10,7 @@ class FacilityUnitModel extends Model
     protected $table = 'facility_unit';
     // protected $primaryKey = 'id';
     protected $returnType = 'array';
-    protected $allowedFields    = ['id','name'];
+    protected $allowedFields    = ['id', 'name'];
 
     // Dates
     protected $useTimestamps = true;
@@ -24,12 +24,36 @@ class FacilityUnitModel extends Model
     protected $skipValidation       = false;
     protected $cleanValidationRules = true;
 
-    public function get_facility_unit()
-    {
+
+    public function get_list_facility_unit() {
         $query = $this->db->table($this->table)
-            ->select('*')
+            ->select("*")
+            ->orderBy('id', 'ASC')
             ->get();
         return $query;
     }
 
+    public function get_new_id()
+    {
+        $lastId = $this->db->table($this->table)->select('id')->orderBy('id', 'ASC')->get()->getLastRow('array');
+        $count = (int)substr($lastId['id'], 2);
+        $id = sprintf('FU%02d', $count + 1);
+        return $id;
+    }
+
+    public function add_new_facilityUnit($requestData)
+    {
+        $insert = $this->db->table($this->table)
+            ->insert($requestData);
+        return $insert;
+    }
+
+    public function get_facility_unit_selected($facility_unit_id) 
+    {
+        $query = $this->db->table($this->table)
+            ->select("*")
+            ->where('id', $facility_unit_id)
+            ->get();
+        return $query;
+    }
 }

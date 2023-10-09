@@ -122,8 +122,21 @@ $edit = in_array('edit', $uri);
             currentUrl = '<?= current_url(); ?>';
         </script>
 
-        <div class="col-md-13 col-13">
+        <div class="col-md-12 col-12">
             <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title text-center"><?= $title; ?></h4>
+                </div>
+                <ul class="nav nav-tabs">
+                    <li class="nav-item col-md-6">
+                        <a class="nav-link active float-center" aria-current="page" href="<?=base_url('dashboard/homestay/new') ?>">Homestay</a>
+                    </li>
+                    <li class="nav-item col-md-6">
+                        <a class="nav-link " href="<?= ($edit) ? base_url('dashboard/unithomestay/edit'). '/' . $data['id'] : base_url('dashboard/unithomestay/new'). '/' ;  ?>">Unit Homestay</a>
+                    </li>
+                </ul>
+                <br>
+                <div class="card-body">
             <!-- Menambahkan hari paket -->
                 
                 <div class="col-auto ">
@@ -181,7 +194,7 @@ $edit = in_array('edit', $uri);
             <!-- end menambahkan hari paket -->
             
             <!-- Menambahkan Aktivitas -->
-            <div class="col-sm-2 float-end">
+                <div class="col-sm-2 float-end">
                                         <!-- <button type="button" class="btn btn-info add-new"><i class="fa fa-plus"></i> Activity</button> -->
                                         <div class="modal fade" id="activityModal" tabindex="-1" aria-labelledby="activityModalLabel" aria-hidden="true">
                                             <div class="modal-dialog">
@@ -254,74 +267,76 @@ $edit = in_array('edit', $uri);
                                     </div>
             <!-- end Menambahkan Aktivitas -->
 
-            <?php if (session()->getFlashdata('pesan')) : ?>
-                <div class="alert alert-success col-sm-10 mx-auto" role="alert">
-                    <?= session()->getFlashdata('pesan'); ?>
-                </div>
-            <?php endif;  ?>
-            
-            <?php if (isset($day)) : ?>
-                <?php foreach ($day as $item => $key) : ?>
-                    <div class="table-responsive">
-                        <div class="table-wrapper">
+                    <?php if (session()->getFlashdata('pesan')) : ?>
+                        <div class="alert alert-success col-sm-10 mx-auto" role="alert">
+                            <?= session()->getFlashdata('pesan'); ?>
+                        </div>
+                    <?php endif;  ?>
+                    
+                    <?php if (isset($day)) : ?>
+                        <?php foreach ($day as $item => $key) : ?>
+                            <div class="table-responsive">
+                                <div class="table-wrapper">
 
-                            <div class="table-title">
-                                <div class="row">
-                                    <div class="col-sm-10">
-                                        <h2><b>Day <?= esc($key['day']); ?></b></h2>
-                                        <p><?= esc($key['description']); ?></p>
+                                    <div class="table-title">
+                                        <div class="row">
+                                            <div class="col-sm-10">
+                                                <h2><b>Day <?= esc($key['day']); ?></b></h2>
+                                                <p><?= esc($key['description']); ?></p>
+                                            </div>
+                                            
+                                        </div>
                                     </div>
-                                    
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Activity Type</th>
+                                                <th>Object</th>
+                                                <th>Description</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php if (isset($activity)) : ?>
+                                                <?php foreach ($activity as $item => $value) : ?>
+                                                    <?php if ($value['day']==$key['day']) : ?>
+                                                        <tr>
+                                                            <td><?= esc($value['activity']); ?></td>
+                                                            <td><?= esc($value['activity_type']); ?></td>
+                                                            <td><?= esc($value['object_id']); ?></td>
+                                                            <td><?= esc($value['description']); ?></td>
+                                                            <td>
+                                                                <!-- <a class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a> -->
+                                                                <!-- <a class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a> -->
+
+                                                                <div class="btn-group" role="group" aria-label="Basic example">
+                                                                    <button type="button" class="btn btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap"><i class="material-icons">&#xE254;</i></button>                                                            
+                                                                    <form action="delete/<?= $value['package_id']; ?>" method="post" class="d-inline">
+                                                                        <?= csrf_field(); ?>
+                                                                        <input type="hidden" name="package_id" value="<?= esc($value['package_id']); ?>">
+                                                                        <input type="hidden" name="day" value="<?= esc($value['day']); ?>">
+                                                                        <input type="hidden" name="activity" value="<?= esc($value['activity']); ?>">
+                                                                        <input type="hidden" name="description" value="<?= esc($value['description']); ?>">
+                                                                        <input type="hidden" name="_method" value="DELETE">
+                                                                        <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('apakah anda yakin?');"><i class="material-icons">&#xE872;</i></button>
+                                                                    </form>
+                                                                </div>
+                                                            </td> 
+                                                        </tr>  
+                                                    <?php endif; ?>
+        
+                                                <?php endforeach; ?>
+                                            <?php endif; ?>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
-                            <table class="table table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Activity Type</th>
-                                        <th>Object</th>
-                                        <th>Description</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php if (isset($activity)) : ?>
-                                        <?php foreach ($activity as $item => $value) : ?>
-                                            <?php if ($value['day']==$key['day']) : ?>
-                                                <tr>
-                                                    <td><?= esc($value['activity']); ?></td>
-                                                    <td><?= esc($value['activity_type']); ?></td>
-                                                    <td><?= esc($value['object_id']); ?></td>
-                                                    <td><?= esc($value['description']); ?></td>
-                                                    <td>
-                                                        <!-- <a class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a> -->
-                                                        <!-- <a class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a> -->
-
-                                                        <div class="btn-group" role="group" aria-label="Basic example">
-                                                            <button type="button" class="btn btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap"><i class="material-icons">&#xE254;</i></button>                                                            
-                                                            <form action="delete/<?= $value['package_id']; ?>" method="post" class="d-inline">
-                                                                <?= csrf_field(); ?>
-                                                                <input type="hidden" name="package_id" value="<?= esc($value['package_id']); ?>">
-                                                                <input type="hidden" name="day" value="<?= esc($value['day']); ?>">
-                                                                <input type="hidden" name="activity" value="<?= esc($value['activity']); ?>">
-                                                                <input type="hidden" name="description" value="<?= esc($value['description']); ?>">
-                                                                <input type="hidden" name="_method" value="DELETE">
-                                                                <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('apakah anda yakin?');"><i class="material-icons">&#xE872;</i></button>
-                                                            </form>
-                                                        </div>
-                                                    </td> 
-                                                </tr>  
-                                            <?php endif; ?>
- 
-                                        <?php endforeach; ?>
-                                    <?php endif; ?>
-                                </tbody>
-                            </table>
-                        </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                     </div>
-                <?php endforeach; ?>
-            <?php endif; ?>
-
+            </div>
+        </div>
 
             </div>
         </div>

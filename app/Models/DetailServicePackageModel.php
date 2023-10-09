@@ -38,22 +38,23 @@ class DetailServicePackageModel extends Model
     {
         $query = $this->db->table($this->table)
             ->select("*")
-            ->where('package_id', $id)
+            ->join('service_package', 'detail_service_package.service_package_id = service_package.id')
+            ->where('detail_service_package.package_id', $id)
             ->get();
         return $query;
     }
 
-    public function add_new_detail_service($id, $requestDetailService)
+    public function add_new_detail_service($id, $requestData)
     {
         $query = false;
-        foreach ($requestDetailService as $ds) {
-            $content = [
-                'service_package_id' => $ds,
-                'package_id' => $id,
-                'status' => '1',
-            ];
-            $query = $this->db->table($this->table)->insert($content);
-        }
+        $content = [
+            'service_package_id' =>  $requestData['service_package_id'],
+            'package_id' => $id,
+            'status' => $requestData['status'],
+        ];
+
+        $query = $this->db->table($this->table)->insert($content);
+        
         return $query;
     }
 
