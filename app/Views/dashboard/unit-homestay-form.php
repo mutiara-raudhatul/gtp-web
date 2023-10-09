@@ -365,11 +365,15 @@ $edit = in_array('edit', $uri);
                                                         editModal.style.display = 'none';
                                                     });
                                                 </script>
-                                                
+
                                                 <form action="<?= base_url('dashboard/unithomestay/delete/').$itemunit['id']; ?>" method="post" class="d-inline">
                                                     <?= csrf_field(); ?>
                                                     <input type="hidden" name="homestay_id" value="<?= esc($itemunit['homestay_id']); ?>">
                                                     <input type="hidden" name="unit_homestay_id" value="<?= esc($itemunit['id']); ?>">
+                                                    <input type="hidden" name="nama_unit" value="<?= esc($itemunit['nama_unit']); ?>">
+                                                    <input type="hidden" name="description" value="<?= esc($itemunit['description']); ?>">
+                                                    <input type="hidden" name="price" value="<?= esc($itemunit['price']); ?>">
+                                                    <input type="hidden" name="capacity" value="<?= esc($itemunit['capacity']); ?>">
                                                     <input type="hidden" name="_method" value="DELETE">
                                                     <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('apakah anda yakin akan menghapus?');"><i class="material-icons">&#xE872;</i></button>
                                                 </form>

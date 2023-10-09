@@ -296,16 +296,21 @@ class UnitHomestay extends ResourcePresenter
     public function delete ($homestay_id=null, $unit_homestay_id=null)
     {
         $request = $this->request->getPost();
-
+        
         $homestay_id=$request['homestay_id'];
         $unit_homestay_id=$request['unit_homestay_id'];
+        $nama_unit=$request['nama_unit'];
 
-        $array = array('id' => $unit_homestay_id, 'homestay_id' => $homestay_id);
-        $unitHomestay = $this->unitHomestayModel->where($array)->find();
-        $deleteUH= $this->unitHomestayModel->where($array)->delete();
+        $array1 = array('unit_homestay_id' => $unit_homestay_id);
+        $facilityUnitDetail = $this->facilityUnitDetailModel->where($array1)->find();
+        $deleteFUD= $this->facilityUnitDetailModel->where($array1)->delete();
+
+        $array2 = array('id' => $unit_homestay_id, 'homestay_id' => $homestay_id);
+        $unitHomestay = $this->unitHomestayModel->where($array2)->find();
+        $deleteUH= $this->unitHomestayModel->where($array2)->delete();
 
         if ($deleteUH) {
-            session()->setFlashdata('pesan', 'Unit "'.$unit_homestay_id.'"Homestay "'.$homestay_id.'" Berhasil di Hapus.');
+            session()->setFlashdata('pesan', 'Unit "'.$nama_unit.'" Homestay "'.$homestay_id.'" Berhasil di Hapus.');
             
             return redirect()->back();
 
