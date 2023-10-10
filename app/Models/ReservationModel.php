@@ -10,7 +10,7 @@ class ReservationModel extends Model
     protected $table = 'reservation';
     protected $primaryKey = 'id';
     protected $returnType = 'array';
-    protected $allowedFields    = ['id', 'user_id', 'reservation_date','check_in', 'check_out', 'total_price', 'deposite', 'status_id', 'review_id'];
+    protected $allowedFields    = ['id', 'user_id', 'request_date','check_in', 'check_out', 'total_people', 'deposite', 'total_price', 'status_id', 'comment', 'rating'];
 
     // Dates
     protected $useTimestamps = true;
@@ -26,7 +26,9 @@ class ReservationModel extends Model
 
     public function get_list_reservation() {
         $query = $this->db->table($this->table)
-            ->select("*")
+            ->select("`reservation.id`, `reservation.user_id`, `users.username`,`reservation.package_id`, `package.name`, `reservation.request_date`, `reservation.check_in`, `reservation.check_out`, `reservation.status_id`,`status_reservation.status`")
+            ->join('package', 'reservation.package_id = package.id')
+            ->join('users', 'reservation.user_id = users.id')
             ->join('status_reservation', 'reservation.status_id = status_reservation.id')
             ->orderBy('reservation.id', 'ASC')
             ->get();
@@ -34,35 +36,11 @@ class ReservationModel extends Model
         return $query;
     }
 
-    // public function get_listservicePackage_by_id(array $data)
-    // {
-
-    //     foreach ($data as $key => $value) {
-    //         if (empty($value)) {
-    //             unset($data[$key]);
-    //         }
-
-    //         $query = $this->db->table($this->table)
-    //             ->select('name')
-    //             ->where('id', $value)
-    //             ->get();
-    //     }
-            
-    //     return $query;
-
-        
-    //     // foreach ($list_service as  $key){
-    //     //     $query = $this->db->table($this->table)
-    //     //         ->select("*")
-    //     //         ->where('id', $key)
-    //     //         ->get();
-    //     // }
-    // }
-
     public function get_reservation_by_id($id = null)
     {
         $query = $this->db->table($this->table)
-            ->select("*")
+            ->select("`reservation.id`, `reservation.user_id`, `reservation.package_id`,`package.name`, `reservation.request_date`, `reservation.check_in`, `reservation.check_out`, `reservation.status_id`, `reservation.total_price`, `reservation.total_people`, `reservation.deposit`,`status_reservation.status`,`users.username` ")
+            ->join('package', 'reservation.package_id = package.id')
             ->join('status_reservation', 'reservation.status_id = status_reservation.id')
             ->join('users', 'reservation.user_id = users.id')
             ->where('reservation.id', $id)

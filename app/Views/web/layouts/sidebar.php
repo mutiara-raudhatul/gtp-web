@@ -124,19 +124,16 @@ $uri3 = $uri[3] ?? '';
                         </ul>
                     </li>
 
-                    <li class="sidebar-item has-sub">
-                        <a href="" class="sidebar-link">
-                            <i class="fa-solid fa-star"></i><span>Homestay</span>
+                    <li class="sidebar-item <?= ($uri1 == 'homestay') ? 'active' : '' ?>">
+                        <a href="<?= base_url('/web/homestay'); ?>" class="sidebar-link">
+                            <i class="fa-solid fa-bed"></i><span>Homestay</span>
                         </a>
+                    </li>
 
-                        <ul class="submenu <?= ($uri1 == 'homestay' || $uri1 == 'reservation') ? 'active' : '' ?>">
-                            <li class="submenu-item <?= ($uri1 == 'homestay') ? 'active' : '' ?>" id="at-list">
-                                <a href="<?= base_url('/web/homestay'); ?>"><i class="fa-solid fa-bridge-water me-3"></i>List Homestay</a>
-                            </li>
-                            <li class="submenu-item <?= ($uri1 == 'reservation') ? 'active' : '' ?>" id="at-list">
-                                <a href="<?= base_url('/web/reservation'); ?>"><i class="fa-solid fa-water me-3"></i>Reservation</a>
-                            </li>
-                        </ul>
+                    <li class="sidebar-item <?= ($uri1 == 'reservation') ? 'active' : '' ?>">
+                        <a href="<?= base_url('/web/reservation'); ?>" class="sidebar-link">
+                            <i class="fa-solid fa-calendar"></i><span>Reservation</span>
+                        </a>
                     </li>
 
                     <li class="sidebar-item <?= ($uri1 == 'ulakan') ? 'active' : '' ?>">

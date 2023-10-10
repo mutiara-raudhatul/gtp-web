@@ -46,7 +46,21 @@
                                 ?></p>
                         </div>
                     </div>
-                
+                    <div class="row">
+                        <div class="col">
+                            <p class="fw-bold">Service Include <br> 
+                                <?php foreach ($serviceinclude as $ls) : ?>
+                                    <li><?= esc($ls['name']);?></li>
+                                <?php endforeach; ?>
+                            </p>
+                            <p class="fw-bold">Service exclude <br> 
+                            <?php foreach ($serviceexclude as $ls) : ?>
+                                <li><?= esc($ls['name']);?></li>
+                            <?php endforeach; ?>
+                            </p>
+                            <br> 
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="card">

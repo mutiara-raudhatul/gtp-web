@@ -70,7 +70,7 @@ $edit = in_array('edit', $uri);
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
 
-                                    <form class="row g-3" action="<?= base_url('dashboard/servicepackage/createservicepackage/').$data['id'] ; ?>" method="post" enctype="multipart/form-data">
+                                    <form class="row g-3" action="<?= base_url('dashboard/servicepackage/createservicepackage/').$id; ?>" method="post" enctype="multipart/form-data">
                                         <div class="modal-body">
                                             <div class="card-header">
                                                 <?php @csrf_field(); ?>
@@ -173,106 +173,6 @@ $edit = in_array('edit', $uri);
                     </form>
 
                     <br/>
-
-                    <?php if(($edit)) : ?>
-                        <div class="form-group mb-4">
-                            <div class="col-auto ">
-                                <div class="btn-group float-right" role="group">
-                                    <button type="button" class="btn btn-outline-primary " data-bs-toggle="modal" data-bs-target="#servicesPackageModal" data-bs-whatever="@getbootstrap"><i class="fa fa-plus"></i> New Services</button>
-                                    <button type="button" class="btn btn-outline-info " data-bs-toggle="modal" data-bs-target="#detailServicesPackageModal" data-bs-whatever="@getbootstrap"><i class="fa fa-plus"></i> Add Services Package</button>
-                                </div>
-                            </div>
-                            <br>
-                            <label for="facility" class="mb-2">Services</label>
-                            <div class="table-responsive">
-                                <div class="table-wrapper">
-                                    <table class="table table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th>No</th>
-                                                <th>Name</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php if (isset($detailservice)) : ?>
-                                                <?php $i = 1; ?>
-                                                <?php foreach ($detailservice as $item => $value) : ?>
-                                                    <?php if ($value['status']=="1") : ?>
-                                                        <tr>
-                                                            <td><?= esc($i++); ?></td>
-                                                            <td><?= esc($value['name']); ?></td>
-                                                            <td>
-                                                                <div class="btn-group" role="group" aria-label="Basic example">
-                                                                    <button type="button" class="btn btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap"><i class="material-icons">&#xE254;</i></button>                                                            
-                                                                    <form action="<?= base_url('dashboard/servicepackage/delete/').$value['package_id']; ?>" method="post" class="d-inline">
-                                                                        <?= csrf_field(); ?>
-                                                                        <input type="hidden" name="package_id" value="<?= esc($value['package_id']); ?>">
-                                                                        <input type="hidden" name="service_package_id" value="<?= esc($value['service_package_id']); ?>">
-                                                                        <input type="hidden" name="name" value="<?= esc($value['name']); ?>">
-                                                                        <input type="hidden" name="status" value="<?= esc($value['status']); ?>">
-                                                                        <input type="hidden" name="_method" value="DELETE">
-                                                                        <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('apakah anda yakin akan menghapus?');"><i class="material-icons">&#xE872;</i></button>
-                                                                    </form>
-                                                                </div>
-                                                            </td> 
-                                                        </tr> 
-                                                    <?php endif; ?>       
-                                                <?php endforeach; ?>
-                                            <?php endif; ?>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-
-                            <label for="facility" class="mb-2">Non-Services</label>
-                            <div class="table-responsive">
-                                <div class="table-wrapper">
-                                    <table class="table table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th>No</th>
-                                                <th>Name</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php if (isset($detailservice)) : ?>
-                                                <?php $i = 1; ?>
-                                                <?php foreach ($detailservice as $item => $value) : ?>
-                                                    <?php if ($value['status']=="0") : ?>
-                                                        <tr>
-                                                            <td><?= esc($i++); ?></td>
-                                                            <td><?= esc($value['name']); ?></td>
-                                                            <td>
-                                                                <div class="btn-group" role="group" aria-label="Basic example">
-                                                                    <button type="button" class="btn btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap"><i class="material-icons">&#xE254;</i></button>                                                            
-                                                                    <form action="<?= base_url('dashboard/servicepackage/delete/').$value['package_id']; ?>" method="post" class="d-inline">
-                                                                        <?= csrf_field(); ?>
-                                                                        <input type="hidden" name="package_id" value="<?= esc($value['package_id']); ?>">
-                                                                        <input type="hidden" name="service_package_id" value="<?= esc($value['service_package_id']); ?>">
-                                                                        <input type="hidden" name="name" value="<?= esc($value['name']); ?>">
-                                                                        <input type="hidden" name="status" value="<?= esc($value['status']); ?>">
-                                                                        <input type="hidden" name="_method" value="DELETE">
-                                                                        <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('apakah anda yakin akan menghapus?');"><i class="material-icons">&#xE872;</i></button>
-                                                                    </form>
-                                                                </div>
-                                                            </td> 
-                                                        </tr> 
-                                                    <?php endif; ?>
-                                                <?php endforeach; ?>
-                                            <?php endif; ?>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    <?php else : ?>
-                        <div>
-                            no 
-                        </div>
-                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -315,9 +215,113 @@ $edit = in_array('edit', $uri);
                     initDrawingManager(<?= $edit ?>);
                 </script>
             </div>
+
             <!-- Object Media -->
+            <?php if(($edit)) : ?>
+                <div class="col-md-12 col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row align-items-center">
+                            <div class="form-group mb-4">
+                                <div class="col-auto ">
+                                    <div class="btn-group float-right" role="group">
+                                        <button type="button" class="btn btn-outline-primary " data-bs-toggle="modal" data-bs-target="#servicesPackageModal" data-bs-whatever="@getbootstrap"><i class="fa fa-plus"></i> New Services</button>
+                                        <button type="button" class="btn btn-outline-info " data-bs-toggle="modal" data-bs-target="#detailServicesPackageModal" data-bs-whatever="@getbootstrap"><i class="fa fa-plus"></i> Add Services Package</button>
+                                    </div>
+                                </div>
+                                <br>
+                                <label for="facility" class="mb-2">Services</label>
+                                <div class="table-responsive">
+                                    <div class="table-wrapper">
+                                        <table class="table table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>Name</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php if (isset($detailservice)) : ?>
+                                                    <?php $i = 1; ?>
+                                                    <?php foreach ($detailservice as $item => $value) : ?>
+                                                        <?php if ($value['status']=="1") : ?>
+                                                            <tr>
+                                                                <td><?= esc($i++); ?></td>
+                                                                <td><?= esc($value['name']); ?></td>
+                                                                <td>
+                                                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                                                        <button type="button" class="btn btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap"><i class="material-icons">&#xE254;</i></button>                                                            
+                                                                        <form action="<?= base_url('dashboard/servicepackage/delete/').$value['package_id']; ?>" method="post" class="d-inline">
+                                                                            <?= csrf_field(); ?>
+                                                                            <input type="hidden" name="package_id" value="<?= esc($value['package_id']); ?>">
+                                                                            <input type="hidden" name="service_package_id" value="<?= esc($value['service_package_id']); ?>">
+                                                                            <input type="hidden" name="name" value="<?= esc($value['name']); ?>">
+                                                                            <input type="hidden" name="status" value="<?= esc($value['status']); ?>">
+                                                                            <input type="hidden" name="_method" value="DELETE">
+                                                                            <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('apakah anda yakin akan menghapus?');"><i class="material-icons">&#xE872;</i></button>
+                                                                        </form>
+                                                                    </div>
+                                                                </td> 
+                                                            </tr> 
+                                                        <?php endif; ?>       
+                                                    <?php endforeach; ?>
+                                                <?php endif; ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+    
+    
+                                <label for="facility" class="mb-2">Non-Services</label>
+                                <div class="table-responsive">
+                                    <div class="table-wrapper">
+                                        <table class="table table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>Name</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php if (isset($detailservice)) : ?>
+                                                    <?php $i = 1; ?>
+                                                    <?php foreach ($detailservice as $item => $value) : ?>
+                                                        <?php if ($value['status']=="0") : ?>
+                                                            <tr>
+                                                                <td><?= esc($i++); ?></td>
+                                                                <td><?= esc($value['name']); ?></td>
+                                                                <td>
+                                                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                                                        <button type="button" class="btn btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap"><i class="material-icons">&#xE254;</i></button>                                                            
+                                                                        <form action="<?= base_url('dashboard/servicepackage/delete/').$value['package_id']; ?>" method="post" class="d-inline">
+                                                                            <?= csrf_field(); ?>
+                                                                            <input type="hidden" name="package_id" value="<?= esc($value['package_id']); ?>">
+                                                                            <input type="hidden" name="service_package_id" value="<?= esc($value['service_package_id']); ?>">
+                                                                            <input type="hidden" name="name" value="<?= esc($value['name']); ?>">
+                                                                            <input type="hidden" name="status" value="<?= esc($value['status']); ?>">
+                                                                            <input type="hidden" name="_method" value="DELETE">
+                                                                            <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('apakah anda yakin akan menghapus?');"><i class="material-icons">&#xE872;</i></button>
+                                                                        </form>
+                                                                    </div>
+                                                                </td> 
+                                                            </tr> 
+                                                        <?php endif; ?>
+                                                    <?php endforeach; ?>
+                                                <?php endif; ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>                        
+                        </div>
+                    </div>
+                </div>
+                </div>
+            <?php endif; ?>
         </div>
-        
+
     </div>
 </section>
 

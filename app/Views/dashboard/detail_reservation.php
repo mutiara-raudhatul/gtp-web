@@ -12,13 +12,24 @@
         <div class="col-md-7 col-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title text-center">Homestay Reservation</h4>
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h4 class="card-title text-center">Reservation Information</h4>
+                        </div>
+                        <div class="col-auto">
+                            <a href="<?= base_url('dashboard/managereservation/edit'); ?>/<?= esc($data['id']); ?>" class="btn btn-primary float-end"><i class="fa-solid fa-pencil me-3"></i>Edit</a>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col table-responsive">
                             <table class="table table-borderless">
                                 <tbody>
+                                    <tr>
+                                        <td class="fw-bold">Costumer</td>
+                                        <td><?= esc($data['username']); ?></td>
+                                    </tr>
                                     <tr>
                                         <td class="fw-bold">Package Reservation</td>
                                         <td><?= esc($data['name']); ?></td>

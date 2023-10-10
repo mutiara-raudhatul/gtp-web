@@ -56,8 +56,17 @@
                     <div class="row">
                         <div class="col">
                             <p class="fw-bold">Service Include</p>
-                            <?php foreach ($service as $ls) : ?>
-                                <li><?= esc($ls->name);?></li>
+                            <?php foreach ($serviceinclude as $ls) : ?>
+                                <li><?= esc($ls['name']);?></li>
+                            <?php endforeach; ?>
+                            <br> 
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <p class="fw-bold">Service Exclude</p>
+                            <?php foreach ($serviceexclude as $ls) : ?>
+                                <li><?= esc($ls['name']);?></li>
                             <?php endforeach; ?>
                             <br> 
                         </div>

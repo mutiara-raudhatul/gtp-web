@@ -37,6 +37,8 @@ class Reservation extends ResourcePresenter
             'data' => $contents,
         ];
 
+        // dd($data);
+
         return view('web/reservation', $data);
     }
 

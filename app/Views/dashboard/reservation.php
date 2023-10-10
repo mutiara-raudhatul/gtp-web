@@ -1,4 +1,4 @@
-<?= $this->extend('web/layouts/main'); ?>
+<?= $this->extend('dashboard/layouts/main'); ?>
 
 <?= $this->section('content') ?>
 
@@ -10,7 +10,7 @@
             <div class="col-12" id="list-rg-col">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title text-center">List Reservation</h5>
+                        <h5 class="card-title text-center"><?= esc($title); ?></h5>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive overflow-auto" id="table-user">
@@ -23,6 +23,7 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
+                                        <th>Costumer</th>
                                         <th>Package Name</th>
                                         <th>Request Date</th>
                                         <th>Check In</th>
@@ -37,6 +38,7 @@
                                         <?php foreach ($data as $item) :?>
                                             <tr>
                                                 <td><?= esc($i); ?></td>
+                                                <td><?= esc($item['username']); ?></td>
                                                 <td><?= esc($item['name']); ?></td>
                                                 <td><?= date('d F Y, h:i:s A', strtotime($item['request_date'])); ?></td>
                                                 <td><?= date('d F Y, h:i:s A', strtotime($item['check_in'])); ?></td>

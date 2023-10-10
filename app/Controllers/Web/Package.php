@@ -88,20 +88,25 @@ class Package extends ResourcePresenter
         // $service_package = $this->servicePackageModel->get_listservicePackage_by_id($package['service'])->getResultArray();
 
 
-        $this->builder->select ('service_package.id, service_package.name');
-        $this->builder->join ('detail_service_package', 'detail_service_package.package_id = package.id');
-        $this->builder->join ('service_package', 'service_package.id = detail_service_package.service_package_id');
-        $this->builder->where ('package.id', $id);
-        $query = $this->builder->get();
-        $datase['package']=$query->getResult();
-        $datases = $datase['package'];
+        // $this->builder->select ('service_package.id, service_package.name');
+        // $this->builder->join ('detail_service_package', 'detail_service_package.package_id = package.id');
+        // $this->builder->join ('service_package', 'service_package.id = detail_service_package.service_package_id');
+        // $this->builder->where ('package.id', $id);
+        // $query = $this->builder->get();
+        // $datase['package']=$query->getResult();
+        // $datases = $datase['package'];
 
-        $package['datase'] = $datases;
+        // $package['datase'] = $datases;
         
+        $serviceinclude= $this->detailServicePackageModel->get_service_include_by_id($id)->getResultArray();
+
+        $serviceexclude= $this->detailServicePackageModel->get_service_exclude_by_id($id)->getResultArray();
+
         $data = [
             'title' => $package['name'],
             'data' => $package,
-            'service' => $package['datase'],
+            'serviceinclude' => $serviceinclude,
+            'serviceexclude' => $serviceexclude,
             'folder' => 'package'
         ];
 
@@ -119,16 +124,17 @@ class Package extends ResourcePresenter
     public function new()
     {
         $type = $this->packageTypeModel->get_list_type()->getResultArray();
-        $service = $this->servicePackageModel->get_list_service_package()->getResultArray();
+        $servicelist = $this->servicePackageModel->get_list_service_package()->getResultArray();
         $id = $this->packageModel->get_new_id();
 
         $data = [
             'title' => 'New Package',
             'type' => $type,
-            'service' => $service,
+            'servicelist' => $servicelist,
             'id'=> $id
         ];
 
+        // dd($data);
         return view('dashboard/package-form', $data);
     }
 
@@ -249,7 +255,7 @@ class Package extends ResourcePresenter
         $datases = $datase['package'];
         $package['datase'] = $datases;
 
-        $servicepackage = $this->detailServicePackageModel->get_detailServicePackage_by_id($id)->getResultArray();
+        $servicepackage = $this->detailServicePackageModel->get_service_package_detail_by_id($id)->getResultArray();
 
         $data = [
             'title' => 'Package',

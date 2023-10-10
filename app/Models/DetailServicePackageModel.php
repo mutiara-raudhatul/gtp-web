@@ -34,13 +34,37 @@ class DetailServicePackageModel extends Model
         return $query;
     }
 
-    public function get_detailServicePackage_by_id($id = null)
+    public function get_service_package_detail_by_id($id = null)
     {
         $query = $this->db->table($this->table)
             ->select("*")
             ->join('service_package', 'detail_service_package.service_package_id = service_package.id')
             ->where('detail_service_package.package_id', $id)
             ->get();
+        return $query;
+    }
+
+    public function get_service_include_by_id($id = null)
+    {
+        $query = $this->db->table($this->table)
+            ->select("*")
+            ->join('service_package', 'detail_service_package.service_package_id = service_package.id')
+            ->where('detail_service_package.package_id', $id)
+            ->where('detail_service_package.status', '1')
+            ->get();
+
+        return $query;
+    }
+    
+    public function get_service_exclude_by_id($id = null)
+    {
+        $query = $this->db->table($this->table)
+            ->select("*")
+            ->join('service_package', 'detail_service_package.service_package_id = service_package.id')
+            ->where('detail_service_package.package_id', $id)
+            ->where('detail_service_package.status', '0')
+            ->get();
+
         return $query;
     }
 
