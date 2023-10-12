@@ -3,6 +3,7 @@
 namespace App\Controllers\Web;
 
 use App\Models\PackageModel;
+use App\Models\DetailPackageModel;
 use App\Models\GalleryPackageModel;
 use App\Models\PackageTypeModel;
 use App\Models\ServicePackageModel;
@@ -13,6 +14,7 @@ use CodeIgniter\Files\File;
 class Package extends ResourcePresenter
 {
     protected $packageModel;
+    protected $detailPackageModel;
     protected $galleryPackageModel;
     protected $packageTypeModel;
     protected $servicePackageModel;
@@ -31,6 +33,7 @@ class Package extends ResourcePresenter
     public function __construct()
     {
         $this->packageModel = new PackageModel();
+        $this->detailPackageModel = new DetailPackageModel();
         $this->galleryPackageModel = new GalleryPackageModel();
         $this->packageTypeModel = new PackageTypeModel();
         $this->servicePackageModel = new ServicePackageModel();
@@ -99,14 +102,21 @@ class Package extends ResourcePresenter
         // $package['datase'] = $datases;
         
         $serviceinclude= $this->detailServicePackageModel->get_service_include_by_id($id)->getResultArray();
-
         $serviceexclude= $this->detailServicePackageModel->get_service_exclude_by_id($id)->getResultArray();
+
+        $detailPackage = $this->detailPackageModel->get_detailPackage_by_id($id)->getResultArray();
+        
+        $getday = $this->detailPackageModel->get_day_by_package($id)->getResultArray();
+
+        $combinedData = $this->detailPackageModel->getCombinedData();
 
         $data = [
             'title' => $package['name'],
             'data' => $package,
             'serviceinclude' => $serviceinclude,
             'serviceexclude' => $serviceexclude,
+            'day'=> $getday,
+            'activity' => $combinedData,
             'folder' => 'package'
         ];
 

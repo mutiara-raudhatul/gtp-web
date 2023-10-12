@@ -27,11 +27,12 @@ class PackageModel extends Model
     public function get_list_package()
     {
         $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
-        $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.price,{$this->table}.contact_person,{$this->table}.description,{$this->table}.video_url";
+        $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.price,{$this->table}.contact_person,{$this->table}.description,{$this->table}.video_url,{$this->table}.min_capacity";
         $query = $this->db->table($this->table)
             ->select("{$columns}, {$coords}")
             ->join('package_type', 'package.type_id = package_type.id')
-            ->select('package_type.type_name')
+            ->join('package_day', 'package.id = package_day.package_id')
+            ->select('package_type.type_name, package_day.day')
             ->get();
         return $query;
     }

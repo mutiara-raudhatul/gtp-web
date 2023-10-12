@@ -4,8 +4,10 @@ namespace App\Controllers\Web;
 
 use App\Models\HomestayModel;
 use App\Models\UnitHomestayModel;
+use App\Models\HomestayUnitTypeModel;
 use App\Models\FacilityUnitModel;
 use App\Models\FacilityUnitDetailModel;
+use App\Models\GalleryUnitModel;
 use CodeIgniter\RESTful\ResourcePresenter;
 use CodeIgniter\Files\File;
 
@@ -13,8 +15,10 @@ class UnitHomestay extends ResourcePresenter
 {
     protected $homestayModel;
     protected $unitHomestayModel;
+    protected $homestayUnitTypeModel;
     protected $facilityUnitModel;
     protected $facilityUnitDetailModel;
+    protected $galleryUnitModel;
 
     /**
      * Instance of the main Request object.
@@ -29,8 +33,10 @@ class UnitHomestay extends ResourcePresenter
     {
         $this->homestayModel = new HomestayModel();
         $this->unitHomestayModel = new UnitHomestayModel();
+        $this->homestayUnitTypeModel = new HomestayUnitTypeModel();
         $this->facilityUnitModel = new FacilityUnitModel();
         $this->facilityUnitDetailModel = new FacilityUnitDetailModel();
+        $this->galleryUnitModel = new GalleryUnitModel();
     }
 
     /**
@@ -73,35 +79,29 @@ class UnitHomestay extends ResourcePresenter
 
         $list_unit = $this->unitHomestayModel->get_unit_homestay($id)->getResultArray();
 
-        $unithomes = array();
-        foreach ($list_unit as $unithome) {
-            $unithomes[] = $unithome['id'];
-        }
-        $homestay['unithomes'] = $unithomes;
-
         $facilities = array();
-        foreach ($homestay['unithomes'] as $uh_id) {
-            $unit_homestay_id=$uh_id;
-            $list_facility = $this->facilityUnitDetailModel->get_facility_unit_detail($unit_homestay_id)->getResultArray();
+
+        foreach ($list_unit as $unithome) {
+            $homestay_id=$unithome['homestay_id'];
+            $unit_number=$unithome['unit_number'];
+            $unit_type=$unithome['unit_type'];
+
+            $list_facility = $this->facilityUnitDetailModel->get_facility_unit_detail($homestay_id, $unit_type, $unit_number)->getResultArray();
             $facilities[]=$list_facility;
         }
+            
         $fc = $facilities;
-
-        // $data = [
-            // 'title' => $homestay['name'],
-            // 'data' => $homestay,
-            // 'unit' => $list_unit,
-            // 'facility' => $fc,
-            // 'folder' => 'homestay'
-        // ];
+    
+        $unittype = $this->homestayUnitTypeModel->get_list_type()->getResultArray();
 
         $data = [
             'title' => 'Unit Homestay',
             'homestay_id'=>$id,
             'data'=>$homestay,
             'unit' => $list_unit,
+            'unit_type' => $unittype,
             'facility_unit' => $facilityUnit,
-            'facility' => $fc,
+            'facility'=> $fc,
         ];
 // dd($data);
         return view('dashboard/unit-homestay-form', $data);
@@ -115,13 +115,15 @@ class UnitHomestay extends ResourcePresenter
     //  */
     public function createunit($id)
     {
-
         $request = $this->request->getPost();
-        $id_unit = $this->unitHomestayModel->get_new_id();
+
+        $type = $request['unit_type'];
+        $unit_number = $this->unitHomestayModel->get_new_unit_number($id, $type);
 
         $requestData = [
-            'id' => $id_unit,
+            'unit_number' => $unit_number,
             'homestay_id' => $id,
+            'unit_type' => $request['unit_type'],
             'nama_unit' => $request['nama_unit'],
             'capacity' => $request['capacity'],
             'price' => $request['price'],
@@ -147,9 +149,17 @@ class UnitHomestay extends ResourcePresenter
     {
         $request = $this->request->getPost();
 
+        $unitdata  = $_POST['unit_homestay'];
+        $input_arr = explode("-", $unitdata);
+        $input_arr[0]; 
+        $input_arr[1]; 
+        $input_arr[2]; 
+
         $requestData = [
             'facility_unit_id' => $request['facility_unit_id'],
-            'unit_homestay_id' => $request['unit_homestay'],
+            'homestay_id' => $input_arr[0],
+            'unit_type' => $input_arr[1],
+            'unit_number' => $input_arr[2],
             'description' => $request['description_facility']
         ];
 
@@ -162,19 +172,21 @@ class UnitHomestay extends ResourcePresenter
         }
     }
 
-    public function deletefacilityunit ($unit_homestay_id=null, $facility_unit_id=null, $description=null)
+    public function deletefacilityunit ($homestay_id=null, $unit_type=null, $unit_number=null, $facility_unit_id=null, $description=null)
     {
         $request = $this->request->getPost();
 
-        $unit_homestay_id=$request['unit_homestay_id'];
+        $homestay_id=$request['homestay_id'];
+        $unit_type=$request['unit_type'];
+        $unit_number=$request['unit_number'];
         $facility_unit_id=$request['facility_unit_id'];
         $description=$request['description'];
 
-        $data_unit = $this->unitHomestayModel->get_unit_homestay_selected($unit_homestay_id)->getRowArray();
+        $data_unit = $this->unitHomestayModel->get_unit_homestay_selected($homestay_id, $unit_type, $unit_number)->getRowArray();
         $data_facility = $this->facilityUnitModel->get_facility_unit_selected($facility_unit_id)->getRowArray();
 
-        $array = array('unit_homestay_id' => $unit_homestay_id, 'facility_unit_id' => $facility_unit_id, 'description' => $description);
-        $facilityUnitDetail = $this->facilityUnitDetailModel->where($array)->find();
+        $array = array('homestay_id' => $homestay_id, 'unit_type' => $unit_type,'unit_number' => $unit_number, 'facility_unit_id' => $facility_unit_id, 'description' => $description);
+        $facilityUnitDetail= $this->facilityUnitDetailModel->where($array)->find();
         $deleteFUD= $this->facilityUnitDetailModel->where($array)->delete();
 
         if ($deleteFUD) {
@@ -220,17 +232,61 @@ class UnitHomestay extends ResourcePresenter
     }
 
     public function edit($id = null)
-    {
+    {        
+        $homestay = $this->homestayModel->get_homestay_by_id($id)->getRowArray();
+        $list_unit = $this->unitHomestayModel->get_unit_homestay($id)->getResultArray();
         $uh = $this->unitHomestayModel->get_unit_homestay_by_id($id)->getRowArray();
-
         $unitHomestay = $this->unitHomestayModel->get_list_unit_homestay()->getResultArray();
+        $unittype = $this->homestayUnitTypeModel->get_list_type()->getResultArray();
+        $facilityUnit = $this->facilityUnitModel->get_list_facility_unit()->getResultArray();
 
-        $data = [
-            'title' => 'Unit Homestay',
-            'homestay_id' => $id,
-            'data' => $uh,
-            'unithomestay' => $unitHomestay
-        ];
+        $facilities = array();
+        $galleries = array();
+
+        foreach ($list_unit as $unithome) {
+            $homestay_id=$unithome['homestay_id'];
+            $unit_number=$unithome['unit_number'];
+            $unit_type=$unithome['unit_type'];
+
+            $list_facility = $this->facilityUnitDetailModel->get_facility_unit_detail($homestay_id, $unit_type, $unit_number)->getResultArray();
+
+            $facilities[]=$list_facility;
+            $fc = $facilities;
+
+            $list_gallery = $this->galleryUnitModel->get_gallery($homestay_id, $unit_type, $unit_number)->getResultArray();
+            foreach ($list_gallery as $gallery) {
+                $galleries[] = $gallery['url'];
+            }
+
+        }
+        $homestay['gallery'] = $galleries;
+
+        if(empty($fc)){
+            $data = [
+                'title' => 'Unit Homestay',
+                'homestay_id' => $id,
+                'data' => $homestay,
+                'unit_type' => $unittype,
+                'unit' => $list_unit,
+                'uh' => $uh,
+                'unithomestay' => $unitHomestay,
+                'facility_unit' => $facilityUnit,
+            ];      
+        } else {
+            $data = [
+                'title' => 'Unit Homestay',
+                'homestay_id' => $id,
+                'data' => $homestay,
+                'unit_type' => $unittype,
+                'unit' => $list_unit,
+                'uh' => $uh,
+                'unithomestay' => $unitHomestay,
+                'facility_unit' => $facilityUnit,
+                'facility'=> $fc,
+            ];
+        }  
+        //  dd($data);
+
         return view('dashboard/unit-homestay-form', $data);
     }
 
@@ -293,35 +349,39 @@ class UnitHomestay extends ResourcePresenter
         return view('web/detail_homestay',$data);
     }
 
-    public function delete ($homestay_id=null, $unit_homestay_id=null)
+    public function delete ($homestay_id=null, $unit_type=null, $unit_number=null, $unit_homestay_id=null)
     {
         $request = $this->request->getPost();
         
         $homestay_id=$request['homestay_id'];
-        $unit_homestay_id=$request['unit_homestay_id'];
+        $unit_type=$request['unit_type'];
+        $unit_number=$request['unit_number'];
         $nama_unit=$request['nama_unit'];
+        $description=$request['description'];
 
-        $array1 = array('unit_homestay_id' => $unit_homestay_id);
+        $array1 = array('homestay_id' => $homestay_id, 'unit_type' => $unit_type,'unit_number' => $unit_number);
         $facilityUnitDetail = $this->facilityUnitDetailModel->where($array1)->find();
         $deleteFUD= $this->facilityUnitDetailModel->where($array1)->delete();
 
-        $array2 = array('id' => $unit_homestay_id, 'homestay_id' => $homestay_id);
-        $unitHomestay = $this->unitHomestayModel->where($array2)->find();
-        $deleteUH= $this->unitHomestayModel->where($array2)->delete();
+        if ($deleteFUD){
+            $array2 = array('homestay_id' => $homestay_id, 'unit_type' => $unit_type,'unit_number' => $unit_number, 'nama_unit'=> $nama_unit,'description'=> $description);
+            $unitHomestay = $this->unitHomestayModel->where($array2)->find();
+            $deleteUH= $this->unitHomestayModel->delete_unit($array2);
 
-        if ($deleteUH) {
-            session()->setFlashdata('pesan', 'Unit "'.$nama_unit.'" Homestay "'.$homestay_id.'" Berhasil di Hapus.');
-            
-            return redirect()->back();
+            if ($deleteUH) {
+                session()->setFlashdata('pesan', 'Unit "'.$nama_unit.'" Homestay "'.$homestay_id.'" Berhasil di Hapus.');
+                
+                return redirect()->back();
 
-        } else {
-            $response = [
-                'status' => 404,
-                'message' => [
-                    "Unit Homestay not found"
-                ]
-            ];
-            return $this->failNotFound($response);
+            } else {
+                $response = [
+                    'status' => 404,
+                    'message' => [
+                        "Unit Homestay not found"
+                    ]
+                ];
+                return $this->failNotFound($response);
+            }
         }
     }
 }

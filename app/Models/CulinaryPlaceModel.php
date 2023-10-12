@@ -36,6 +36,14 @@ class CulinaryPlaceModel extends Model
         return $query;
     }
 
+    public function get_object_package()
+    {
+        $query = $this->db->table($this->table)
+        ->select("*")
+        ->get();
+        return $query;
+    }
+
     public function get_cp_by_id($id = null)
     {
         $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";

@@ -127,25 +127,19 @@ $edit = in_array('edit', $uri);
                 <div class="card-header">
                     <h4 class="card-title text-center"><?= $title; ?></h4>
                 </div>
-                <ul class="nav nav-tabs">
-                    <li class="nav-item col-md-6">
-                        <a class="nav-link active float-center" aria-current="page" href="<?=base_url('dashboard/homestay/new') ?>">Homestay</a>
-                    </li>
-                    <li class="nav-item col-md-6">
-                        <a class="nav-link " href="<?= ($edit) ? base_url('dashboard/unithomestay/edit'). '/' . $data['id'] : base_url('dashboard/unithomestay/new'). '/' ;  ?>">Unit Homestay</a>
-                    </li>
-                </ul>
                 <br>
                 <div class="card-body">
             <!-- Menambahkan hari paket -->
                 
                 <div class="col-auto ">
                     <br>
-                    <div class="btn-group float-right" role="group">
+                    <div class="btn-group" role="group">
                         <button type="button" class="btn btn-outline-primary " data-bs-toggle="modal" data-bs-target="#dayModal" data-bs-whatever="@getbootstrap"><i class="fa fa-plus"></i> Day</button>
                         <button type="button" class="btn btn-outline-info " data-bs-toggle="modal" data-bs-target="#activityModal" data-bs-whatever="@getbootstrap"><i class="fa fa-plus"></i> Activity</button>
                     </div>
-                </div>
+                    <div class="btn-group float-right" role="group">
+                        <a href="<?= base_url('dashboard/package/').$data['id']; ?>" class="btn btn-outline-success"><i class="fa fa-table"></i> Package</a>                    </div>
+                    </div>
                 <div class="modal fade" id="dayModal" tabindex="-1" aria-labelledby="dayModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -230,6 +224,7 @@ $edit = in_array('edit', $uri);
                                                                     <select class="form-control" name="activity_type" id="activity_type">
                                                                         <option disabled selected>Select Type</option>
                                                                         <option value="CP">Culinary</option>
+                                                                        <option value="WO">Worship</option>
                                                                         <option value="SP">Souvenir Place</option>
                                                                         <option value="HO">Homestay</option>
                                                                         <option value="FC">Facility</option>
@@ -241,7 +236,24 @@ $edit = in_array('edit', $uri);
                                                                     <label for="object">Object</label>
                                                                     <select class="form-control" name="object" id="object">
                                                                         <option disabled selected>Select Object</option>
-                                                                        <option value=""></option>
+                                                                        <?php foreach ($object['culinary'] as $item) : ?>
+                                                                            <option value="<?= esc($item['id']); ?>">[Culinary] <?= esc($item['name']); ?></option>                                                                
+                                                                        <?php endforeach; ?>
+                                                                        <?php foreach ($object['worship'] as $item) : ?>
+                                                                            <option value="<?= esc($item['id']); ?>">[Worship] <?= esc($item['name']); ?></option>                                                                
+                                                                        <?php endforeach; ?>
+                                                                        <?php foreach ($object['souvenir'] as $item) : ?>
+                                                                            <option value="<?= esc($item['id']); ?>">[Souvenir] <?= esc($item['name']); ?></option>                                                                
+                                                                        <?php endforeach; ?>
+                                                                        <?php foreach ($object['facility'] as $item) : ?>
+                                                                            <option value="<?= esc($item['id']); ?>">[Facility] <?= esc($item['name']); ?></option>                                                                
+                                                                        <?php endforeach; ?>
+                                                                        <?php foreach ($object['attraction'] as $item) : ?>
+                                                                            <option value="<?= esc($item['id']); ?>">[Attraction] <?= esc($item['name']); ?></option>                                                                
+                                                                        <?php endforeach; ?>
+                                                                        <?php foreach ($object['event'] as $item) : ?>
+                                                                            <option value="<?= esc($item['id']); ?>">[Event] <?= esc($item['name']); ?></option>                                                                
+                                                                        <?php endforeach; ?>
                                                                     </select>                                                                
                                                                 </div>
                                                             </div><br>
@@ -298,13 +310,13 @@ $edit = in_array('edit', $uri);
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <?php if (isset($activity)) : ?>
-                                                <?php foreach ($activity as $item => $value) : ?>
+                                            <?php if (isset($data_package)) : ?>
+                                                <?php foreach ($data_package as $item => $value) : ?>
                                                     <?php if ($value['day']==$key['day']) : ?>
                                                         <tr>
                                                             <td><?= esc($value['activity']); ?></td>
                                                             <td><?= esc($value['activity_type']); ?></td>
-                                                            <td><?= esc($value['object_id']); ?></td>
+                                                            <td><?= esc($value['name']); ?></td>
                                                             <td><?= esc($value['description']); ?></td>
                                                             <td>
                                                                 <!-- <a class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a> -->

@@ -48,14 +48,6 @@ class ServicePackageModel extends Model
         }
             
         return $query;
-
-        
-        // foreach ($list_service as  $key){
-        //     $query = $this->db->table($this->table)
-        //         ->select("*")
-        //         ->where('id', $key)
-        //         ->get();
-        // }
     }
 
     public function get_servicePackage_by_id($id = null)

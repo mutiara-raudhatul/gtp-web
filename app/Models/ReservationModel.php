@@ -48,20 +48,20 @@ class ReservationModel extends Model
         return $query;
     }
     
-    // public function get_new_id()
-    // {
-    //     $lastId = $this->db->table($this->table)->select('id')->orderBy('id', 'ASC')->get()->getLastRow('array');
-    //     $count = (int)substr($lastId['id'], 1);
-    //     $id = sprintf('S%1d', $count + 1);
-    //     return $id;
-    // }
+    public function get_new_id()
+    {
+        $lastId = $this->db->table($this->table)->select('id')->orderBy('id', 'ASC')->get()->getLastRow('array');
+        $count = (int)substr($lastId['id'], 3);
+        $id = sprintf('R%07d', $count + 1);
+        return $id;
+    }
 
-    // public function add_new_servicePackage($servicePackage = null)
-    // {
-    //     $insert = $this->db->table($this->table)
-    //         ->insert($servicePackage);
-    //     return $insert;
-    // }
+    public function add_new_reservation($reservation = null)
+    {
+        $insert = $this->db->table($this->table)
+            ->insert($reservation);
+        return $insert;
+    }
 
     // public function update_servicePackage($id = null, $servicePackage = null)
     // {

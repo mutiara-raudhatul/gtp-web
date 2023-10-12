@@ -22,7 +22,7 @@
                                         <div class="card-body py-3 px-4">
                                             <div class="d-flex align-items-center">
                                                 <div class="avatar avatar-lg me-0">
-                                                    <img src="<?= base_url('media/photos/admin'); ?>/<?= user()->user_image; ?>" alt="Face 1" />
+                                                    <img src="<?= base_url('media/photos/user'); ?>/<?= user()->user_image; ?>" alt="Face 1" />
                                                 </div>
                                             </div>
                                         </div>

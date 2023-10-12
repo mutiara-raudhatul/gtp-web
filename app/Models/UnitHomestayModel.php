@@ -24,10 +24,21 @@ class UnitHomestayModel extends Model
     protected $skipValidation       = false;
     protected $cleanValidationRules = true;
 
+    public function get_unit_homestay_all()
+    {
+        $query = $this->db->table($this->table)
+            ->select('*')
+            ->join('homestay', 'unit_homestay.homestay_id=homestay.id')
+            ->join('homestay_unit_type', 'unit_homestay.unit_type=homestay_unit_type.id')
+            ->get();
+        return $query;
+    }
+
     public function get_unit_homestay($homestay_id =  null)
     {
         $query = $this->db->table($this->table)
             ->select('*')
+            ->join('homestay_unit_type', 'unit_homestay.unit_type=homestay_unit_type.id')
             ->where('homestay_id', $homestay_id)
             ->get();
         return $query;
@@ -35,7 +46,6 @@ class UnitHomestayModel extends Model
 
     public function get_unit_homestay_by_id($homestay_id)
     {
-
         $query = $this->db->table($this->table)
             ->select("*")
             ->where('homestay_id', $homestay_id)
@@ -47,28 +57,38 @@ class UnitHomestayModel extends Model
     public function get_list_unit_homestay() {
         $query = $this->db->table($this->table)
             ->select("*")
-            ->orderBy('id', 'ASC')
             ->get();
 
         return $query;
     }
 
-    public function get_unit_homestay_selected($unit_homestay_id) 
+    public function get_unit_homestay_selected($homestay_id, $unit_type, $unit_number) 
     {
         $query = $this->db->table($this->table)
             ->select("*")
-            ->where('id', $unit_homestay_id)
+            ->where('homestay_id', $homestay_id)
+            ->where('unit_type', $unit_type)
+            ->where('unit_number', $unit_number)
             ->get();
         return $query;
     }
     
-    public function get_new_id()
+    public function get_new_unit_number($id, $type)
     {
-        $lastId = $this->db->table($this->table)->select('id')->orderBy('id', 'ASC')->get()->getLastRow('array');
-        $count = (int)substr($lastId['id'], 1);
-        $id = sprintf('U%02d', $count + 1);
+        $lastId = $this->db->table($this->table)
+            ->select('unit_number')
+            ->where('homestay_id', $id)
+            ->where('unit_type', $type)
+            ->orderBy('unit_number', 'ASC')->get()->getLastRow('array');
 
-        return $id;
+        if(empty($lastId)){
+            $unit_number='01';
+        }else{
+            $count = (int)substr($lastId['unit_number'], 1);
+            $unit_number = sprintf('%02d', $count + 1);
+        }
+// dd($unit_number);
+        return $unit_number;
     }
 
     public function add_new_unitHomestay($requestData = null)
@@ -78,4 +98,9 @@ class UnitHomestayModel extends Model
         return $insert;
     }
 
+    public function delete_unit($array2 = null)
+    {
+        // dd($array2);
+        return $this->db->table($this->table)->delete($array2);
+    }
 }

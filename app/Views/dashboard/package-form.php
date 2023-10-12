@@ -169,6 +169,9 @@ $edit = in_array('edit', $uri);
                             <?php else : ?>
                                 <button type="submit" class="btn btn-primary me-1 mb-1">Save</button>
                             <?php endif; ?>
+                            <?php if($edit) : ?>
+                                <a href="<?= base_url('dashboard/packageday/'); ?>/<?= $data['id']; ?>" class="btn btn-info"> Add Activity</a>
+                            <?php endif; ?>
                         </div>
                     </form>
 

@@ -49,6 +49,8 @@ $routes->group('web', function ($routes) {
         $routes->get('update', 'Home::update');
         $routes->post('save/(:any)', 'Home::save/$1');
         $routes->get('changePassword', 'Home::changePassword');
+        $routes->post('changePassword', 'Home::changePassword');
+
     });
 });
 
@@ -72,15 +74,27 @@ $routes->group('web', ['namespace' => 'App\Controllers\Web'], function ($routes)
     $routes->presenter('event');
     $routes->presenter('package');
     $routes->presenter('ulakan');
-    $routes->presenter('reservation');
-    $routes->resource('reservation');
+    $routes->presenter('reservation', ['filter' => 'login']);
+    $routes->resource('reservation', ['filter' => 'login']);
+    $routes->get('detailreservation/add/(:segment)', 'DetailReservation::add/$1', ['filter' => 'login']);
+    $routes->presenter('detailreservation', ['filter' => 'login']);
+    $routes->resource('detailreservation', ['filter' => 'login']);
     $routes->resource('homestay');
     $routes->presenter('homestay');
     $routes->presenter('culinaryPlace');
     $routes->presenter('souvenirPlace');
     $routes->presenter('worshipPlace');
 
+    // $routes->get('visitHistory', 'VisitHistory::visitHistory', ['filter' => 'role:user']);
+
     // Profile
+    $routes->group('profile', function ($routes) {
+        $routes->get('/', 'Profile::profile', ['filter' => 'login']);
+        $routes->get('changePassword', 'Profile::changePassword', ['filter' => 'login']);
+        $routes->post('changePassword', 'Profile::changePassword', ['filter' => 'login']);
+        $routes->get('update', 'Profile::updateProfile', ['filter' => 'login']);
+        $routes->post('update', 'Profile::update', ['filter' => 'login']);
+    });
 });
 
 // Dashboard
@@ -155,20 +169,15 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], function ($routes)
     $routes->post('village', 'Village::getData');
 
     $routes->resource('connection');
-
     $routes->resource('tracking');
-
     $routes->resource('attraction');
-
     $routes->resource('servicepackage');
     $routes->resource('packageday');
-
     $routes->resource('facility');
     $routes->post('facility/findByRadius', 'Facility::findByRadius');
     $routes->post('facility/findByTrack', 'Facility::findByTrack');
 
     $routes->resource('event');
-
     $routes->get('package/type', 'Package::type');
     $routes->resource('package');
     $routes->post('package/findByName', 'Package::findByName');

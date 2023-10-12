@@ -3,12 +3,17 @@
 namespace App\Controllers\Web;
 
 use App\Models\ReservationModel;
+use App\Models\UnitHomestayModel;
+use App\Models\PackageModel;
 use CodeIgniter\RESTful\ResourcePresenter;
 use CodeIgniter\Files\File;
 
 class Reservation extends ResourcePresenter
 {
     protected $reservationModel;
+    protected $unitHomestayModel;
+    protected $packageModel;
+
 
     /**
      * Instance of the main Request object.
@@ -22,6 +27,9 @@ class Reservation extends ResourcePresenter
     public function __construct()
     {
         $this->reservationModel = new ReservationModel();
+        $this->unitHomestayModel = new UnitHomestayModel();
+        $this->packageModel = new PackageModel();
+
     }
 
     /**
@@ -56,7 +64,7 @@ class Reservation extends ResourcePresenter
         ];
 
         // if (url_is('*dashboard*')) {
-            return view('web/detail_reservation', $data);
+            return view('web/detailreservation', $data);
         // }
     }
 
@@ -67,14 +75,79 @@ class Reservation extends ResourcePresenter
      */
     public function new()
     {
-        $servicePackage = $this->servicePackageModel->get_list_service_package()->getResultArray();
+        $contents = $this->packageModel->get_list_package()->getResultArray();
+
+        $list_unit = $this->unitHomestayModel->get_unit_homestay_all()->getResultArray();
+
+// dd($list_unit);
+        // // Periksa apakah ada hasil
+        // if ($list_unit > 0) {
+        //     // Siapkan opsi untuk pilihan unit homestay
+        //     $options = '<option value="">Select Unit Homestay</option>';
+        //     foreach($list_unit as $item){
+        //         $homestay_id = $item['homestay_id'];
+        //         $unit_type = $item['unit_type'];
+        //         $unit_number = $item['unit_number'];
+        //         $nama_homestay = $item['name'];
+        //         $nama_unit = $item['nama_unit'];
+        //         $name_type = $item['name_type'];
+        //         $price = $item['price'];
+        //         $capacity = $item['capacity'];
+
+        //         // Tambahkan opsi ke variabel $options
+        //         $options .= "<option value='$homestay_id' data-price='$price'>Homestay $nama_homestay - $name_type - $unit_number - $nama_unit(Capacity: $capacity)</option>";
+        //     }
+        //     echo $options;
+
+        // } else {
+        //     echo '<option value="">No Units Available</option>';
+        // }
 
         $data = [
-            'title' => 'New Service Package',
-            'facility' => $servicePackage
+            'title' => 'New Reservation',
+            'data' => $contents,
+            'list_unit' => $list_unit,
+            // 'options' => $options,
         ];
-        return view('dashboard/service-package-form', $data);
+
+        // dd($data);
+        return view('dashboard/reservation-form', $data);
     }
+
+    public function dataunithomestay()
+    {
+
+            $list_unit = $this->unitHomestayModel->get_unit_homestay_all()->getResultArray();
+
+            // Periksa apakah ada hasil
+            if ($list_unit > 0) {
+                // Siapkan opsi untuk pilihan unit homestay
+                $options = '<option value="">Select Unit Homestay</option>';
+                while ($row = $list_unit->fetch_assoc()) {
+                    $homestay_id = $row['homestay_id'];
+                    $unit_type = $row['unit_type'];
+                    $unit_number = $row['unit_number'];
+                    $price = $row['price'];
+                    $capacity = $row['capacity'];
+
+                    // Tambahkan opsi ke variabel $options
+                    $options .= "<option value='$homestay_id' data-price='$price'>$unit_type - $unit_number (Capacity: $capacity)</option>";
+                }
+                echo $options;
+            } else {
+                echo '<option value="">No Units Available</option>';
+            }
+
+        // $data = [
+        //     'title' => 'Homestay',
+        //     'data' => $list_unit,
+        // ];
+
+        // // dd($data);
+        // return view('dashboard/reservation-form', $data);
+    }
+    
+
 
     /**
      * Process the creation/insertion of a new resource object.
@@ -86,22 +159,30 @@ class Reservation extends ResourcePresenter
     {
         $request = $this->request->getPost();
 
-        $id = $this->servicePackageModel->get_new_id();
+        $id = $this->reservationModel->get_new_id();
 
         $requestData = [
             'id' => $id,
-            'name' => $request['name'],
+            'user_id' => user()->id,
+            'package_id' => $request['package'],
+            'total_people' => $request['total_people'],
+            'check_in' => $request['check_in'].' '.$request['time_check_in'],
+            'check_out' => $request['check_out'].' '.$request['time_check_out'],
+            'total_price' => $request['total_price'],
+            'deposit' => $request['deposit'],
+            'status_id' => '1',
         ];
+// dd($requestData);
         foreach ($requestData as $key => $value) {
             if (empty($value)) {
                 unset($requestData[$key]);
             }
         }
 
-        $addSP = $this->servicePackageModel->add_new_servicePackage($requestData);
+        $addRe = $this->reservationModel->add_new_reservation($requestData);
 
-        if ($addSP) {
-            return redirect()->to(base_url('dashboard/servicepackage'));
+        if ($addRe) {
+            return redirect()->to(base_url('web/detailreservation/new/'.$id));
         } else {
             return redirect()->back()->withInput();
         }
@@ -109,19 +190,26 @@ class Reservation extends ResourcePresenter
 
     public function edit($id = null)
     {
-        $sp = $this->servicePackageModel->get_servicePackage_by_id($id)->getRowArray();
-        if (empty($sp)) {
-            return redirect()->to('dashboard/service-package');
-        }
+        $contents = $this->packageModel->get_list_package()->getResultArray();
 
-        $servicePackage = $this->servicePackageModel->get_list_service_package()->getResultArray();
+        $datareservation = $this->reservationModel->get_reservation_by_id($id)->getRowArray();
+
+        $list_unit = $this->unitHomestayModel->get_unit_homestay_all()->getResultArray();
+        
+        if (empty($datareservation)) {
+            return redirect()->to('web/detailreservation');
+        }
+        $date = date('Y-m-d');
 
         $data = [
-            'title' => 'Edit Service Package',
-            'data' => $sp,
-            'facility' => $servicePackage
+            'title' => 'Reservation Homestay',
+            'data' => $contents,
+            'detail' => $datareservation,
+            'list_unit' => $list_unit,
+            'date'=>$date
         ];
-        return view('dashboard/service-package-form', $data);
+        
+        return view('dashboard/reservation-form', $data);
     }
 
     public function update($id = null)

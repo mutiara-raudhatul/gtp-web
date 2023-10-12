@@ -4,6 +4,14 @@ namespace App\Controllers\Web;
 use App\Models\PackageDayModel;
 use App\Models\PackageModel;
 use App\Models\DetailPackageModel;
+
+use App\Models\CulinaryPlaceModel;
+use App\Models\WorshipPlaceModel;
+use App\Models\FacilityModel;
+use App\Models\SouvenirPlaceModel;
+use App\Models\AttractionModel;
+use App\Models\EventModel;
+
 use CodeIgniter\API\ResponseTrait;
 use CodeIgniter\RESTful\ResourcePresenter;
 use CodeIgniter\Files\File;
@@ -16,6 +24,14 @@ class PackageDay extends ResourcePresenter
     protected $packageDayModel;
     protected $packageModel;
     protected $detailPackageModel;
+    protected $culinaryPlaceModel;
+    protected $worshipPlaceModel;
+    protected $facilityModel;
+    protected $souvenirPlaceModel;
+    protected $attractionModel;
+    protected $eventModel;
+    protected $db, $builder;
+
 
     /**
      * Instance of the main Request object.
@@ -31,6 +47,15 @@ class PackageDay extends ResourcePresenter
         $this->packageDayModel = new PackageDayModel();
         $this->packageModel = new PackageModel();
         $this->detailPackageModel = new DetailPackageModel();
+        $this->culinaryPlaceModel = new CulinaryPlaceModel();
+        $this->worshipPlaceModel = new WorshipPlaceModel();
+        $this->facilityModel = new FacilityModel();
+        $this->souvenirPlaceModel = new SouvenirPlaceModel();
+        $this->attractionModel = new AttractionModel();
+        $this->eventModel = new EventModel();
+        
+        $this->db = \Config\Database::connect();
+        $this->builder = $this->db->table('detail_package', 'culinary_place');;
     }
 
     /**
@@ -68,26 +93,42 @@ class PackageDay extends ResourcePresenter
     public function newday($id)
     {        
         $package = $this->packageModel->get_package_by_id($id)->getRowArray();
-
         $package_id=$package['id'];
-        
         $packageDay = $this->packageDayModel->get_package_day_by_id($package_id)->getResultArray();
 
-        // dd($packageDay);
-        // foreach ($packageDay as $item):
-            // $dayp=$item['day'];
-            $detailPackage = $this->detailPackageModel->get_detailPackage_by_id($package_id, $packageDay)->getResultArray();
-           
-            $data = [
-                'title' => 'New Detail Package',
-                'data' => $package,
-                'day' => $packageDay,
-                'activity' => $detailPackage
-            ];  
+        $culinary = $this->culinaryPlaceModel->get_list_cp()->getResultArray();
+        $worship = $this->worshipPlaceModel->get_list_wp()->getResultArray();
+        $facility = $this->facilityModel->get_list_facility()->getResultArray();
+        $souvenir = $this->souvenirPlaceModel->get_list_sp()->getResultArray();
+        $attraction = $this->attractionModel->get_list_attraction()->getResultArray();
+        $event = $this->eventModel->get_list_event()->getResultArray();
 
-        // endforeach;
+        $data_object = array_merge($culinary,$worship,$facility,$souvenir,$attraction,$event);
 
-        return view('dashboard/detail-package-form', $data, $package, $packageDay, $detailPackage);
+        $detailPackage = $this->detailPackageModel->get_detailPackage_by_id($package_id)->getResultArray();
+        
+        $combinedData = $this->detailPackageModel->getCombinedData();
+            
+        $object = [
+            'culinary' => $culinary,
+            'worship' => $worship,
+            'facility' => $facility,
+            'souvenir' => $souvenir,
+            'attraction' => $attraction,
+            'event' => $event
+        ];
+
+        $data = [
+            'title' => 'Detail Package '.$package['name'],
+            'data' => $package,
+            'day' => $packageDay,
+            'activity' => $detailPackage,
+            'data_package' => $combinedData,
+            'object' => $object
+        ];  
+        // dd( $data);
+
+        return view('dashboard/detail-package-form', $data, $object);
     }
 
     /**

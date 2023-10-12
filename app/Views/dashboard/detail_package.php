@@ -48,18 +48,18 @@
                     </div>
                     <div class="row">
                         <div class="col">
-                            <p class="fw-bold">Description</p>
-                            <p><?= esc($data['description']);
-                                ?></p>
+                            <p class="fw-bold">Description </p>
+                            <p><?= esc($data['description']);?></p>
+                            
                         </div>
                     </div>
                     <div class="row">
                         <div class="col">
-                            <p class="fw-bold">Service Include</p>
+                            <p class="fw-bold">Service Include <br>
                             <?php foreach ($serviceinclude as $ls) : ?>
                                 <li><?= esc($ls['name']);?></li>
                             <?php endforeach; ?>
-                            <br> 
+                            </p>
                         </div>
                     </div>
                     <div class="row">
@@ -67,6 +67,20 @@
                             <p class="fw-bold">Service Exclude</p>
                             <?php foreach ($serviceexclude as $ls) : ?>
                                 <li><?= esc($ls['name']);?></li>
+                            <?php endforeach; ?>
+                            <br> 
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <p class="fw-bold">Activity</p>
+                            <?php foreach ($day as $d) : ?>
+                                <b>Day <?= esc($d['day']);?></b><br> 
+                                <?php foreach ($activity as $ac) : ?>
+                                    <?php if($d['day']==$ac['day']): ?>
+                                        <?= esc($ac['activity']);?>. <?= esc($ac['name']);?> : <?= esc($ac['description']);?> <br>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
                             <?php endforeach; ?>
                             <br> 
                         </div>

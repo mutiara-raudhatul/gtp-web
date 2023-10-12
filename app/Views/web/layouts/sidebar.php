@@ -13,11 +13,11 @@ $uri3 = $uri[3] ?? '';
         <!-- Sidebar -->
         <div class="sidebar-menu">
             <div class="d-flex flex-column">
-                <div class="d-flex justify-content-center avatar avatar-xl me-3" id="avatar-sidebar">
-                    <img src="<?= base_url('media/photos/talao.jpg'); ?>" alt="" srcset="">
-                </div>
-
+        
                 <?php if (logged_in()) : ?>
+                    <div class="d-flex justify-content-center avatar avatar-xl me-3" id="avatar-sidebar">
+                        <img src="<?= base_url('media/photos/user/'); ?><?= user()->user_image; ?>" alt="" srcset="">
+                    </div>
                     <div class="p-2 text-center">
                         <?php if (!empty(user()->fullname)) : ?>
                             Hello, <span class="fw-bold"><?= user()->fullname; ?></span> <br> <span class="text-muted mb-0">@<?= user()->username; ?></span>
@@ -26,6 +26,9 @@ $uri3 = $uri[3] ?? '';
                         <?php endif; ?>
                     </div>
                 <?php else : ?>
+                    <div class="d-flex justify-content-center avatar avatar-xl me-3" id="avatar-sidebar">
+                        <img src="<?= base_url('media/photos/talao.jpg'); ?>" alt="" srcset="">
+                    </div>
                     <div class="p-2 d-flex justify-content-center">Hello, Visitor</div>
                 <?php endif; ?>
 

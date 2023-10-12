@@ -12,6 +12,9 @@
                     <div class="card-header">
                         <h5 class="card-title text-center">List Reservation</h5>
                     </div>
+                    <div class="col-auto">
+                        <a href="<?= current_url(); ?>/new" class="btn btn-primary float-end"><i class="fa-solid fa-plus me-3"></i>New Reservation</a>
+                    </div>
                     <div class="card-body">
                         <div class="table-responsive overflow-auto" id="table-user">
                             <script>

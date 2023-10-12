@@ -59,11 +59,11 @@
                             <div class="row">
                                 <div class="col-12 mb-3">
                                     <div class="form-group">
-                                        <label for="avatar" class="mb-2">Profile Picture</label>
+                                        <label for="user_image" class="mb-2">Profile Picture</label>
                                         <div class="text-md-start text-center mb-3" id="avatar-container">
-                                            <img src="<?= base_url('media/photos'); ?>/default.jpg" alt="avatar" class="img-fluid img-thumbnail rounded-circle" id="avatar-preview">
+                                            <img src="<?= base_url('media/photos/user/'); ?><?= user()->user_image; ?>" alt="user_image" class="img-fluid img-thumbnail rounded-circle" id="avatar-preview">
                                         </div>
-                                        <input class="form-control" type="file" id="avatar" name="avatar" onchange="showPreview(this)">
+                                        <input class="form-control" type="file" id="user_image" name="user_image"   accept="image/png, image/jpeg, image/gif">
                                     </div>
                                 </div>
                             </div>
