@@ -28,10 +28,6 @@
                                         <td><?= esc($data['address']); ?></td>
                                     </tr>
                                     <tr>
-                                        <td class="fw-bold">Price</td>
-                                        <td><?= 'Rp ' . number_format(esc($data['price']), 0, ',', '.'); ?></td>
-                                    </tr>
-                                    <tr>
                                         <td class="fw-bold">Contact Person</td>
                                         <td><?= esc($data['contact_person']); ?></td>
                                     </tr>

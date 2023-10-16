@@ -41,6 +41,7 @@ class FacilityUnitDetailModel extends Model
     public function add_new_facilityUnitDetail($id, $requestData)
     {
         $query = false;
+
         $content = [
             'facility_unit_id' => $requestData['facility_unit_id'],
             'homestay_id' => $requestData['homestay_id'],
@@ -49,9 +50,35 @@ class FacilityUnitDetailModel extends Model
             'description' => $requestData['description']
         ];
 
-        $insert = $this->db->table($this->table)
-            ->insert($content);
-        return $insert;
+        // $insert = $this->db->table($this->table)
+        //     ->insert($content);
+        // return $insert;
+
+        $existingRecord = $this->db->table($this->table)
+        ->where('facility_unit_id', $requestData['facility_unit_id'])
+        ->where('homestay_id', $requestData['homestay_id'])
+        ->where('unit_type', $requestData['unit_type'])
+        ->where('unit_number', $requestData['unit_number'])
+        ->get()
+        ->getRow();
+
+        if ($existingRecord) {
+            // Data sudah ada, lakukan operasi update
+            $insert = $this->db->table($this->table)
+                ->where('facility_unit_id', $requestData['facility_unit_id'])
+                ->where('homestay_id', $requestData['homestay_id'])
+                ->where('unit_type', $requestData['unit_type'])
+                ->where('unit_number', $requestData['unit_number'])
+                ->update($content);
+
+            return $insert; // Sukses mengupdate data
+        } else {
+            // Data belum ada, lakukan operasi insert
+            $insert =$this->db->table($this->table)->insert($content);
+
+            return $insert; // Sukses menambahkan data
+        }
+
     }
 
 }

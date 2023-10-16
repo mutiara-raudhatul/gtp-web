@@ -12,10 +12,11 @@
                     <div class="card-header">
                         <h5 class="card-title text-center">List Reservation</h5>
                     </div>
-                    <div class="col-auto">
-                        <a href="<?= current_url(); ?>/new" class="btn btn-primary float-end"><i class="fa-solid fa-plus me-3"></i>New Reservation</a>
-                    </div>
                     <div class="card-body">
+                        <div class="col-auto">
+                            <a href="<?= current_url(); ?>/new" class="btn btn-primary float-end"><i class="fa-solid fa-plus me-3"></i>New Reservation</a>
+                        </div>
+                        <br><br>
                         <div class="table-responsive overflow-auto" id="table-user">
                             <script>
                                 clearMarker();
@@ -46,7 +47,7 @@
                                                 <td><?= date('d F Y, h:i:s A', strtotime($item['check_out'])); ?></td>
                                                 <td><?= esc($item['status']); ?></td>
                                                 <td>
-                                                    <a data-bs-toggle="tooltip" data-bs-placement="bottom" title="More Info" class="btn icon btn-outline-primary mx-1" href="<?= current_url().'/'.esc($item['id']); ?>">
+                                                    <a data-bs-toggle="tooltip" data-bs-placement="bottom" title="More Info" class="btn icon btn-outline-primary mx-1" href="<?=base_url('web/detailreservation/').$item['id']; ?>">
                                                         <i class="fa-solid fa-circle-info"></i>
                                                     </a>
                                                 </td>

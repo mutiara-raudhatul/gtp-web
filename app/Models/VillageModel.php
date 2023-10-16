@@ -41,4 +41,25 @@ class VillageModel extends Model
             ->get();
         return $query;
     }
+
+    public function get_new_id()
+    {
+        $lastId = $this->db->table($this->table)->select('id')->orderBy('id', 'ASC')->get()->getLastRow('array');
+        $count = (int)substr($lastId['id'], 2);
+        $id = sprintf('V%04d', $count + 1);
+        return $id;
+    }
+
+    public function add_new_village($requestData = null, $geom = null)
+    {
+
+        $insert = $this->db->table($this->table)
+            ->insert($requestData);
+        $update = $this->db->table($this->table)
+            ->set('geom', "ST_GeomFromText('{$geom}')", false)
+            ->where('id', $requestData['id'])
+            ->update();
+        return $insert && $update;
+    }
+
 }

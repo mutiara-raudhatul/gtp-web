@@ -35,10 +35,6 @@
                                         <td><?= esc($data['address']); ?></td>
                                     </tr>
                                     <tr>
-                                        <td class="fw-bold">Price</td>
-                                        <td><?= esc($data['price']); ?></td>
-                                    </tr>
-                                    <tr>
                                         <td class="fw-bold">Contact Person</td>
                                         <td><?= esc($data['contact_person']); ?></td>
                                     </tr>

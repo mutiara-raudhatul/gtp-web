@@ -79,27 +79,6 @@ class Package extends ResourcePresenter
             $galleries[] = $gallery['url'];
         }
         $package['gallery'] = $galleries;
-
-
-        // $list_service = $this->detailServicePackageModel->get_service($id)->getResultArray();
-        // $lists= array();
-        // foreach ($list_service as $ls) {
-        //     $lists[] = $ls['service_package_id'];
-        // }
-
-        // $package['service']= $lists;
-        // $service_package = $this->servicePackageModel->get_listservicePackage_by_id($package['service'])->getResultArray();
-
-
-        // $this->builder->select ('service_package.id, service_package.name');
-        // $this->builder->join ('detail_service_package', 'detail_service_package.package_id = package.id');
-        // $this->builder->join ('service_package', 'service_package.id = detail_service_package.service_package_id');
-        // $this->builder->where ('package.id', $id);
-        // $query = $this->builder->get();
-        // $datase['package']=$query->getResult();
-        // $datases = $datase['package'];
-
-        // $package['datase'] = $datases;
         
         $serviceinclude= $this->detailServicePackageModel->get_service_include_by_id($id)->getResultArray();
         $serviceexclude= $this->detailServicePackageModel->get_service_exclude_by_id($id)->getResultArray();
@@ -109,6 +88,7 @@ class Package extends ResourcePresenter
         $getday = $this->detailPackageModel->get_day_by_package($id)->getResultArray();
 
         $combinedData = $this->detailPackageModel->getCombinedData();
+        $routeData = $this->detailPackageModel->getRouteData();
 
         $data = [
             'title' => $package['name'],
@@ -117,9 +97,11 @@ class Package extends ResourcePresenter
             'serviceexclude' => $serviceexclude,
             'day'=> $getday,
             'activity' => $combinedData,
+            'route' => $routeData,
             'folder' => 'package'
         ];
 
+// dd($data);
         if (url_is('*dashboard*')) {
             return view('dashboard/detail_package', $data);
         }

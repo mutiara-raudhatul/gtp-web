@@ -304,6 +304,44 @@ function routeTo(lat, lng, routeFromUser = true) {
     boundToRoute(start, end);
 }
 
+// route between two sets of coordinates
+function routeAllActivitiesInDay(activities) {
+    for (let i = 0; i < activities.length - 1; i++) {
+        routeBetweenObjects(
+            activities[i].lat, activities[i].lng,
+            activities[i + 1].lat, activities[i + 1].lng
+        );
+    }
+}
+
+// route between two sets of coordinates
+function routeBetweenObjects(startLat, startLng, endLat, endLng) {
+    clearRadius();
+    clearRoute();
+    google.maps.event.clearListeners(map, 'click');
+    
+    // Create LatLng objects for the start and end coordinates
+    const start = new google.maps.LatLng(startLat, startLng);
+    const end = new google.maps.LatLng(endLat, endLng);
+    
+    let request = {
+        origin: start,
+        destination: end,
+        travelMode: 'DRIVING'
+    };
+
+    directionsService.route(request, function(result, status) {
+        if (status == 'OK') {
+            directionsRenderer.setDirections(result);
+            showSteps(result);
+            directionsRenderer.setMap(map);
+            routeArray.push(directionsRenderer);
+        }
+    });
+
+    boundToRoute(start, end);
+}
+
 // Display tourism attraction digitizing
 // Tracking Mangrove
 function digitTracking() {

@@ -168,7 +168,9 @@ class UnitHomestay extends ResourcePresenter
         if ($addFU) {
             return redirect()->back();
         } else {
-            return redirect()->back()->withInput();
+            $session = session();
+            $session->setFlashdata('error', 'Data tersebut sudah ada');
+            return redirect()->back();        
         }
     }
 

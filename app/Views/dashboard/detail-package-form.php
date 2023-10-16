@@ -248,7 +248,9 @@ $edit = in_array('edit', $uri);
                                                                         <?php foreach ($object['facility'] as $item) : ?>
                                                                             <option value="<?= esc($item['id']); ?>">[Facility] <?= esc($item['name']); ?></option>                                                                
                                                                         <?php endforeach; ?>
-                                                                        <?php foreach ($object['attraction'] as $item) : ?>
+                                                                        <?php foreach ($object['homestay'] as $item) : ?>
+                                                                            <option value="<?= esc($item['id']); ?>">[Homestay] <?= esc($item['name']); ?></option>                                                                
+                                                                        <?php endforeach; ?>                                                                        <?php foreach ($object['attraction'] as $item) : ?>
                                                                             <option value="<?= esc($item['id']); ?>">[Attraction] <?= esc($item['name']); ?></option>                                                                
                                                                         <?php endforeach; ?>
                                                                         <?php foreach ($object['event'] as $item) : ?>

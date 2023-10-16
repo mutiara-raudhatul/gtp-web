@@ -76,7 +76,7 @@ $routes->group('web', ['namespace' => 'App\Controllers\Web'], function ($routes)
     $routes->presenter('ulakan');
     $routes->presenter('reservation', ['filter' => 'login']);
     $routes->resource('reservation', ['filter' => 'login']);
-    $routes->get('detailreservation/add/(:segment)', 'DetailReservation::add/$1', ['filter' => 'login']);
+    $routes->get('detailreservation/addhome/(:segment)', 'DetailReservation::addhome/$1', ['filter' => 'login']);
     $routes->presenter('detailreservation', ['filter' => 'login']);
     $routes->resource('detailreservation', ['filter' => 'login']);
     $routes->resource('homestay');
@@ -150,6 +150,7 @@ $routes->group('dashboard', ['namespace' => 'App\Controllers\Web', 'filter' => '
 
     $routes->presenter('managereservation');
 
+    $routes->resource('village');
 
 });
 

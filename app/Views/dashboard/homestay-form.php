@@ -127,13 +127,6 @@ $edit = in_array('edit', $uri);
                                 <input type="text" id="name" class="form-control" name="address" placeholder="Address" value="<?= ($edit) ? $data['address'] : old('address'); ?>" required autocomplete="off">
                             </div>
                             <div class="form-group mb-4">
-                                <label for="price" class="mb-2">Price</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">Rp </span>
-                                    <input type="number" id="price" class="form-control" name="price" placeholder="Price" aria-label="Price" aria-describedby="price" value="<?= ($edit) ? $data['price'] : old('price'); ?>">
-                                </div>
-                            </div>
-                            <div class="form-group mb-4">
                                 <label for="contact_person" class="mb-2">Contact Person</label>
                                 <input type="tel" id="contact_person" class="form-control" name="contact_person" placeholder="Contact Person" value="<?= ($edit) ? $data['contact_person'] : old('contact_person'); ?>" autocomplete="off">
                             </div>

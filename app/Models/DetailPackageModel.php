@@ -64,33 +64,38 @@ class DetailPackageModel extends Model
         $facilityModel = new FacilityModel();
         $attractionModel = new AttractionModel();
         $eventModel = new EventModel();
+        $homestayModel = new HomestayModel();
 
-        $culinaryData = $culinaryPlaceModel->select('package_id, day, activity, activity_type, object_id, detail_package.description, name, geom')
+        $culinaryData = $culinaryPlaceModel->select('package_id, day, activity, activity_type, object_id, detail_package.description, name, geom, ST_Y(ST_Centroid(geom)) AS lat, ST_X(ST_Centroid(geom)) AS lng')
         ->join('detail_package', 'detail_package.object_id=culinary_place.id')
         ->get()->getResultArray();
 
-        $souvenirData = $souvenirPlaceModel->select('package_id, day, activity, activity_type, object_id, detail_package.description, name, geom')
+        $souvenirData = $souvenirPlaceModel->select('package_id, day, activity, activity_type, object_id, detail_package.description, name, geom, ST_Y(ST_Centroid(geom)) AS lat, ST_X(ST_Centroid(geom)) AS lng')
         ->join('detail_package', 'detail_package.object_id=souvenir_place.id')
         ->get()->getResultArray();
 
-        $worshipData = $worshipPlaceModel->select('package_id, day, activity, activity_type, object_id, detail_package.description, name, geom')
+        $worshipData = $worshipPlaceModel->select('package_id, day, activity, activity_type, object_id, detail_package.description, name, geom, ST_Y(ST_Centroid(geom)) AS lat, ST_X(ST_Centroid(geom)) AS lng')
         ->join('detail_package', 'detail_package.object_id=worship_place.id')
         ->get()->getResultArray();
 
-        $facilityData = $facilityModel->select('package_id, day, activity, activity_type, object_id, detail_package.description, name, geom')
+        $facilityData = $facilityModel->select('package_id, day, activity, activity_type, object_id, detail_package.description, name, geom, ST_Y(ST_Centroid(geom)) AS lat, ST_X(ST_Centroid(geom)) AS lng')
         ->join('detail_package', 'detail_package.object_id=facility.id')
         ->get()->getResultArray();
 
-        $attractionData = $attractionModel->select('package_id, day, activity, activity_type, object_id, detail_package.description, name, geom')
+        $attractionData = $attractionModel->select('package_id, day, activity, activity_type, object_id, detail_package.description, name, geom, ST_Y(ST_Centroid(geom)) AS lat, ST_X(ST_Centroid(geom)) AS lng')
         ->join('detail_package', 'detail_package.object_id=attraction.id')
         ->get()->getResultArray();
 
-        $eventData = $eventModel->select('package_id, day, activity, object_id, activity_type, detail_package.description, name, geom')
+        $eventData = $eventModel->select('package_id, day, activity, object_id, activity_type, detail_package.description, name, geom, ST_Y(ST_Centroid(geom)) AS lat, ST_X(ST_Centroid(geom)) AS lng')
         ->join('detail_package', 'detail_package.object_id=event.id')
         ->get()->getResultArray();
 
+        $homestayData = $homestayModel->select('package_id, day, activity, object_id, activity_type, detail_package.description, name, geom, ST_Y(ST_Centroid(geom)) AS lat, ST_X(ST_Centroid(geom)) AS lng')
+        ->join('detail_package', 'detail_package.object_id=homestay.id')
+        ->get()->getResultArray();
+
         // Gabungkan hasil dari kedua model
-        $combinedData = array_merge($culinaryData, $souvenirData, $worshipData, $facilityData, $attractionData, $eventData);
+        $combinedData = array_merge($culinaryData, $souvenirData, $worshipData, $facilityData, $attractionData, $eventData, $homestayData);
 
         // Urutkan data berdasarkan kolom "activity"
         usort($combinedData, function($a, $b) {
@@ -98,6 +103,55 @@ class DetailPackageModel extends Model
         });
 
         return $combinedData;
+    }
+
+    public function getRouteData()
+    {
+        $culinaryPlaceModel = new CulinaryPlaceModel();
+        $souvenirPlaceModel = new SouvenirPlaceModel();
+        $worshipPlaceModel = new WorshipPlaceModel();
+        $facilityModel = new FacilityModel();
+        $attractionModel = new AttractionModel();
+        $eventModel = new EventModel();
+        $homestayModel = new HomestayModel();
+
+        $culinaryData = $culinaryPlaceModel->select('ST_Y(ST_Centroid(geom)) AS lat, ST_X(ST_Centroid(geom)) AS lng')
+        ->join('detail_package', 'detail_package.object_id=culinary_place.id')
+        ->get()->getResultArray();
+
+        $souvenirData = $souvenirPlaceModel->select('ST_Y(ST_Centroid(geom)) AS lat, ST_X(ST_Centroid(geom)) AS lng')
+        ->join('detail_package', 'detail_package.object_id=souvenir_place.id')
+        ->get()->getResultArray();
+
+        $worshipData = $worshipPlaceModel->select('ST_Y(ST_Centroid(geom)) AS lat, ST_X(ST_Centroid(geom)) AS lng')
+        ->join('detail_package', 'detail_package.object_id=worship_place.id')
+        ->get()->getResultArray();
+
+        $facilityData = $facilityModel->select('ST_Y(ST_Centroid(geom)) AS lat, ST_X(ST_Centroid(geom)) AS lng')
+        ->join('detail_package', 'detail_package.object_id=facility.id')
+        ->get()->getResultArray();
+
+        $attractionData = $attractionModel->select('ST_Y(ST_Centroid(geom)) AS lat, ST_X(ST_Centroid(geom)) AS lng')
+        ->join('detail_package', 'detail_package.object_id=attraction.id')
+        ->get()->getResultArray();
+
+        $eventData = $eventModel->select('ST_Y(ST_Centroid(geom)) AS lat, ST_X(ST_Centroid(geom)) AS lng')
+        ->join('detail_package', 'detail_package.object_id=event.id')
+        ->get()->getResultArray();
+
+        $homestayData = $homestayModel->select('ST_Y(ST_Centroid(geom)) AS lat, ST_X(ST_Centroid(geom)) AS lng')
+        ->join('detail_package', 'detail_package.object_id=homestay.id')
+        ->get()->getResultArray();
+
+        // Gabungkan hasil dari kedua model
+        $routeData = array_merge($culinaryData, $souvenirData, $worshipData, $facilityData, $attractionData, $eventData, $homestayData);
+
+        // // Urutkan data berdasarkan kolom "activity"
+        // usort($routeData, function($a, $b) {
+        //     return strcmp($a['activity'], $b['activity']);
+        // });
+
+        return $routeData;
     }
 
     public function add_new_packageActivity($packageActivity = null)

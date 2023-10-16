@@ -5,6 +5,7 @@ namespace App\Controllers\Web;
 use App\Models\ReservationModel;
 use App\Models\UnitHomestayModel;
 use App\Models\PackageModel;
+use App\Models\PackageDayModel;
 use CodeIgniter\RESTful\ResourcePresenter;
 use CodeIgniter\Files\File;
 
@@ -13,6 +14,7 @@ class Reservation extends ResourcePresenter
     protected $reservationModel;
     protected $unitHomestayModel;
     protected $packageModel;
+    protected $packageDayModel;
 
 
     /**
@@ -29,6 +31,7 @@ class Reservation extends ResourcePresenter
         $this->reservationModel = new ReservationModel();
         $this->unitHomestayModel = new UnitHomestayModel();
         $this->packageModel = new PackageModel();
+        $this->packageDayModel = new PackageDayModel();
 
     }
 
@@ -75,8 +78,9 @@ class Reservation extends ResourcePresenter
      */
     public function new()
     {
-        $contents = $this->packageModel->get_list_package()->getResultArray();
+        $contents = $this->packageModel->get_list_package_distinct()->getResultArray();
 
+        // dd($contents);
         $list_unit = $this->unitHomestayModel->get_unit_homestay_all()->getResultArray();
 
 // dd($list_unit);
@@ -111,7 +115,7 @@ class Reservation extends ResourcePresenter
         ];
 
         // dd($data);
-        return view('dashboard/reservation-form', $data);
+        return view('web/reservation-form', $data);
     }
 
     public function dataunithomestay()
@@ -182,7 +186,7 @@ class Reservation extends ResourcePresenter
         $addRe = $this->reservationModel->add_new_reservation($requestData);
 
         if ($addRe) {
-            return redirect()->to(base_url('web/detailreservation/new/'.$id));
+            return redirect()->to(base_url('web/detailreservation/edit/'.$id));
         } else {
             return redirect()->back()->withInput();
         }
@@ -209,7 +213,7 @@ class Reservation extends ResourcePresenter
             'date'=>$date
         ];
         
-        return view('dashboard/reservation-form', $data);
+        return view('web/reservation-form', $data);
     }
 
     public function update($id = null)

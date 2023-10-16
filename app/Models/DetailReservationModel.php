@@ -40,7 +40,7 @@ class DetailReservationModel extends Model
         return $query;
     }
 
-    public function get_unit_homestay_booking_data($homestay_id=null, $unit_type=null, $unit_number=null)
+    public function get_unit_homestay_booking_data($homestay_id=null, $unit_type=null, $unit_number=null, $reservation_id=null)
     {
         $query = $this->db->table($this->table)
             ->select('*')
@@ -49,7 +49,23 @@ class DetailReservationModel extends Model
             ->join('homestay_unit_type', 'detail_reservation.unit_type=homestay_unit_type.id')
             ->where('detail_reservation.unit_type', $unit_type)
             ->where('detail_reservation.unit_number', $unit_number)
+            ->where('detail_reservation.reservation_id', $reservation_id)
             ->get();
+        return $query;
+    }
+
+    public function get_price_homestay_booking($homestay_id=null, $unit_type=null, $unit_number=null, $reservation_id=null)
+    {
+        $query = $this->db->table($this->table)
+            ->selectSum('price','tot_price_hom')
+            ->join('unit_homestay', 'detail_reservation.homestay_id=unit_homestay.homestay_id')
+            ->join('homestay', 'detail_reservation.homestay_id=homestay.id')
+            ->join('homestay_unit_type', 'detail_reservation.unit_type=homestay_unit_type.id')
+            ->where('detail_reservation.unit_type', $unit_type)
+            ->where('detail_reservation.unit_number', $unit_number)
+            ->where('detail_reservation.reservation_id', $reservation_id)
+            ->get();
+            
         return $query;
     }
 

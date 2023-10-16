@@ -11,6 +11,7 @@ use App\Models\FacilityModel;
 use App\Models\SouvenirPlaceModel;
 use App\Models\AttractionModel;
 use App\Models\EventModel;
+use App\Models\HomestayModel;
 
 use CodeIgniter\API\ResponseTrait;
 use CodeIgniter\RESTful\ResourcePresenter;
@@ -30,6 +31,7 @@ class PackageDay extends ResourcePresenter
     protected $souvenirPlaceModel;
     protected $attractionModel;
     protected $eventModel;
+    protected $homestayModel;
     protected $db, $builder;
 
 
@@ -53,6 +55,7 @@ class PackageDay extends ResourcePresenter
         $this->souvenirPlaceModel = new SouvenirPlaceModel();
         $this->attractionModel = new AttractionModel();
         $this->eventModel = new EventModel();
+        $this->homestayModel = new HomestayModel();
         
         $this->db = \Config\Database::connect();
         $this->builder = $this->db->table('detail_package', 'culinary_place');;
@@ -102,8 +105,9 @@ class PackageDay extends ResourcePresenter
         $souvenir = $this->souvenirPlaceModel->get_list_sp()->getResultArray();
         $attraction = $this->attractionModel->get_list_attraction()->getResultArray();
         $event = $this->eventModel->get_list_event()->getResultArray();
+        $homestay = $this->homestayModel->get_list_homestay()->getResultArray();
 
-        $data_object = array_merge($culinary,$worship,$facility,$souvenir,$attraction,$event);
+        $data_object = array_merge($culinary,$worship,$facility,$souvenir,$attraction,$event,$homestay);
 
         $detailPackage = $this->detailPackageModel->get_detailPackage_by_id($package_id)->getResultArray();
         
@@ -115,7 +119,8 @@ class PackageDay extends ResourcePresenter
             'facility' => $facility,
             'souvenir' => $souvenir,
             'attraction' => $attraction,
-            'event' => $event
+            'event' => $event,
+            'homestay' => $homestay
         ];
 
         $data = [

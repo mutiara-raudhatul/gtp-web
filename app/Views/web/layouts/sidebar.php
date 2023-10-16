@@ -133,7 +133,7 @@ $uri3 = $uri[3] ?? '';
                         </a>
                     </li>
 
-                    <li class="sidebar-item <?= ($uri1 == 'reservation') ? 'active' : '' ?>">
+                    <li class="sidebar-item <?= ($uri1 == 'reservation') || ($uri1 == 'detailreservation') ? 'active' : '' ?>">
                         <a href="<?= base_url('/web/reservation'); ?>" class="sidebar-link">
                             <i class="fa-solid fa-calendar"></i><span>Reservation</span>
                         </a>

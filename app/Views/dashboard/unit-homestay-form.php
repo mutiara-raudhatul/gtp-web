@@ -74,7 +74,7 @@ $edit = in_array('edit', $uri);
                                                 <select class="form-select" name="unit_type" required>
                                                         <option >Select Type</option>
                                                     <?php foreach ($unit_type as $item => $keyy) : ?>
-                                                        <option value="<?= esc($keyy['id']); ?>"><?= esc($keyy['name']); ?></option>                                                                
+                                                        <option value="<?= esc($keyy['id']); ?>"><?= esc($keyy['name_type']); ?></option>                                                                
                                                     <?php endforeach; ?>
                                                 </select>
                                             </div>
@@ -139,7 +139,7 @@ $edit = in_array('edit', $uri);
                                                             <select class="form-select" name="unit_homestay">
                                                                     <option selected disabled>Select Unit</option>
                                                                 <?php foreach ($unit as $item => $keyy) : ?>
-                                                                    <option value="<?= esc($keyy['homestay_id']); ?>-<?=esc($keyy['unit_type']); ?>-<?= esc($keyy['unit_number']); ?>">[<?= esc($keyy['name']); ?>] <?= esc($keyy['nama_unit']); ?></option>                                                                
+                                                                    <option value="<?= esc($keyy['homestay_id']); ?>-<?=esc($keyy['unit_type']); ?>-<?= esc($keyy['unit_number']); ?>">[<?= esc($keyy['name_type']); ?>] <?= esc($keyy['unit_number']); ?> <?= esc($keyy['nama_unit']); ?></option>                                                                
                                                                 <?php endforeach; ?>
                                                             </select>
                                                         </div>
@@ -196,7 +196,7 @@ $edit = in_array('edit', $uri);
                                                 <div class="col-md-12">
                                                     <div class="form-group">
                                                         <label for="facility_name">Facility Name</label>
-                                                        <input type="text" class="form-control" id="facility_name" name="facility_name">
+                                                        <input type="text" class="form-control" id="facility_name" name="facility_name" autocomplete="off">
                                                     </div>
                                                 </div>
                                             </div>
@@ -225,7 +225,7 @@ $edit = in_array('edit', $uri);
                                 <div class="col-sm-6">
                                     <div class="card border border-primary-subtle p-2 mb-2">
                                         <div class="card-body">
-                                            <h5 class="card-title"><?= esc($itemunit['name']); ?> <?= esc($itemunit['unit_number']); ?> <?= esc($itemunit['nama_unit']); ?></h5>
+                                            <h5 class="card-title"><?= esc($itemunit['name_type']); ?> <?= esc($itemunit['unit_number']); ?> <?= esc($itemunit['nama_unit']); ?></h5>
                                             <p class="card-text">
                                                 Price : <?= 'Rp ' . number_format(esc($itemunit['price']), 0, ',', '.'); ?> <br>
                                                 Capacity : <?= esc($itemunit['capacity']); ?> orang <br>
@@ -256,7 +256,7 @@ $edit = in_array('edit', $uri);
                                                                     <td><?= esc($dt['description']); ?></td>
                                                                     <td>
                                                                         <div class="btn-group" role="group" aria-label="Basic example">
-                                                                            <button type="button" class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap"><i class="fa fa-pencil" aria-hidden="true"></i></button>                                                            
+                                                                            <!-- <button type="button" class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap"><i class="fa fa-pencil" aria-hidden="true"></i></button>                                                             -->
                                                                             <form action="<?= base_url('dashboard/unithomestay/deletefacilityunit/').$dt['unit_number']; ?>" method="post" class="d-inline">
                                                                                 <?= csrf_field(); ?>
                                                                                 <input type="hidden" name="homestay_id" value="<?= esc($dt['homestay_id']); ?>">
@@ -379,7 +379,7 @@ $edit = in_array('edit', $uri);
                                                     });
                                                 </script>
 
-                                                <form action="<?= base_url('dashboard/unithomestay/delete/').$itemunit['unit_number']; ?>" method="post" class="d-inline">
+                                                <form action="<?= base_url('dashboard/unithomestay/delete/').$itemunit['nama_unit']; ?>" method="post" class="d-inline">
                                                     <?= csrf_field(); ?>
                                                     <input type="hidden" name="homestay_id" value="<?= esc($itemunit['homestay_id']); ?>">
                                                     <input type="hidden" name="unit_type" value="<?= esc($itemunit['unit_type']); ?>">

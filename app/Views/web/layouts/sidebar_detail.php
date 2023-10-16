@@ -3,6 +3,8 @@ $uri = service('uri')->getSegments();
 $uri1 = $uri[1] ?? 'index';
 $uri2 = $uri[2] ?? '';
 $uri3 = $uri[3] ?? '';
+
+// dd($uri, $uri1, $uri2, $uri3);
 ?>
 
 <div id="sidebar" class="active">

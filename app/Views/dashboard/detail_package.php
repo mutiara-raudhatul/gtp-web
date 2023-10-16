@@ -129,13 +129,45 @@
                 </div>
 
                 <?= $this->include('web/layouts/map-body'); ?>
+                <div class="card-body">
+                    <div class="col-auto ">
+                        <br>
+                        <div class="btn-group float-right" role="group">
+                            <?php foreach ($day as $d) : ?>
+                                <?php $activitiesForDay = array_filter($activity, function($activity) use ($d) {
+                                    return $activity['day'] === $d['day'];
+                                }); ?>
+                                <?php if (!empty($activitiesForDay)): ?>
+                                    <?php foreach ($activity as $index => $currentActivity) :?>
+                                        <?php if ($currentActivity['day'] === $d['day']) : ?>
+
+                                                <?php if (isset($activity[$index + 1])): 
+                                                    $nextActivity = $activity[$index + 1];
+                                                ?>    
+                                                    <button type="button" onclick="routeBetweenObjects(<?= $currentActivity['lat'] ?>, <?= $currentActivity['lng'] ?>, <?= $nextActivity['lat']?>, <?= $nextActivity['lng'] ?>)" class="btn btn-outline-primary"><i class="fa fa-road"></i> Day <?= esc($d['day']);?></button>
+                                                <?php endif; ?>    
+
+                                        <?php endif; ?>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                </div>
                 <script>
                     initMap(<?= esc($data['lat']); ?>, <?= esc($data['lng']); ?>)
                 </script>
-                <script>
-                    objectMarker("<?= esc($data['id']); ?>", <?= esc($data['lat']); ?>, <?= esc($data['lng']); ?>);
-                </script>
+                <?php foreach($day as $d) : ?>
+                    <?php foreach($activity as $ac) : ?>
+                    <script>
+                        objectMarker("<?= esc($ac['object_id']); ?>", <?= esc($ac['lat']); ?>, <?= esc($ac['lng']); ?>);
+                    </script>
+                    <?php endforeach; ?>
+                <?php endforeach; ?>
+            <!-- Direction section -->
+            <?= $this->include('web/layouts/direction'); ?>
             </div>
+            
 
         </div>
     </div>
@@ -155,5 +187,8 @@
     myModal.addEventListener('hide.bs.modal', () => {
         document.getElementById('video').setAttribute('src', '');
     });
+
+    $('#direction-row').hide();
+
 </script>
 <?= $this->endSection() ?>

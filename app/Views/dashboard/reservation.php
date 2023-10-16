@@ -1,3 +1,8 @@
+<?php
+$uri = service('uri')->getSegments();
+$users = in_array('users', $uri);
+?>
+
 <?= $this->extend('dashboard/layouts/main'); ?>
 
 <?= $this->section('content') ?>
@@ -12,14 +17,10 @@
                     <div class="card-header">
                         <h5 class="card-title text-center"><?= esc($title); ?></h5>
                     </div>
+
                     <div class="card-body">
-                        <div class="table-responsive overflow-auto" id="table-user">
-                            <script>
-                                clearMarker();
-                                clearRadius();
-                                clearRoute();
-                            </script>
-                            <table class="table table-hover mb-0 table-lg">
+                        <div class="table-responsive">
+                            <table class="table table-hover dt-head-center" id="table-manage">
                                 <thead>
                                     <tr>
                                         <th>#</th>
@@ -45,8 +46,11 @@
                                                 <td><?= date('d F Y, h:i:s A', strtotime($item['check_out'])); ?></td>
                                                 <td><?= esc($item['status']); ?></td>
                                                 <td>
-                                                    <a data-bs-toggle="tooltip" data-bs-placement="bottom" title="More Info" class="btn icon btn-outline-primary mx-1" href="<?= current_url().'/'.esc($item['id']); ?>">
+                                                    <a data-bs-toggle="tooltip" data-bs-placement="bottom" title="More Info" class="btn icon btn-outline-primary mx-1" href="<?=base_url('web/detailreservation/').$item['id']; ?>">
                                                         <i class="fa-solid fa-circle-info"></i>
+                                                    </a>
+                                                    <a data-bs-toggle="tooltip" data-bs-placement="bottom" title="Delete" class="btn icon btn-outline-danger mx-1" onclick="deleteObject('<?= esc($item['id']); ?>', '<?= esc($item['name']); ?>', <?= ($users) ? 'true' : 'false'; ?>)">
+                                                        <i class="fa-solid fa-trash"></i>
                                                     </a>
                                                 </td>
                                                 <?php $i++ ?>
@@ -70,4 +74,15 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('javascript') ?>
+<script>
+    $(document).ready(function() {
+        $('#table-manage').DataTable({
+            columnDefs: [{
+                targets: ['_all'],
+                className: 'dt-head-center'
+            }],
+            lengthMenu: [5, 10, 20, 50, 100]
+        });
+    });
+</script>
 <?= $this->endSection() ?>

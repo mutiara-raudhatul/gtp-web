@@ -37,10 +37,24 @@ class PackageModel extends Model
         return $query;
     }
 
+    public function get_list_package_distinct()
+    {
+        $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
+        $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.price,{$this->table}.contact_person,{$this->table}.description,{$this->table}.video_url,{$this->table}.min_capacity";
+        $query = $this->db->table($this->table)
+            ->select("max(day) as days, {$columns}, {$coords}")
+            ->join('package_type', 'package.type_id = package_type.id')
+            ->join('package_day', 'package.id = package_day.package_id')
+            ->select('package_type.type_name, package_day.day')
+            ->groupby('package.id')
+            ->get();
+        return $query;
+    }
+
     public function get_package_by_id($id = null)
     {
         $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
-        $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.type_id,{$this->table}.price,{$this->table}.contact_person,{$this->table}.description,{$this->table}.video_url";
+        $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.type_id,{$this->table}.price,{$this->table}.contact_person,{$this->table}.description,{$this->table}.video_url,{$this->table}.min_capacity";
         $geoJson = "ST_AsGeoJSON({$this->table}.geom) AS geoJson";
         $query = $this->db->table($this->table)
             ->select("{$columns}, {$coords}, {$geoJson}")
@@ -54,7 +68,7 @@ class PackageModel extends Model
     public function get_package_by_name($name = null)
     {
         $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
-        $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.price,{$this->table}.contact_person,{$this->table}.description,{$this->table}.video_url";
+        $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.price,{$this->table}.contact_person,{$this->table}.description,{$this->table}.video_url,{$this->table}.min_capacity";
         $query = $this->db->table($this->table)
             ->select("{$columns}, {$coords}")
             ->like("{$this->table}.name", $name)
@@ -65,7 +79,7 @@ class PackageModel extends Model
     public function get_package_by_type($type = null)
     {
         $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
-        $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.price,{$this->table}.contact_person,{$this->table}.description,{$this->table}.video_url";
+        $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.price,{$this->table}.contact_person,{$this->table}.description,{$this->table}.video_url,{$this->table}.min_capacity";
         $query = $this->db->table($this->table)
             ->select("{$columns}, {$coords}")
             ->like("{$this->table}.type_id", $type)

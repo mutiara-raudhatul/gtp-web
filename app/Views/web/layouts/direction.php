@@ -1,5 +1,5 @@
 <div class="row" id="direction-row">
-    <div class="col-md-8 col-12">
+    <div class="col-md-12 col-12">
         <div class="card">
             <div class="card-header">
                 <h5 class="card-title text-center">Directions</h5>
