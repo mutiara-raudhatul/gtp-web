@@ -80,7 +80,6 @@ class UnitHomestay extends ResourcePresenter
         $list_unit = $this->unitHomestayModel->get_unit_homestay($id)->getResultArray();
 
         $facilities = array();
-
         foreach ($list_unit as $unithome) {
             $homestay_id=$unithome['homestay_id'];
             $unit_number=$unithome['unit_number'];
@@ -91,8 +90,9 @@ class UnitHomestay extends ResourcePresenter
         }
             
         $fc = $facilities;
-    
+
         $unittype = $this->homestayUnitTypeModel->get_list_type()->getResultArray();
+
 
         $data = [
             'title' => 'Unit Homestay',
@@ -112,7 +112,7 @@ class UnitHomestay extends ResourcePresenter
      * This should be a POST.
      *
      * @return mixed
-    //  */
+     */
     public function createunit($id)
     {
         $request = $this->request->getPost();
@@ -130,13 +130,31 @@ class UnitHomestay extends ResourcePresenter
             'description' => $request['description']
         ];
 
+        $unit_number=$requestData['unit_number'];
+        $homestay_id=$requestData['homestay_id'];
+        $unit_type=$requestData['unit_type'];
+
         foreach ($requestData as $key => $value) {
             if (empty($value)) {
                 unset($requestData[$key]);
             }
         }
-
         $addUH = $this->unitHomestayModel->add_new_unitHomestay($requestData);
+
+        // if (isset($request['gallery'])) {
+        //     $folders = $request['gallery'];
+        //     $gallery = array();
+        //     foreach ($folders as $folder) {
+        //         $filepath = WRITEPATH . 'uploads/' . $folder;
+        //         $filenames = get_filenames($filepath);
+        //         $fileImg = new File($filepath . '/' . $filenames[0]);
+        //         $fileImg->move(FCPATH . 'media/photos/unithomestay');
+        //         delete_files($filepath);
+        //         rmdir($filepath);
+        //         $gallery[] = $fileImg->getFilename();
+        //     }
+        //     $this->galleryUnitModel->add_new_gallery($unit_number, $homestay_id, $unit_type, $gallery);
+        // }
 
         if ($addUH) {
             return redirect()->back();
@@ -192,7 +210,7 @@ class UnitHomestay extends ResourcePresenter
         $deleteFUD= $this->facilityUnitDetailModel->where($array)->delete();
 
         if ($deleteFUD) {
-            session()->setFlashdata('pesan', 'Fasilitas Unit "'.$data_facility['name'].'" di "'.$data_unit['nama_unit'].'" Berhasil di Hapus.');
+            session()->setFlashdata('pesan', 'Facility Unit Berhasil di Hapus.');
             
             return redirect()->back();
 
@@ -371,7 +389,7 @@ class UnitHomestay extends ResourcePresenter
             $deleteUH= $this->unitHomestayModel->delete_unit($array2);
 
             if ($deleteUH) {
-                session()->setFlashdata('pesan', 'Unit "'.$nama_unit.'" Homestay "'.$homestay_id.'" Berhasil di Hapus.');
+                session()->setFlashdata('pesan', 'Unit "'.$nama_unit.' '.$unit_number.'" Homestay "'.$homestay_id.'" Berhasil di Hapus.');
                 
                 return redirect()->back();
 

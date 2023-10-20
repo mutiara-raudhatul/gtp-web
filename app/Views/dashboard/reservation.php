@@ -44,14 +44,19 @@ $users = in_array('users', $uri);
                                                 <td><?= date('d F Y, h:i:s A', strtotime($item['request_date'])); ?></td>
                                                 <td><?= date('d F Y, h:i:s A', strtotime($item['check_in'])); ?></td>
                                                 <td><?= date('d F Y, h:i:s A', strtotime($item['check_out'])); ?></td>
-                                                <td><?= esc($item['status']); ?></td>
+                                                <td>
+                                                    <?php if($item['status']==null): ?>    
+                                                        <a href="#" class="btn-sm btn-secondary float-center"><i class="fa-solid fa-clock"></i></a>
+                                                    <?php elseif($item['status']==1): ?>    
+                                                        <a href="#" class="btn-sm btn-success float-center"><i class="fa-solid fa-check"></i></a>
+                                                    <?php elseif($item['status']==0): ?>    
+                                                        <a href="#" class="btn-sm btn-danger float-center"><i class="fa-solid fa-times"></i></a>
+                                                    <?php endif; ?>
+                                                </td>
                                                 <td>
                                                     <a data-bs-toggle="tooltip" data-bs-placement="bottom" title="More Info" class="btn icon btn-outline-primary mx-1" href="<?=base_url('web/detailreservation/').$item['id']; ?>">
                                                         <i class="fa-solid fa-circle-info"></i>
-                                                    </a>
-                                                    <a data-bs-toggle="tooltip" data-bs-placement="bottom" title="Delete" class="btn icon btn-outline-danger mx-1" onclick="deleteObject('<?= esc($item['id']); ?>', '<?= esc($item['name']); ?>', <?= ($users) ? 'true' : 'false'; ?>)">
-                                                        <i class="fa-solid fa-trash"></i>
-                                                    </a>
+                                                     </a>
                                                 </td>
                                                 <?php $i++ ?>
                                             </tr>

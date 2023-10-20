@@ -10,7 +10,7 @@ class ReservationModel extends Model
     protected $table = 'reservation';
     protected $primaryKey = 'id';
     protected $returnType = 'array';
-    protected $allowedFields    = ['id', 'user_id', 'request_date','check_in', 'check_out', 'total_people', 'deposite', 'total_price', 'status_id', 'comment', 'rating'];
+    protected $allowedFields    = ['id', 'user_id', 'request_date','check_in', 'check_out', 'total_people', 'deposite', 'total_price', 'status', 'comment', 'rating'];
 
     // Dates
     protected $useTimestamps = true;
@@ -26,10 +26,9 @@ class ReservationModel extends Model
 
     public function get_list_reservation() {
         $query = $this->db->table($this->table)
-            ->select("`reservation.id`, `reservation.user_id`, `users.username`,`reservation.package_id`, `package.name`, `reservation.request_date`, `reservation.check_in`, `reservation.check_out`, `reservation.status_id`,`status_reservation.status`")
+            ->select("`reservation.id`, `reservation.user_id`, `users.username`,`reservation.package_id`, `package.name`, `reservation.request_date`, `reservation.check_in`, `reservation.check_out`, `reservation.status`,`reservation.confirmation_date`,`reservation.comment`,`users.username` ")
             ->join('package', 'reservation.package_id = package.id')
             ->join('users', 'reservation.user_id = users.id')
-            ->join('status_reservation', 'reservation.status_id = status_reservation.id')
             ->orderBy('reservation.id', 'ASC')
             ->get();
 
@@ -39,21 +38,41 @@ class ReservationModel extends Model
     public function get_reservation_by_id($id = null)
     {
         $query = $this->db->table($this->table)
-            ->select("`reservation.id`, `reservation.user_id`, `reservation.package_id`,`package.name`, `reservation.request_date`, `reservation.check_in`, `reservation.check_out`, `reservation.status_id`, `reservation.total_price`, `reservation.total_people`, `reservation.deposit`,`status_reservation.status`,`users.username` ")
+            ->select("`reservation.id`, `reservation.user_id`, `reservation.package_id`,`package.name`, `reservation.request_date`, `reservation.check_in`, `reservation.check_out`, `reservation.status`, `reservation.total_price`, `reservation.total_people`, `reservation.deposit`, `reservation.proof_of_deposit`, `reservation.deposit_date`,`reservation.proof_of_payment`,`reservation.payment_date`,`reservation.confirmation_date`,`reservation.comment`,`reservation.review`,`reservation.rating`,`users.username` ")
             ->join('package', 'reservation.package_id = package.id')
-            ->join('status_reservation', 'reservation.status_id = status_reservation.id')
             ->join('users', 'reservation.user_id = users.id')
             ->where('reservation.id', $id)
             ->get();
         return $query;
     }
+
+    public function getReview($id = null)
+    {
+        $query = $this->db->table($this->table)
+            ->select("`reservation.id`, `reservation.user_id`, `reservation.package_id`,`package.name`,`reservation.review`,`reservation.rating`,`users.username` ")
+            ->join('package', 'reservation.package_id = package.id')
+            ->join('users', 'reservation.user_id = users.id')
+            ->where('reservation.package_id', $id)
+            ->where('reservation.rating <>', 0) 
+            ->get();
+        return $query;
+    }
     
+    public function getRating($id = null)
+    {
+        $query = $this->db->table($this->table)
+            ->selectAVG('reservation.rating', 'rating')
+            ->where('reservation.package_id', $id)
+            ->where('reservation.rating <>', 0) 
+            ->get();
+        return $query;
+    }
+
     public function get_reservation_package_by_id($id = null)
     {
         $query = $this->db->table($this->table)
-            ->select("`reservation.id`, `reservation.user_id`, `reservation.package_id`,`package.name`, `reservation.request_date`, `reservation.check_in`, `reservation.check_out`, `reservation.status_id`, `reservation.total_price`, `reservation.total_people`, `reservation.deposit`,`status_reservation.status`,`users.username` ")
+            ->select("`reservation.id`, `reservation.user_id`, `reservation.package_id`,`package.name`, `reservation.request_date`, `reservation.check_in`, `reservation.check_out`, `reservation.status`, `reservation.total_price`, `reservation.total_people`, `reservation.deposit`, `reservation.proof_of_deposit`, `reservation.deposit_date`,`reservation.proof_of_payment`,`reservation.payment_date`,`reservation.confirmation_date`,`reservation.comment`,`users.username` ")
             ->join('package', 'reservation.package_id = package.id')
-            ->join('status_reservation', 'reservation.status_id = status_reservation.id')
             ->join('users', 'reservation.user_id = users.id')
             ->where('reservation.id', $id)
             ->get();
@@ -63,8 +82,12 @@ class ReservationModel extends Model
     public function get_new_id()
     {
         $lastId = $this->db->table($this->table)->select('id')->orderBy('id', 'ASC')->get()->getLastRow('array');
+        if(empty($lastId)){
+            $id='R0000001';
+        }else{
         $count = (int)substr($lastId['id'], 3);
         $id = sprintf('R%07d', $count + 1);
+        }
         return $id;
     }
 
@@ -75,18 +98,34 @@ class ReservationModel extends Model
         return $insert;
     }
 
-    public function update_reservation($id = null, $reservation_data = null)
-    {
-        foreach ($reservation_data as $key => $value) {
-            if (empty($value)) {
-                unset($reservation_data[$key]);
-            }
-        }
-        $query = $this->db->table($this->table)
-            ->where('id', $id)
-            ->update($reservation_data);
+    public function update_reservation($id = null, $data = null) {
+        $query = $this->db->table('reservation')
+            ->update($data, ['id' => $id]);
         return $query;
     }
 
+    public function upload_deposit($id = null, $data = null) {
+        $query = $this->db->table('reservation')
+            ->update($data, ['id' => $id]);
+        return $query;
+    }
+
+    public function upload_fullpayment ($id = null, $data = null) {
+        $query = $this->db->table('reservation')
+            ->update($data, ['id' => $id]);
+        return $query;
+    }
+
+
+    // public function upload_deposit($id = null, $deposit = null)
+    // {
+    //     foreach ($deposit as $key => $value) {
+    //         if (empty($value)) {
+    //             unset($deposit[$key]);
+    //         }
+    //     }
+    //     $queryIns = $this->add_new_gallery($id, $deposit);
+    //     return $queryIns;
+    // }
 
 }

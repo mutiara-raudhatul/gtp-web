@@ -67,7 +67,15 @@ class DetailServicePackageModel extends Model
 
         return $query;
     }
-
+    public function checkIfDataExists($requestData)
+    {
+        return $this->table($this->table)
+            ->where('service_package_id', $requestData['service_package_id'])
+            ->where('package_id', $requestData['package_id'])
+            ->get()
+            ->getRow();
+    }
+    
     public function add_new_detail_service($id, $requestData)
     {
         $query = false;

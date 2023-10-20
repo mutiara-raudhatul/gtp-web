@@ -1,6 +1,16 @@
 <?= $this->extend('web/layouts/main'); ?>
 
 <?= $this->section('content') ?>
+<style>
+    .rating {
+        display: inline-block;
+        font-size: 25px;
+    }
+    
+    .rating {
+        color: orange;
+    }
+</style>
 
 <section class="section">
     <div class="row">
@@ -13,6 +23,15 @@
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title text-center">Package Information</h4>
+                </div>
+                <div class="rating text-center ">
+                    <?php for ($i = 1; $i <= 5; $i++) : ?>
+                        <?php if ($i <= $rating['rating']) : ?>
+                            <i name="rating" class="fas fa-star"></i>
+                        <?php else: ?>
+                            <i name="rating" class="far fa-star"></i>
+                        <?php endif; ?>
+                    <?php endfor; ?>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -64,20 +83,65 @@
                 </div>
             </div>
             <div class="card">
-  <div class="card-header">
-     <h4 class="card-title text-center">Package Activity</h4>
-  </div>
-  <div class="card-body">
-    <blockquote class="blockquote mb-0">
-      <p>A well-known quote, contained in a blockquote element.</p>
-      <footer class="blockquote-footer">Someone famous in <cite title="Source Title">Source Title</cite></footer>
-    </blockquote>
-  </div>
-</div>
+                <div class="card-header">
+                    <h4 class="card-title text-center">Package Activity</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            <p>
+                            <?php foreach ($day as $d) : ?>
+                                <b>Day <?= esc($d['day']);?></b><br> 
+                                <?php foreach ($activity as $ac) : ?>
+                                    <?php if($d['day']==$ac['day']): ?>
+                                        <?= esc($ac['activity']);?>. <?= esc($ac['name']);?> : <?= esc($ac['description']);?> <br>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                                <br>
+                            <?php endforeach; ?>
+                            </p>
+                            <br> 
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <!-- Object Media -->
             <?= $this->include('web/layouts/our_gallery'); ?>
 
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title text-center">Package Review</h4>
+                </div>
+                <div class="card-body">
+                    <?php if($review==null): ?>
+                        <p class="text-center"><i>There are no reviews yet</i></p>
+                    <?php endif; ?>
+                    <div class="row">
+                        <div class="col">
+                            <?php foreach ($review as $d) : ?>
+                                <strong>@<?= esc($d['username']) ?></strong>
+                                <br>
+                                <div>Rating  :
+                                    <div class="rating text-center ">
+                                        <?php for ($i = 1; $i <= 5; $i++) : ?>
+                                            <?php if ($i <= $d['rating']) : ?>
+                                                <i name="rating" class="fas fa-star"></i>
+                                            <?php else: ?>
+                                                <i name="rating" class="far fa-star"></i>
+                                            <?php endif; ?>
+                                        <?php endfor; ?>
+                                    </div>
+                                </div>
+                                <div>Review  : <?= esc($d['review']) ?></div>
+                                <hr>
+                            <?php endforeach; ?>
+                            </p>
+                            <br> 
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="col-md-5 col-12">

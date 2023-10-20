@@ -89,12 +89,24 @@ class Facilityhomestay extends ResourcePresenter
             'description' => $request['description_facility']
         ];
 
-        $addFHD = $this->facilityHomestayDetailModel->add_new_facilityHomestayDetail($id, $requestData);
+        $checkExistingData = $this->facilityHomestayDetailModel->checkIfDataExists($requestData);
 
-        if ($addFHD) {
-            return redirect()->back();
-        } else {
+        if ($checkExistingData) {
+            // Data sudah ada, set pesan error flash data
+            session()->setFlashdata('failed', 'Fasilitas Homestay tersebut sudah ada.');
+
             return redirect()->back()->withInput();
+        } else {
+            // Data belum ada, jalankan query insert
+            $addFH = $this->facilityHomestayDetailModel->add_new_facilityHomestayDetail($requestData);
+       
+            if ($addFH) {
+                session()->setFlashdata('success', 'Fasilitas Homestay tersebut berhasil ditambahkan.');
+
+                return redirect()->back();
+            } else {
+                return redirect()->back()->withInput();
+            }
         }
     }
 
@@ -110,8 +122,8 @@ class Facilityhomestay extends ResourcePresenter
         $deleteFHD= $this->facilityHomestayDetailModel->where($array)->delete();
 
         if ($deleteFHD) {
-            session()->setFlashdata('pesan', 'Fasilitas Homestay "'.$facility_homestay_id.'" Berhasil di Hapus.');
-            
+            session()->setFlashdata('success', 'Fasilitas Homestay "'.$facility_homestay_id.'" Berhasil di Hapus.');
+
             return redirect()->back();
 
         } else {

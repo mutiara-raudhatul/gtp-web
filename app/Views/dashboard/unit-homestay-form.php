@@ -107,6 +107,10 @@ $edit = in_array('edit', $uri);
                                                 </div>
                                             </div>
                                         </div>
+                                        <!-- <div class="form-group mb-4">
+                                            <label for="gallery" class="form-label">Gallery</label>
+                                            <input class="form-control" accept="image/*" type="file" name="gallery[]" id="gallery" multiple>
+                                        </div> -->
                                     </div>
                                 </div>
                                 <div class="modal-footer">

@@ -74,9 +74,27 @@ $routes->group('web', ['namespace' => 'App\Controllers\Web'], function ($routes)
     $routes->presenter('event');
     $routes->presenter('package');
     $routes->presenter('ulakan');
+    $routes->get('reservation/custombooking/(:segment)', 'Reservation::custombooking/$1', ['filter' => 'login']);
     $routes->presenter('reservation', ['filter' => 'login']);
     $routes->resource('reservation', ['filter' => 'login']);
+    $routes->get('detailreservation/packagecustom/(:any)', 'DetailReservation::packagecustom/$1', ['filter' => 'login']);//--------
+    $routes->post('detailreservation/addcustom', 'DetailReservation::addcustom', ['filter' => 'login']);//--------
+    $routes->post('detailreservation/createday/(:segment)', 'DetailReservation::createday/$1');//--------
+    $routes->post('detailreservation/createactivity/(:segment)', 'DetailReservation::createactivity/$1');//--------
+    $routes->delete('detailreservation/deleteunit/(:any)', 'DetailReservation::deleteunit/$1');
+    $routes->delete('detailreservation/deleteday/(:any)', 'DetailReservation::deleteday/$1');
+    $routes->delete('detailreservation/delete/(:any)', 'DetailReservation::delete/$1');
+    $routes->post('servicepackage/createservicepackage/(:segment)', 'ServicePackage::createservicepackage/$1');//--------
+    $routes->delete('servicepackage/delete/(:any)', 'ServicePackage::delete/$1');//--------
+    $routes->presenter('servicepackage');
+    $routes->resource('servicepackage');
+
+    $routes->post('reservation/uploaddeposit/(:any)', 'Reservation::uploaddeposit/$1', ['filter' => 'login']);
+    $routes->post('reservation/uploadfullpayment/(:any)', 'Reservation::uploadfullpayment/$1', ['filter' => 'login']);
     $routes->get('detailreservation/addhome/(:segment)', 'DetailReservation::addhome/$1', ['filter' => 'login']);
+    $routes->get('detailreservation/review/(:any)', 'DetailReservation::review/$1');//--------
+    $routes->post('detailreservation/savereview/(:any)', 'DetailReservation::savereview/$1');//--------
+    $routes->post('detailreservation/savereviewunit/(:any)', 'DetailReservation::savereviewunit/$1');//--------
     $routes->presenter('detailreservation', ['filter' => 'login']);
     $routes->resource('detailreservation', ['filter' => 'login']);
     $routes->resource('homestay');
@@ -110,6 +128,7 @@ $routes->group('dashboard', ['namespace' => 'App\Controllers\Web', 'filter' => '
     $routes->post('packageday/createday/(:segment)', 'Packageday::createday/$1');//--------
     $routes->post('packageday/createactivity/(:segment)', 'Packageday::createactivity/$1');//--------
     $routes->delete('packageday/delete/(:any)', 'Packageday::delete/$1');
+    $routes->delete('packageday/deleteday/(:any)', 'Packageday::deleteday/$1');
 
     $routes->post('facilityhomestay/createfacility/(:segment)', 'Facilityhomestay::createfacility/$1');//--------
     $routes->post('facilityhomestay/createfacilityhomestay/(:segment)', 'Facilityhomestay::createfacilityhomestay/$1');//--------
@@ -148,7 +167,11 @@ $routes->group('dashboard', ['namespace' => 'App\Controllers\Web', 'filter' => '
     $routes->presenter('packageday');
     // $routes->resource('packageday');
 
+    $routes->presenter('reservation');
+    $routes->resource('reservation');
     $routes->presenter('managereservation');
+    $routes->get('detailreservation/confirm/(:any)', 'DetailReservation::confirm/$1');//--------
+    $routes->post('detailreservation/saveconfirm/(:any)', 'DetailReservation::saveconfirm/$1');//--------
 
     $routes->resource('village');
 
@@ -173,7 +196,8 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], function ($routes)
     $routes->resource('tracking');
     $routes->resource('attraction');
     $routes->resource('servicepackage');
-    $routes->resource('packageday');
+    $routes->get('packageday/(:any)', 'PackageDay::getDay/$1');
+    // $routes->resource('packageday');
     $routes->resource('facility');
     $routes->post('facility/findByRadius', 'Facility::findByRadius');
     $routes->post('facility/findByTrack', 'Facility::findByTrack');

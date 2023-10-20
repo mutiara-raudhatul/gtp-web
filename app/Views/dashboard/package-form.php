@@ -26,8 +26,8 @@ $edit = in_array('edit', $uri);
             currentUrl = '<?= current_url(); ?>';
         </script>
 
-        <!-- ADD DATA FACILITY -->
-        <div class="modal fade" id="servicesPackageModal" tabindex="-1" aria-labelledby="servicesPackageModalLabel" aria-hidden="true">
+            <!-- ADD DATA Service -->
+                <div class="modal fade" id="servicesPackageModal" tabindex="-1" aria-labelledby="servicesPackageModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                         <div class="modal-header">
@@ -57,10 +57,10 @@ $edit = in_array('edit', $uri);
                         </div>
                     </div>
                 </div>
-            <!-- end menambahkan data fasilitas -->
+            <!-- end menambahkan data Service -->
 
 
-                        <!-- Menambahkan Aktivitas -->
+            <!-- Menambahkan Service -->
                             <!-- <button type="button" class="btn btn-info add-new"><i class="fa fa-plus"></i> Activity</button> -->
                             <div class="modal fade" id="detailServicesPackageModal" tabindex="-1" aria-labelledby="detailServicesPackageModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
@@ -108,7 +108,7 @@ $edit = in_array('edit', $uri);
                                     </div>
                                 </div>
                             </div>
-            <!-- end Menambahkan Aktivitas -->
+            <!-- end Menambahkan Service -->
 
         <!-- Object Detail Information -->
         <div class="col-md-6 col-12">
@@ -219,7 +219,7 @@ $edit = in_array('edit', $uri);
                 </script>
             </div>
 
-            <!-- Object Media -->
+            <!-- Services -->
             <?php if(($edit)) : ?>
                 <div class="col-md-12 col-12">
                 <div class="card">
@@ -233,6 +233,26 @@ $edit = in_array('edit', $uri);
                                     </div>
                                 </div>
                                 <br>
+                                <?php if(session()->has('success')) : ?>
+                                    <script>
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: 'Berhasil!',
+                                            text: '<?= session('success') ?>',
+                                        });
+                                    </script>
+                                <?php endif; ?>
+
+                                <?php if(session()->has('failed')) : ?>
+                                    <script>
+                                        Swal.fire({
+                                            icon: 'warning',
+                                            title: 'Failed!',
+                                            text: '<?= session('failed') ?>',
+                                        });
+                                    </script>
+                                <?php endif; ?>
+
                                 <label for="facility" class="mb-2">Services</label>
                                 <div class="table-responsive">
                                     <div class="table-wrapper">
@@ -254,7 +274,6 @@ $edit = in_array('edit', $uri);
                                                                 <td><?= esc($value['name']); ?></td>
                                                                 <td>
                                                                     <div class="btn-group" role="group" aria-label="Basic example">
-                                                                        <button type="button" class="btn btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap"><i class="material-icons">&#xE254;</i></button>                                                            
                                                                         <form action="<?= base_url('dashboard/servicepackage/delete/').$value['package_id']; ?>" method="post" class="d-inline">
                                                                             <?= csrf_field(); ?>
                                                                             <input type="hidden" name="package_id" value="<?= esc($value['package_id']); ?>">
@@ -262,7 +281,7 @@ $edit = in_array('edit', $uri);
                                                                             <input type="hidden" name="name" value="<?= esc($value['name']); ?>">
                                                                             <input type="hidden" name="status" value="<?= esc($value['status']); ?>">
                                                                             <input type="hidden" name="_method" value="DELETE">
-                                                                            <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('apakah anda yakin akan menghapus?');"><i class="material-icons">&#xE872;</i></button>
+                                                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('apakah anda yakin akan menghapus?');"><i class="fa fa-times"></i></button>
                                                                         </form>
                                                                     </div>
                                                                 </td> 
@@ -297,7 +316,6 @@ $edit = in_array('edit', $uri);
                                                                 <td><?= esc($value['name']); ?></td>
                                                                 <td>
                                                                     <div class="btn-group" role="group" aria-label="Basic example">
-                                                                        <button type="button" class="btn btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap"><i class="material-icons">&#xE254;</i></button>                                                            
                                                                         <form action="<?= base_url('dashboard/servicepackage/delete/').$value['package_id']; ?>" method="post" class="d-inline">
                                                                             <?= csrf_field(); ?>
                                                                             <input type="hidden" name="package_id" value="<?= esc($value['package_id']); ?>">
@@ -305,7 +323,7 @@ $edit = in_array('edit', $uri);
                                                                             <input type="hidden" name="name" value="<?= esc($value['name']); ?>">
                                                                             <input type="hidden" name="status" value="<?= esc($value['status']); ?>">
                                                                             <input type="hidden" name="_method" value="DELETE">
-                                                                            <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('apakah anda yakin akan menghapus?');"><i class="material-icons">&#xE872;</i></button>
+                                                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('apakah anda yakin akan menghapus?');"><i class="fa fa-times"></i></button>
                                                                         </form>
                                                                     </div>
                                                                 </td> 

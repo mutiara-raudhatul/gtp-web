@@ -44,7 +44,16 @@ class FacilityHomestayDetailModel extends Model
         return $query;
     }
 
-    public function add_new_facilityHomestayDetail($id, $requestData)
+    public function checkIfDataExists($requestData)
+    {
+        return $this->table($this->table)
+            ->where('facility_homestay_id', $requestData['facility_homestay_id'])
+            ->where('homestay_id', $requestData['homestay_id'])
+            ->get()
+            ->getRow();
+    }
+    
+    public function add_new_facilityHomestayDetail($requestData)
     {
         $query = false;
         $content = [

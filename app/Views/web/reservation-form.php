@@ -27,6 +27,18 @@ $edit = in_array('edit', $uri);
 
         <!-- Object Detail Information -->
         <div class="col-md-6 col-12">
+            <?php if(!$edit): ?>
+            <form class="form form-vertical" id="customForm" action="<?= base_url('/web/detailreservation/addcustom'); ?>" method="post" onsubmit="checkRequired(event)" enctype="multipart/form-data">
+                <?= csrf_field();  ?>
+                <div>
+                    <div class="col">
+                        <button type="submit" class="btn btn-info float-right"><i class="fa-solid fa-plus me-3"></i>Custom Package</button>
+                    </div>
+                </div>
+                <br>
+            </form>
+            <?php endif; ?>
+
             <form class="form form-vertical" id="reservationForm" action="<?= ($edit) ? base_url('web/reservation/update') . '/' . $detail['id'] : base_url('web/reservation/create'); ?>" method="post" onsubmit="checkRequired(event)" enctype="multipart/form-data">
                 <div class="card">
                     <div class="card-header">
@@ -34,14 +46,6 @@ $edit = in_array('edit', $uri);
                     </div>
                     
                     <div class="card-body">
-                        <div>
-                            <?php if(!$edit): ?>
-                                <div class="col">
-                                    <a href="/web/package/new" class="btn btn-info float-right"><i class="fa-solid fa-plus me-3"></i>Custom Package</a>
-                                </div>
-                            <?php endif; ?>
-                        </div>
-                        <br>
                         <?= csrf_field();  ?>
                         <div class="form-group">
                             <label for="package">Package</label>
@@ -58,11 +62,6 @@ $edit = in_array('edit', $uri);
                             
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label for="total_people">Total People</label>
-                            <input type="number" id="total_people" name="total_people" value="<?= ($edit) ? $detail['total_people'] : old('total_people'); ?>" class="form-control" min="1" required>
-                        </div>
-
                         <div class="row g-4">
                             <div class="col-md-7">
                                 <label for="check_in">Check-in</label>
@@ -73,7 +72,6 @@ $edit = in_array('edit', $uri);
                                 <input type="time" id="time_check_in" name="time_check_in" min="<?php echo date('Y-m-d', strtotime('+1 day')); ?>" class="form-control" required>
                             </div>
                         </div>
-
                         <div class="row g-4">
                             <div class="col-md-7">
                                 <label for="check_out">Check-out</label>
@@ -84,7 +82,18 @@ $edit = in_array('edit', $uri);
                                 <input readonly type="time" id="time_check_out" name="time_check_out" class="form-control" required>
                             </div>
                         </div>
-                        
+                        <div class="form-group">
+                            <label for="total_people">Total People</label>
+                            <input type="number" id="total_people" name="total_people" value="<?= ($edit) ? $detail['total_people'] : old('total_people'); ?>" class="form-control" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="item">Package Order</label>
+                            <input type="number" id="item" name="item" class="form-control" min="1" readonly required>
+                        </div>
+                        <div class="form-group">
+                            <label for="price">Price Package</label>
+                            <input type="text" id="price" name="price" class="form-control" value="<?= ($edit) ? $keyy['price'] : old('price'); ?>" readonly>
+                        </div>
                          <div class="form-group">
                             <label for="total_price">Total Price Package</label>
                             <input type="text" id="total_price" name="total_price" class="form-control" value="<?= ($edit) ? $detail['total_price'] : old('total_price'); ?>" readonly>
@@ -273,9 +282,12 @@ $edit = in_array('edit', $uri);
             const price = parseFloat(package.data('price'));
             const capacity = parseInt(package.data('capacity'));
             const totalPeople = parseInt($('#total_people').val());
+            $('#price').val(price);
+            const numberOfPackages = Math.ceil(totalPeople/capacity);
+            $('#item').val(numberOfPackages);
 
             if (totalPeople > capacity) {
-                const numberOfPackages = Math.ceil(totalPeople / capacity);
+                const numberOfPackages = Math.ceil(totalPeople/capacity);
                 const totalPrice = price * numberOfPackages;
                 $('#total_price').val(totalPrice);
                 const deposit = totalPrice * 0.5;

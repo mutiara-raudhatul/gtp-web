@@ -13,14 +13,18 @@ $addhome = in_array('addhome', $uri);
         <script>
             currentUrl = '<?= current_url(); ?>';
         </script>
-
+        
         <!-- Object Detail Information -->
         <div class="col-md-6 col-12">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title text-center">Reservation Package</h4>
+                        <div class="col-auto">
+                            <a href="<?= base_url('dashboard/detailreservation/confirm'); ?>/<?= esc($detail['id']); ?>" class="btn btn-primary float-end"><i class="fa-solid fa-pencil me-3"></i>Confirmation</a>
+                        </div>
                     </div>
                     <div class="card-body">
+                        
                         <div class="row">
                             <div class="col table-responsive">
                                 <table class="table table-borderless">
@@ -63,10 +67,6 @@ $addhome = in_array('addhome', $uri);
                                                 $total_price_package = $jumlah_package*$data_package['price'];
                                             ?>
                                             <td><?= 'Rp ' . number_format(esc($total_price_package), 0, ',', '.'); ?></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="fw-bold">Status</td>
-                                            <td><?= esc($detail['status']); ?></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -122,7 +122,7 @@ $addhome = in_array('addhome', $uri);
                         <h4 class="card-title text-center"><?= $title; ?></h4>
                     </div>
                     <div class="card-body">
-                        <?php if($addhome): ?>
+                        <?php if($addhome && $detail['status']==null): ?>
                         <div class="col-auto ">
                             <br>
                             <div class="btn-group float-right" role="group">
@@ -137,7 +137,7 @@ $addhome = in_array('addhome', $uri);
                                     <th>Nama Homestay</th>
                                     <th>Capacity</th>
                                     <th>Price</th>
-                                    <?php if($addhome): ?>
+                                    <?php if($addhome && $detail['status']==null): ?>
                                     <th>Actions</th>
                                     <?php endif; ?>
                                 </tr>
@@ -155,7 +155,7 @@ $addhome = in_array('addhome', $uri);
                                         <?php if($addhome): ?>
                                         <td>
                                             <div class="btn-group" role="group" aria-label="Basic example">
-                                                <form action="<?= base_url('web/detailreservation/delete/').$dtb['date']; ?>" method="post" class="d-inline">
+                                                <form action="<?= base_url('web/detailreservation/deleteunit/').$dtb['date']; ?>" method="post" class="d-inline">
                                                     <?= csrf_field(); ?>
                                                     <input type="hidden" name="date" value="<?= esc($dtb['date']); ?>">
                                                     <input type="hidden" name="homestay_id" value="<?= esc($dtb['homestay_id']); ?>">
@@ -172,33 +172,13 @@ $addhome = in_array('addhome', $uri);
                                     </tr>              
                                 <?php endforeach; ?>
                             <?php endif; ?>
-                            </tbody>
-                        </table>
-
-                        <div>
-                            <table>
-                                <tbody>
                                     <tr>
                                         <td>Total Price Homestay </td>
                                         <td>:   <?= 'Rp' . number_format(esc($price_home), 0, ',', '.'); ?></td>
 
                                     </tr>
-                                    <tr>
-                                        <td><hr> </td>
-                                        <td><hr> </td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>Total Reservation</b></td>
-                                        <td><b>:   <?= 'Rp' . number_format(esc($detail['total_price']), 0, ',', '.'); ?></b></td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>Deposit Reservation</b></td>
-                                        <td><b>:   <?= 'Rp' . number_format(esc($detail['deposit']), 0, ',', '.'); ?></b></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
+                            </tbody>
+                        </table>
 
                     <!-- modal add unit homestay -->
                         <div class="modal fade" id="unitHomestayModal" tabindex="-1" aria-labelledby="unitHomestayModalLabel" aria-hidden="true">
@@ -242,6 +222,228 @@ $addhome = in_array('addhome', $uri);
                             </div>
                         </div>
                     <!-- end modal add unit homestay -->
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- payment -->
+            <div class="col-md-12 col-12" >
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title text-center">Payment</h4>
+                    </div>
+                    <div class="card-body">
+                        <div>
+                            <table class="col-12">
+                                <tbody>
+                                    <tr>
+                                        <td><b>Total Reservation</b></td>
+                                        <td><b>:   <?= 'Rp' . number_format(esc($detail['total_price']), 0, ',', '.'); ?></b></td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Deposit Reservation</b></td>
+                                        <td><b>:   <?= 'Rp' . number_format(esc($detail['deposit']), 0, ',', '.'); ?></b></td>
+                                    </tr>
+                                    <tr>
+                                        <td><hr> </td>
+                                        <td><hr> </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td> Status  : 
+                                        <?php if($detail['status']==null): ?>    
+                                                <i class="fa fa-clock btn-sm btn-secondary btn-circle"></i> Waiting</td>
+                                            <?php elseif($detail['status']==1): ?>    
+                                                <i class="fa fa-check btn-sm btn-success btn-circle"></i> Accepted</td>
+                                            <?php elseif($detail['status']==0): ?>    
+                                                <i class="fa fa-times btn-sm btn-danger btn-circle"></i> Rejected</td>
+                                            <?php endif; ?>                                      
+                                    </tr>
+    
+                                    <tr>
+                                        <?php if($detail['status']=='1' || $detail['status']=='0'): ?> 
+                                            <td> Confirmation Date :
+                                                 <?= esc(date('l, j F Y H:i:s', strtotime($detail['confirmation_date']))); ?></td> 
+                                        <?php endif; ?>   
+                                    </tr>
+                                    <tr>
+                                        <?php if($detail['status']=='1' || $detail['status']=='0'): ?> 
+                                            <td> Comment :
+                                                 <?= esc($detail['comment']); ?></td> 
+                                        <?php endif; ?>   
+                                    </tr>
+                                    <tr><td><br></td></tr>
+                                    <tr>
+                                        <?php if($detail['proof_of_deposit']!=null): ?> 
+                                            <td>Deposit Payment
+                                            : <?= esc(date('l, j F Y H:i:s', strtotime($detail['deposit_date']))); ?><td>
+                                        <?php endif; ?>   
+
+                                        <?php if($detail['proof_of_deposit']!=null): ?> 
+                                            <?php if($detail['proof_of_payment']!=null): ?> 
+                                                <td>Full Payment Reservation
+                                                : <?= esc(date('l, j F Y H:i:s', strtotime($detail['payment_date']))); ?></td>                                                
+                                            <?php endif; ?>   
+                                        <?php endif; ?>   
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <!-- upload proof payment -->
+                            <table class="col-12">
+                                <tbody>
+                                <tr>
+                                    <td class="col-md-5 col-12">
+                                        <?php if ($detail['status']=='1'):
+                                            if($detail['proof_of_deposit']==null): ?>
+                                            <form class="form form-vertical" action="<?= base_url('web/reservation/uploaddeposit/').$detail['id']; ?>" method="post" onsubmit="checkRequired(event)" enctype="multipart/form-data">
+                                                <div class="form-body">
+                                                <div class="col-md-5 col-12">
+                                                        <div class="form-group mb-4">
+                                                                <label for="proof_of_deposit" class="form-label">Proof of Deposit</label>
+                                                                <input class="form-control" accept="image/*" type="file" name="proof_of_deposit" id="proof_of_deposit">
+                                                        </div>
+                                                        </div>
+                                                        <div col="col-md-5 col-12">
+                                                            <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
+                                                            <button type="reset" class="btn btn-light-secondary me-1 mb-1">Reset</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                            <?php else: ?>
+                                                <div class="col-md-5 col-12">
+                                                    <div class="form-group">
+                                                        <div class="text-md-start mb-3" id="deposit-container">
+                                                                <div class="row gallery" data-bs-toggle="modal" data-bs-target="#galleryModal">
+                                                                        <img class="w-100 active" src="<?= base_url('media/photos/deposit/'); ?><?= $detail['proof_of_deposit'] ?>" data-bs-target="#Gallerycarousel" />
+                                                                </div>
+                                                            <!-- modal -->
+                                                            <div class="modal fade" id="galleryModal" tabindex="-1" role="dialog" aria-labelledby="galleryModalTitle" aria-hidden="true">
+                                                                <div class="modal-dialog modal-dialog-centered modal-dialog-centered" role="document">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h5 class="modal-title" id="galleryModalTitle">
+                                                                                Proof of Deposit
+                                                                            </h5>
+                                                                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                                                                <i data-feather="x"></i>
+                                                                            </button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <div id="Gallerycarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+                                                                                <div class="carousel-indicators">
+                                                                                        <button type="button" data-bs-target="#Gallerycarousel" data-bs-slide-to="<?= esc($i=1); ?>" class="<?= ($i == 0) ? 'active' : ''; ?>"></button>
+                                                                                </div>
+                                                                                <div class="carousel-inner">
+                                                                                    <?php $i = 0; ?>
+                                                                                        <div class="carousel-item<?= ($i == 0) ? ' active' : ''; ?>">
+                                                                                            <img class="d-block w-100" src="<?= base_url('media/photos/deposit/'); ?><?= $detail['proof_of_deposit'] ?>">
+                                                                                        </div>
+                                                                                </div>
+                                                                                <a class="carousel-control-prev" href="#Gallerycarousel" role="button" type="button" data-bs-slide="prev">
+                                                                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                                                </a>
+                                                                                <a class="carousel-control-next" href="#Gallerycarousel" role="button" data-bs-slide="next">
+                                                                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                                                </a>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="modal-footer">
+                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                                                Close
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            <?php endif; 
+                                        endif; ?>
+                                    </td>
+
+                                    <td class="col-md-5 col-12">
+                                        <?php if ($detail['status']=='1'):
+                                            if($detail['proof_of_payment']==null): ?>
+                                        <form class="form form-vertical" action="<?= base_url('web/reservation/uploadfullpayment/').$detail['id']; ?>" method="post" onsubmit="checkRequired(event)" enctype="multipart/form-data">
+                                            <div class="form-body">
+                                            <div class="col-md-5 col-12">
+                                                        <div class="form-group mb-4">
+                                                            <label for="proof_of_payment" class="form-label">  Proof of Full Payment</label>
+                                                            <input class="form-control" accept="image/*" type="file" name="proof_of_payment" id="proof_of_payment">
+                                                        </div>
+                                                    </div>
+                                                    <div col="col-md-5 col-12">
+                                                        <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
+                                                        <button type="reset" class="btn btn-light-secondary me-1 mb-1">Reset</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                        <?php else: ?>
+                                            <div class="col-md-5 col-12">
+                                                <div class="form-group">
+                                                    <div class="text-md-start mb-3" id="deposit-container">
+                                                            <div class="row gallery" data-bs-toggle="modal" data-bs-target="#paymentModal">
+                                                                    <img class="w-100 active" src="<?= base_url('media/photos/fullpayment/'); ?><?= $detail['proof_of_payment'] ?>" data-bs-target="#Gallerycarousel" />
+                                                            </div>
+                                                        <!-- modal -->
+                                                        <div class="modal fade" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="paymentModalTitle" aria-hidden="true">
+                                                            <div class="modal-dialog modal-dialog-centered modal-dialog-centered" role="document">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title" id="gpaymentModalTitle">
+                                                                            Proof of Payment
+                                                                        </h5>
+                                                                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                                                            <i data-feather="x"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <div id="Gallerycarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+                                                                            <div class="carousel-indicators">
+                                                                                    <button type="button" data-bs-target="#Gallerycarousel" data-bs-slide-to="<?= esc($i=1); ?>" class="<?= ($i == 0) ? 'active' : ''; ?>"></button>
+                                                                            </div>
+                                                                            <div class="carousel-inner">
+                                                                                <?php $i = 0; ?>
+                                                                                    <div class="carousel-item<?= ($i == 0) ? ' active' : ''; ?>">
+                                                                                        <img class="d-block w-100" src="<?= base_url('media/photos/fullpayment/'); ?><?= $detail['proof_of_payment'] ?>">
+                                                                                    </div>
+                                                                            </div>
+                                                                            <a class="carousel-control-prev" href="#Gallerycarousel" role="button" type="button" data-bs-slide="prev">
+                                                                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                                            </a>
+                                                                            <a class="carousel-control-next" href="#Gallerycarousel" role="button" data-bs-slide="next">
+                                                                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                                            </a>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                                            Close
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                            </div>
+                                        <?php 
+                                            endif;
+                                            endif; ?>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 

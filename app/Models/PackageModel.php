@@ -31,8 +31,9 @@ class PackageModel extends Model
         $query = $this->db->table($this->table)
             ->select("{$columns}, {$coords}")
             ->join('package_type', 'package.type_id = package_type.id')
-            ->join('package_day', 'package.id = package_day.package_id')
-            ->select('package_type.type_name, package_day.day')
+            // ->join('package_day', 'package.id = package_day.package_id')
+            ->select('package_type.type_name')
+            // ->groupby('package.id')
             ->get();
         return $query;
     }
@@ -47,6 +48,21 @@ class PackageModel extends Model
             ->join('package_day', 'package.id = package_day.package_id')
             ->select('package_type.type_name, package_day.day')
             ->groupby('package.id')
+            ->get();
+        return $query;
+    }
+
+    public function get_package_by_id_custom($id = null)
+    {
+        $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
+        $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.type_id,{$this->table}.price,{$this->table}.contact_person,{$this->table}.description,{$this->table}.video_url,{$this->table}.min_capacity";
+        $geoJson = "ST_AsGeoJSON({$this->table}.geom) AS geoJson";
+        $query = $this->db->table($this->table)
+            ->select("max(day) as days, {$columns}, {$coords}, {$geoJson}")
+            ->where('package.id', $id)
+            ->join('package_type', 'package.type_id = package_type.id')
+            ->join('package_day', 'package.id = package_day.package_id')
+            ->select('package_type.type_name, package_day.day')
             ->get();
         return $query;
     }
@@ -98,7 +114,6 @@ class PackageModel extends Model
 
     public function add_new_package($requestData = null, $geom = null)
     {
-
         $insert = $this->db->table($this->table)
             ->insert($requestData);
         $update = $this->db->table($this->table)

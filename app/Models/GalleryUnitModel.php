@@ -27,7 +27,7 @@ class GalleryUnitModel extends Model
     public function get_gallery($homestay_id = null, $unit_type = null, $unit_number = null)
     {
         $query = $this->db->table($this->table)
-            ->select('url')
+            ->select('*')
             ->where('homestay_id', $homestay_id)
             ->where('unit_type', $unit_type)
             ->where('unit_number', $unit_number)
@@ -35,28 +35,35 @@ class GalleryUnitModel extends Model
         return $query;
     }
 
-    // public function get_new_id()
-    // {
-    //     $lastId = $this->db->table($this->table)->select('id')->orderBy('id', 'ASC')->get()->getLastRow('array');
-    //     $count = (int)substr($lastId['id'], 2);
-    //     $id = sprintf('HO%03d', $count + 1);
-    //     return $id;
-    // }
+    public function get_new_id()
+    {
+        $lastId = $this->db->table($this->table)->select('id')->orderBy('id', 'ASC')->get()->getLastRow('array');
+        
+        if(empty($lastId)){
+            $id = "GU001";
+        } else {
+            $count = (int)substr($lastId['id'], 2);
+            $id = sprintf('GU%03d', $count + 1);
+        }
+        return $id;
+    }
 
-    // public function add_new_gallery($id = null, $data = null)
-    // {
-    //     $query = false;
-    //     foreach ($data as $gallery) {
-    //         $new_id = $this->get_new_id();
-    //         $content = [
-    //             'id' => $new_id,
-    //             'homestay_id' => $id,
-    //             'url' => $gallery
-    //         ];
-    //         $query = $this->db->table($this->table)->insert($content);
-    //     }
-    //     return $query;
-    // }
+    public function add_new_gallery($unit_number = null, $homestay_id = null, $unit_type = null, $data = null)
+    {
+        $query = false;
+        foreach ($data as $gallery) {
+            $new_id = $this->get_new_id();
+            $content = [
+                'id' => $new_id,
+                'unit_number' => $unit_number,
+                'homestay_id' => $homestay_id,
+                'unit_type' => $unit_type,
+                'url' => $gallery
+            ];
+            $query = $this->db->table($this->table)->insert($content);
+        }
+        return $query;
+    }
 
     // public function update_gallery($id = null, $data = null)
     // {

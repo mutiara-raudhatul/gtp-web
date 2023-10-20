@@ -79,48 +79,48 @@ class Reservation extends ResourcePresenter
     public function new()
     {
         $contents = $this->packageModel->get_list_package_distinct()->getResultArray();
-
-        // dd($contents);
         $list_unit = $this->unitHomestayModel->get_unit_homestay_all()->getResultArray();
-
-// dd($list_unit);
-        // // Periksa apakah ada hasil
-        // if ($list_unit > 0) {
-        //     // Siapkan opsi untuk pilihan unit homestay
-        //     $options = '<option value="">Select Unit Homestay</option>';
-        //     foreach($list_unit as $item){
-        //         $homestay_id = $item['homestay_id'];
-        //         $unit_type = $item['unit_type'];
-        //         $unit_number = $item['unit_number'];
-        //         $nama_homestay = $item['name'];
-        //         $nama_unit = $item['nama_unit'];
-        //         $name_type = $item['name_type'];
-        //         $price = $item['price'];
-        //         $capacity = $item['capacity'];
-
-        //         // Tambahkan opsi ke variabel $options
-        //         $options .= "<option value='$homestay_id' data-price='$price'>Homestay $nama_homestay - $name_type - $unit_number - $nama_unit(Capacity: $capacity)</option>";
-        //     }
-        //     echo $options;
-
-        // } else {
-        //     echo '<option value="">No Units Available</option>';
-        // }
-
+        $id = $this->packageModel->get_new_id();
         $data = [
             'title' => 'New Reservation',
             'data' => $contents,
             'list_unit' => $list_unit,
-            // 'options' => $options,
+            'custom_id' =>$id
         ];
 
-        // dd($data);
         return view('web/reservation-form', $data);
+    }
+
+    public function custombooking($id)
+    {
+        $contents = $this->packageModel->get_package_by_id_custom($id)->getResultArray();
+        $list_unit = $this->unitHomestayModel->get_unit_homestay_all()->getResultArray();
+        $data = [
+            'title' => 'Reservation of Package Custom',
+            'data' => $contents,
+            'list_unit' => $list_unit,
+        ];
+// dd($data);
+        return view('web/reservation-custom-form', $data);
+    }
+
+    public function packagecustom()
+    {
+        $contents = $this->packageModel->get_list_package_distinct()->getResultArray();
+dd($contents);
+        $list_unit = $this->unitHomestayModel->get_unit_homestay_all()->getResultArray();
+
+        $data = [
+            'title' => 'Custom Package',
+            'data' => $contents,
+            'list_unit' => $list_unit,
+        ];
+
+        return view('web/custom-package-form', $data);
     }
 
     public function dataunithomestay()
     {
-
             $list_unit = $this->unitHomestayModel->get_unit_homestay_all()->getResultArray();
 
             // Periksa apakah ada hasil
@@ -164,17 +164,17 @@ class Reservation extends ResourcePresenter
         $request = $this->request->getPost();
 
         $id = $this->reservationModel->get_new_id();
-
+        $date = date('Y-m-d H:i');
         $requestData = [
             'id' => $id,
             'user_id' => user()->id,
             'package_id' => $request['package'],
+            'request_date' => $date,
             'total_people' => $request['total_people'],
             'check_in' => $request['check_in'].' '.$request['time_check_in'],
             'check_out' => $request['check_out'].' '.$request['time_check_out'],
             'total_price' => $request['total_price'],
-            'deposit' => $request['deposit'],
-            'status_id' => '1',
+            'deposit' => $request['deposit']
         ];
 // dd($requestData);
         foreach ($requestData as $key => $value) {
@@ -186,7 +186,7 @@ class Reservation extends ResourcePresenter
         $addRe = $this->reservationModel->add_new_reservation($requestData);
 
         if ($addRe) {
-            return redirect()->to(base_url('web/detailreservation/edit/'.$id));
+            return redirect()->to(base_url('web/detailreservation/addhome/'.$id));
         } else {
             return redirect()->back()->withInput();
         }
@@ -237,4 +237,184 @@ class Reservation extends ResourcePresenter
             return redirect()->back()->withInput();
         }
     }
+
+
+    public function uploaddeposit($id = null)
+    {
+        $request = $this->request->getPost();
+        $date = date('Y-m-d H:i');
+
+        $requestData = [
+            'deposit_date' => $date,
+        ];
+        foreach ($requestData as $key => $value) {
+            if(empty($value)) {
+                unset($requestData[$key]);
+            }
+        }
+        $img = $this->request->getFile('proof_of_deposit');
+
+        if (empty($_FILES['proof_of_deposit']['name'])) {
+            $query = $this->reservationModel->upload_deposit($id, $requestData);
+            if ($query) {
+                $response = [
+                    'status' => 200,
+                    'message' => [
+                        "Success upload deposit"
+                    ]
+                ];
+                return redirect()->back();
+            }
+            $response = [
+                'status' => 400,
+                'message' => [
+                    "Fail upload deposit"
+                ]
+            ];
+            return $this->respond($response, 400);
+        } else {
+
+            $validationRule = [
+                'proof_of_deposit' => [
+                    'label' => 'proof_of_deposit File',
+                    'rules' => 'uploaded[proof_of_deposit]'
+                        . '|is_image[proof_of_deposit]'
+                        . '|mime_in[proof_of_deposit,image/jpg,image/jpeg,image/gif,image/png,image/webp]'
+                ],
+            ];
+            if (!$this->validate($validationRule) && !empty($_FILES['proof_of_deposit']['name'])) {
+                $response = [
+                    'status' => 400,
+                    'message' => [
+                        "Fail upload deposit "
+                    ]
+                ];
+                return $this->respond($response, 400);
+            }
+    
+            if ($img->isValid() && !$img->hasMoved()) {
+                $filepath = WRITEPATH . 'uploads/' . $img->store();
+                $user_image = new File($filepath);
+                $user_image->move(FCPATH . 'media/photos/deposit');
+                $requestData['proof_of_deposit'] = $user_image->getFilename();
+        
+                $query = $this->reservationModel->upload_deposit($id, $requestData);
+                if ($query) {
+                    $response = [
+                        'status' => 200,
+                        'message' => [
+                            "Success upload deposit image"
+                        ]
+                    ];
+                    return redirect()->back();
+                    
+                }
+                $response = [
+                    'status' => 400,
+                    'message' => [
+                        "Fail upload deposit"
+                    ]
+                ];
+                return $this->respond($response, 400);
+        
+            }
+        }
+        $response = [
+            'status' => 400,
+            'message' => [
+                "Fail upload deposit."
+            ]
+        ];
+        return $this->respond($response, 400);
+    }
+
+    public function uploadfullpayment($id = null)
+    {
+        $request = $this->request->getPost();
+        $date = date('Y-m-d H:i');
+
+        $requestData = [
+            'payment_date' => $date,
+        ];
+        foreach ($requestData as $key => $value) {
+            if(empty($value)) {
+                unset($requestData[$key]);
+            }
+        }
+        $img = $this->request->getFile('proof_of_payment');
+
+        if (empty($_FILES['proof_of_payment']['name'])) {
+            $query = $this->reservationModel->upload_fullpayment($id, $requestData);
+            if ($query) {
+                $response = [
+                    'status' => 200,
+                    'message' => [
+                        "Success upload full payment"
+                    ]
+                ];
+                return redirect()->back();
+            }
+            $response = [
+                'status' => 400,
+                'message' => [
+                    "Fail upload full payment"
+                ]
+            ];
+            return $this->respond($response, 400);
+        } else {
+
+            $validationRule = [
+                'proof_of_payment' => [
+                    'label' => 'proof_of_payment File',
+                    'rules' => 'uploaded[proof_of_payment]'
+                        . '|is_image[proof_of_payment]'
+                        . '|mime_in[proof_of_payment,image/jpg,image/jpeg,image/gif,image/png,image/webp]'
+                ],
+            ];
+            if (!$this->validate($validationRule) && !empty($_FILES['proof_of_payment']['name'])) {
+                $response = [
+                    'status' => 400,
+                    'message' => [
+                        "Fail upload full payment "
+                    ]
+                ];
+                return $this->respond($response, 400);
+            }
+    
+            if ($img->isValid() && !$img->hasMoved()) {
+                $filepath = WRITEPATH . 'uploads/' . $img->store();
+                $user_image = new File($filepath);
+                $user_image->move(FCPATH . 'media/photos/fullpayment');
+                $requestData['proof_of_payment'] = $user_image->getFilename();
+        
+                $query = $this->reservationModel->upload_fullpayment($id, $requestData);
+                if ($query) {
+                    $response = [
+                        'status' => 200,
+                        'message' => [
+                            "Success upload full payment image"
+                        ]
+                    ];
+                    return redirect()->back();
+                    
+                }
+                $response = [
+                    'status' => 400,
+                    'message' => [
+                        "Fail upload full payment"
+                    ]
+                ];
+                return $this->respond($response, 400);
+        
+            }
+        }
+        $response = [
+            'status' => 400,
+            'message' => [
+                "Fail upload fullpayment."
+            ]
+        ];
+        return $this->respond($response, 400);
+    }
+
 }

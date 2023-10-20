@@ -63,7 +63,7 @@ class ServicePackageModel extends Model
     {
         $lastId = $this->db->table($this->table)->select('id')->orderBy('id', 'ASC')->get()->getLastRow('array');
         $count = (int)substr($lastId['id'], 1);
-        $id = sprintf('S%1d', $count + 1);
+        $id = sprintf('S0%1d', $count + 1);
         return $id;
     }
 

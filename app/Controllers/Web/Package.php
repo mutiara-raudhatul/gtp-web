@@ -8,6 +8,7 @@ use App\Models\GalleryPackageModel;
 use App\Models\PackageTypeModel;
 use App\Models\ServicePackageModel;
 use App\Models\DetailServicePackageModel;
+use App\Models\ReservationModel;
 use CodeIgniter\RESTful\ResourcePresenter;
 use CodeIgniter\Files\File;
 
@@ -19,6 +20,7 @@ class Package extends ResourcePresenter
     protected $packageTypeModel;
     protected $servicePackageModel;
     protected $detailServicePackageModel;
+    protected $reservationModel;
 
     /**
      * Instance of the main Request object.
@@ -38,6 +40,7 @@ class Package extends ResourcePresenter
         $this->packageTypeModel = new PackageTypeModel();
         $this->servicePackageModel = new ServicePackageModel();
         $this->detailServicePackageModel = new DetailServicePackageModel();
+        $this->reservationModel = new ReservationModel();
 
         $this->db = \Config\Database::connect();
         $this->builder = $this->db->table('package');;
@@ -87,8 +90,15 @@ class Package extends ResourcePresenter
         
         $getday = $this->detailPackageModel->get_day_by_package($id)->getResultArray();
 
-        $combinedData = $this->detailPackageModel->getCombinedData();
+        foreach ($getday as $day){
+            $getactivityday = $this->detailPackageModel->get_activity_day($id, $day)->getResultArray();
+        }
+
+        $combinedData = $this->detailPackageModel->getCombinedData($id);
         $routeData = $this->detailPackageModel->getRouteData();
+
+        $review = $this->reservationModel->getReview($id)->getResultArray();
+        $rating = $this->reservationModel->getRating($id)->getRowArray();
 
         $data = [
             'title' => $package['name'],
@@ -98,6 +108,8 @@ class Package extends ResourcePresenter
             'day'=> $getday,
             'activity' => $combinedData,
             'route' => $routeData,
+            'review'=>$review,
+            'rating'=>$rating,
             'folder' => 'package'
         ];
 

@@ -111,7 +111,7 @@ class PackageDay extends ResourcePresenter
 
         $detailPackage = $this->detailPackageModel->get_detailPackage_by_id($package_id)->getResultArray();
         
-        $combinedData = $this->detailPackageModel->getCombinedData();
+        $combinedData = $this->detailPackageModel->getCombinedData($package_id);
             
         $object = [
             'culinary' => $culinary,
@@ -158,24 +158,30 @@ class PackageDay extends ResourcePresenter
                 unset($requestData[$key]);
             }
         }
+        $checkExistingData = $this->packageDayModel->checkIfDataExists($requestData);
 
-        $addPD = $this->packageDayModel->add_new_packageDay($requestData);
+        if ($checkExistingData) {
+            // Data sudah ada, set pesan error flash data
+            session()->setFlashdata('failed', 'Data hari tersebut sudah ada.');
 
-        if ($addPD) {
-            // return view('dashboard/detail-package-form');
-            $package = $this->packageModel->get_package_by_id($id)->getRowArray();
-
-            $id=$package['id'];
-            $data = [
-                'title' => 'New Detail Package',
-                'data' => $package
-            ];
-            
-            // return view('dashboard/detail-package-form', $data);
-
-            return redirect()->to(base_url('dashboard/packageday/').$id);
-        } else {
             return redirect()->back()->withInput();
+        } else {
+            // Data belum ada, jalankan query insert
+            $addPD = $this->packageDayModel->add_new_packageDay($requestData);
+
+            if ($addPD) {
+                session()->setFlashdata('success', 'Data hari tersebut sudah ditambahkan.');
+
+                $package = $this->packageModel->get_package_by_id($id)->getRowArray();    
+                $id=$package['id'];
+                $data = [
+                    'title' => 'New Detail Package',
+                    'data' => $package
+                ];
+                return redirect()->back();
+            } else {
+                return redirect()->back()->withInput();
+            }
         }
     }
 
@@ -197,25 +203,26 @@ class PackageDay extends ResourcePresenter
                 unset($requestData[$key]);
             }
         }
+        $checkExistingData = $this->detailPackageModel->checkIfDataExists($requestData);
 
-        $addPA = $this->detailPackageModel->add_new_packageActivity($requestData);
+        if ($checkExistingData) {
+            // Data sudah ada, set pesan error flash data
+            session()->setFlashdata('failed', 'Urutan activity '.$requestData['activity'].' pada hari '.$requestData['day'].' sudah ada');
 
-        if ($addPA) {
-            // return view('dashboard/detail-package-form');
-            $package = $this->packageModel->get_package_by_id($id)->getRowArray();
-
-            $id=$package['id'];
-            $data = [
-                'title' => 'New Detail Package',
-                'data' => $package
-            ];
-            
-            // return view('dashboard/detail-package-form', $data);
-
-            return redirect()->to(base_url('dashboard/packageday/').$id);
-        } else {
             return redirect()->back()->withInput();
-        }
+        } else {
+            // Data belum ada, jalankan query insert
+            $addPA = $this->detailPackageModel->add_new_packageActivity($requestData);
+
+            if ($addPA) {
+                // return view('dashboard/detail-package-form');
+                session()->setFlashdata('success', 'Data activity tersebut berhasil ditambahkan.');
+
+                return redirect()->back();
+            } else {
+                return redirect()->back()->withInput();
+            }
+        }     
     }
 
     public function edit($id = null)
@@ -273,6 +280,52 @@ class PackageDay extends ResourcePresenter
         //     return $this->respondDeleted($response);
         // }
     // }
+    public function deleteday($package_id=null, $day=null, $description=null)
+    {
+        $request = $this->request->getPost();
+
+        $package_id=$request['package_id'];
+        $day=$request['day'];
+        $description=$request['description'];
+
+        $array1 = array('package_id' => $package_id, 'day' => $day);
+        $detailPackage = $this->detailPackageModel->where($array1)->find();
+        $deleteDP= $this->detailPackageModel->where($array1)->delete();
+
+        if ($deleteDP) {
+            //jika success
+            $array2 = array('package_id' => $package_id, 'day' => $day,'description'=>$description);
+            $packageDay = $this->packageDayModel->where($array2)->find();
+            // dd($packageDay);
+            $deletePD= $this->packageDayModel->where($array2)->delete();
+
+            if($deletePD){
+                session()->setFlashdata('success', 'Activity "'.$description.'" Berhasil di Hapus.');
+
+                $package = $this->packageModel->get_package_by_id($package_id)->getRowArray();
+                $package_id=$package['id'];
+                $packageDay = $this->packageDayModel->get_package_day_by_id($package_id)->getResultArray();
+                $detailPackage = $this->detailPackageModel->get_detailPackage_by_id($package_id, $packageDay)->getResultArray();
+                
+                $data = [
+                    'title' => 'New Detail Package',
+                    'data' => $package,
+                    'day' => $packageDay,
+                    'activity' => $detailPackage
+                ];  
+
+                return redirect()->to(base_url('dashboard/packageday') . '/' . $package_id);
+            }
+        } else {
+            $response = [
+                'status' => 404,
+                'message' => [
+                    "Package not found"
+                ]
+            ];
+            return $this->failNotFound($response);
+        }    
+    }
 
 
     public function delete($package_id=null, $day=null, $activity=null, $description=null)
@@ -288,7 +341,7 @@ class PackageDay extends ResourcePresenter
         $deleteDP= $this->detailPackageModel->where($array)->delete();
 
         if ($deleteDP) {
-            session()->setFlashdata('pesan', 'Activity "'.$description.'" Berhasil di Hapus.');
+            session()->setFlashdata('success', 'Activity "'.$description.'" Berhasil di Hapus.');
             //jika success
             $package = $this->packageModel->get_package_by_id($package_id)->getRowArray();
 

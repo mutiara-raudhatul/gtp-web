@@ -128,6 +128,27 @@ $edit = in_array('edit', $uri);
                     <h4 class="card-title text-center"><?= $title; ?></h4>
                 </div>
                 <br>
+
+                <?php if(session()->has('success')) : ?>
+                    <script>
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: '<?= session('success') ?>',
+                        });
+                    </script>
+                <?php endif; ?>
+
+                <?php if(session()->has('failed')) : ?>
+                    <script>
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Failed!',
+                            text: '<?= session('failed') ?>',
+                        });
+                    </script>
+                <?php endif; ?>
+
                 <div class="card-body">
             <!-- Menambahkan hari paket -->
                 
@@ -162,7 +183,53 @@ $edit = in_array('edit', $uri);
                                         <div class="col-md-5">
                                             <div class="form-group">
                                                 <label for="day">Day</label>
-                                                <input type="number" class="form-control" id="day" name="day">
+                                                <input type="number" min="1" class="form-control" id="day" name="day">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row g-4">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="description">Description</label>
+                                                <input type="text" class="form-control" id="description" name="description">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+                                <button type="submit" class="btn btn-outline-primary me-1 mb-1"><i class="fa-solid fa-add"></i></button>
+                                <button type="reset" class="btn btn-outline-danger me-1 mb-1"><i class="fa-solid fa-trash-can"></i> </button>
+                            </div>
+                        </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="editdayModal" tabindex="-1" aria-labelledby="dayModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="dayModalLabel">Edit Package Day</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form class="row g-3" action="<?= base_url('dashboard/packageday/createday') . '/' . $data['id']; ?>" method="post" enctype="multipart/form-data">
+                            <div class="modal-body">
+                                <div class="card-header">
+                                    <?php @csrf_field(); ?>
+                                    <h5 class="card-title"><?= esc($data['name']) ?></h5>
+                                    <div class="row g-4">
+                                        <div class="col-md-7">
+                                            <div class="form-group">
+                                                <label for="package">Package</label>
+                                                <input type="text" class="form-control" id="package" name="package" placeholder="Pxxxxx" disabled value="<?= esc($data['id']) ?>">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <div class="form-group">
+                                                <label for="day">Day</label>
+                                                <input type="number" min="1" class="form-control" id="day" name="day">
                                             </div>
                                         </div>
                                     </div>
@@ -298,7 +365,18 @@ $edit = in_array('edit', $uri);
                                                 <h2><b>Day <?= esc($key['day']); ?></b></h2>
                                                 <p><?= esc($key['description']); ?></p>
                                             </div>
-                                            
+                                            <div class="col-sm-2 ">
+                                                <div class="btn-group float-end" role="group" aria-label="Basic example">                                                    
+                                                    <form action="deleteday/<?= $key['package_id']; ?>" method="post" class="d-inline">
+                                                        <?= csrf_field(); ?>
+                                                        <input type="hidden" name="package_id" value="<?= esc($key['package_id']); ?>">
+                                                        <input type="hidden" name="day" value="<?= esc($key['day']); ?>">
+                                                        <input type="hidden" name="description" value="<?= esc($key['description']); ?>">
+                                                        <input type="hidden" name="_method" value="DELETE">
+                                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('apakah anda yakin?');"><i class="fa fa-trash"></i></button>
+                                                    </form>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <table class="table table-sm">
@@ -325,7 +403,6 @@ $edit = in_array('edit', $uri);
                                                                 <!-- <a class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a> -->
 
                                                                 <div class="btn-group" role="group" aria-label="Basic example">
-                                                                    <button type="button" class="btn btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap"><i class="material-icons">&#xE254;</i></button>                                                            
                                                                     <form action="delete/<?= $value['package_id']; ?>" method="post" class="d-inline">
                                                                         <?= csrf_field(); ?>
                                                                         <input type="hidden" name="package_id" value="<?= esc($value['package_id']); ?>">
@@ -333,7 +410,7 @@ $edit = in_array('edit', $uri);
                                                                         <input type="hidden" name="activity" value="<?= esc($value['activity']); ?>">
                                                                         <input type="hidden" name="description" value="<?= esc($value['description']); ?>">
                                                                         <input type="hidden" name="_method" value="DELETE">
-                                                                        <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('apakah anda yakin?');"><i class="material-icons">&#xE872;</i></button>
+                                                                        <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('apakah anda yakin?');"><i class="fa fa-times"></i></button>
                                                                     </form>
                                                                 </div>
                                                             </td> 
@@ -381,6 +458,7 @@ $edit = in_array('edit', $uri);
         startDate: '-3d'
     });
 </script> -->
+
 <script>
     // const myModal = document.getElementById('videoModal');
     // const videoSrc = document.getElementById('video-play').getAttribute('data-src');
@@ -399,6 +477,10 @@ $edit = in_array('edit', $uri);
             Swal.fire('Please select location for the New Package');
         }
     }
+
+
+
+
 </script>
 <script>
     FilePond.registerPlugin(

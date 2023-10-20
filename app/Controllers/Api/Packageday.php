@@ -2,20 +2,35 @@
 
 namespace App\Controllers\Api;
 
-use App\Models\DetailPackageModel;
+use App\Models\PackageModel;
+use App\Models\PackageDayModel;
+use App\Models\PackageTypeModel;
+use App\Models\GalleryPackageModel;
+use App\Models\DetailServicePackageModel;
 use CodeIgniter\API\ResponseTrait;
 use CodeIgniter\RESTful\ResourceController;
 
-class Detailpackage extends ResourceController
+class PackageDay extends ResourceController
 {
     use ResponseTrait;
 
-    protected $detailPackageModel;
+    protected $packageModel;
+    protected $packageDayModel;
+    protected $packageTypeModel;
+    protected $galleryPackageModel;
+    protected $detailServicePackageModel;
+    protected $db, $builder;
 
     public function __construct()
     {
-        $this->detailPackageModel = new DetailPackageModel();
+        $this->packageModel = new PackageModel();
+        $this->packageDayModel = new PackageDayModel();
+        $this->packageTypeModel = new PackageTypeModel();
+        $this->galleryPackageModel = new GalleryPackageModel();
+        $this->detailServicePackageModel = new DetailServicePackageModel();
 
+        $this->db = \Config\Database::connect();
+        $this->builder = $this->db->table('users');;
     }
 
     /**
@@ -23,65 +38,111 @@ class Detailpackage extends ResourceController
      *
      * @return mixed
      */
-    // public function index()
-    // {
-    //     $contents = $this->servicePackageModel->get_list_service_package()->getResult();
-    //     $response = [
-    //         'data' => $contents,
-    //         'status' => 200,
-    //         'message' => [
-    //             "Success get list of Service Package"
-    //         ]
-    //     ];
-    //     return $this->respond($response);
-    // }
+    public function index()
+    {
+        $contents = $this->packageModel->get_list_package()->getResult();
+        $response = [
+            'data' => $contents,
+            'status' => 200,
+            'message' => [
+                "Success get list of Package"
+            ]
+        ];
+        return $this->respond($response);
+    }
 
-    /**
-     * Return the properties of a resource object
-     *
-     * @return mixed
-     */
-    // public function show($id = null)
-    // {
-    //     $servicePackage = $this->servicePackageModel->get_facility_by_id($id)->getRowArray();
+    public function show($id = null)
+    {
+        $package = $this->packageModel->get_package_by_id($id)->getRowArray();
 
-    //     $response = [
-    //         'data' => $servicePackage,
-    //         'status' => 200,
-    //         'message' => [
-    //             "Success display detail information of Service Package"
-    //         ]
-    //     ];
-    //     return $this->respond($response);
-    // }
+        $response = [
+            'data' => $package,
+            'status' => 200,
+            'message' => [
+                "Success display detail information of Package"
+            ]
+        ];
+        return $this->respond($response);
+    }
 
-    // public function delete($id)
-    // {
+    public function getDay($id)
+    {
+        $packageDay = $this->packageDayModel->get_day_by_id($id)->getRow();
 
-    //     $deleteDP = $this->detailPackageModel->delete(['package_id' => $id]);
+        $response = [
+            'data' => $packageDay,
+            'status' => 200,
+            'message' => [
+                "Success display day information of Package"
+            ]
+        ];
+        return $this->respond($response);
+    }
 
-    //     if ($deleteDP) {
-    //         $response = [
-    //             'status' => 200,
-    //             'message' => [
-    //                 "Success delete Activity Package Day"
-    //             ]
-    //         ];
-    //         return $this->respondDeleted($response);
-    //     }
-    // }
+    public function findByName()
+    {
+        $request = $this->request->getPost();
+        $name = $request['name'];
+        $contents = $this->packageModel->get_package_by_name($name)->getResult();
+        $response = [
+            'data' => $contents,
+            'status' => 200,
+            'message' => [
+                "Success find package by name"
+            ]
+        ];
+        return $this->respond($response);
+    }
 
-    // public function new($id = null)
-    // {
-    //     $servicePackage = $this->servicePackageModel->get_package_by_id($id)->getRowArray();
+    public function type()
+    {
+        $contents = $this->packageTypeModel->get_list_type()->getResult();
+        $response = [
+            'data' => $contents,
+            'status' => 200,
+            'message' => [
+                "Success get list of package type"
+            ]
+        ];
+        return $this->respond($response);
+    }
 
-    //     $response = [
-    //         'data' => $servicePackage,
-    //         'status' => 200,
-    //         'message' => [
-    //             "Success display detail information of Service Package"
-    //         ]
-    //     ];
-    //     return $this->respond($response);
-    // }
+    public function findByType()
+    {
+        $request = $this->request->getPost();
+        $type = $request['type'];
+        $contents = $this->packageModel->get_package_by_type($type)->getResult();
+        $response = [
+            'data' => $contents,
+            'status' => 200,
+            'message' => [
+                "Success find package by type"
+            ]
+        ];
+        return $this->respond($response);
+    }
+
+    public function delete($id = null)
+    {
+        $deleteGP = $this->galleryPackageModel->delete(['package_id' => $id]);
+        $deleteS = $this->detailServicePackageModel->delete_detail_service(['package_id' => $id]);
+        $deletePA = $this->packageModel->delete(['id' => $id]);
+        if ($deletePA) {
+            $response = [
+                'status' => 200,
+                'message' => [
+                    "Success delete package"
+                ]
+            ];
+            return $this->respondDeleted($response);
+            } else {
+                $response = [
+                    'status' => 404,
+                    'message' => [
+                        "Package not found"
+                    ]
+                ];
+                return $this->failNotFound($response);
+        }
+    }
 }

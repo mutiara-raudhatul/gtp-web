@@ -153,12 +153,24 @@ class ServicePackage extends ResourcePresenter
             'package_id' => $id,
         ];
 
-        $addSP = $this->detailServicePackageModel->add_new_detail_service($id, $requestData);
+        $checkExistingData = $this->detailServicePackageModel->checkIfDataExists($requestData);
 
-        if ($addSP) {
-            return redirect()->back();
-        } else {
+        if ($checkExistingData) {
+            // Data sudah ada, set pesan error flash data
+            session()->setFlashdata('failed', 'Service tersebut sudah ada.');
+
             return redirect()->back()->withInput();
+        } else {
+            // Data belum ada, jalankan query insert
+            $addSP = $this->detailServicePackageModel->add_new_detail_service($id, $requestData);
+       
+            if ($addSP) {
+                session()->setFlashdata('success', 'Fasilitas Homestay tersebut berhasil ditambahkan.');
+
+                return redirect()->back();
+            } else {
+                return redirect()->back()->withInput();
+            }
         }
     }
 
@@ -176,8 +188,8 @@ class ServicePackage extends ResourcePresenter
         $deleteDSP= $this->detailServicePackageModel->where($array)->delete();
 
         if ($deleteDSP) {
-            session()->setFlashdata('pesan', 'Service "'.$name.'" Berhasil di Hapus.');
-           
+            session()->setFlashdata('success', 'Service "'.$name.'" Berhasil di Hapus.');
+
             return redirect()->back();
 
             // return view('dashboard/detail-package-form', $data, $package, $packageDay, $detailPackage);

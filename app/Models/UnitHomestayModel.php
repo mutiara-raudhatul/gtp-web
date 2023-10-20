@@ -62,7 +62,7 @@ class UnitHomestayModel extends Model
         return $query;
     }
 
-    public function get_unit_homestay_selected($homestay_id, $unit_type, $unit_number) 
+    public function get_unit_homestay_selected($unit_number,$homestay_id, $unit_type) 
     {
         $query = $this->db->table($this->table)
             ->select("*")

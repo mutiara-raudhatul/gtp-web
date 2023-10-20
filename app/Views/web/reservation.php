@@ -33,6 +33,7 @@
                                         <th>Check Out</th>
                                         <th>Status</th>
                                         <th>Action</th>
+                                        <th>Review</th>
                                     </tr>
                                 </thead>
                                 <tbody id="table-data">
@@ -42,14 +43,27 @@
                                             <tr>
                                                 <td><?= esc($i); ?></td>
                                                 <td><?= esc($item['name']); ?></td>
-                                                <td><?= date('d F Y, h:i:s A', strtotime($item['request_date'])); ?></td>
-                                                <td><?= date('d F Y, h:i:s A', strtotime($item['check_in'])); ?></td>
-                                                <td><?= date('d F Y, h:i:s A', strtotime($item['check_out'])); ?></td>
-                                                <td><?= esc($item['status']); ?></td>
+                                                <td><?= date('d F Y, H:i:s', strtotime($item['request_date'])); ?></td>
+                                                <td><?= date('d F Y, H:i:s', strtotime($item['check_in'])); ?></td>
+                                                <td><?= date('d F Y, H:i:s', strtotime($item['check_out'])); ?></td>
+                                                <td>
+                                                    <?php if($item['status']==null): ?>    
+                                                        <a href="#" class="btn-sm btn-secondary float-center"><i class="fa-solid fa-clock"></i></a>
+                                                    <?php elseif($item['status']==1): ?>    
+                                                        <a href="#" class="btn-sm btn-success float-center"><i class="fa-solid fa-check"></i></a>
+                                                    <?php elseif($item['status']==0): ?>    
+                                                        <a href="#" class="btn-sm btn-danger float-center"><i class="fa-solid fa-times"></i></a>
+                                                    <?php endif; ?>  
+                                                </td>
                                                 <td>
                                                     <a data-bs-toggle="tooltip" data-bs-placement="bottom" title="More Info" class="btn icon btn-outline-primary mx-1" href="<?=base_url('web/detailreservation/').$item['id']; ?>">
                                                         <i class="fa-solid fa-circle-info"></i>
                                                     </a>
+                                                </td>
+                                                <td>
+                                                    <a data-bs-toggle="tooltip" data-bs-placement="bottom" title="Review" class="btn icon btn-outline-info mx-1" href="<?=base_url('web/detailreservation/review/').$item['id']; ?>">
+                                                        <i class="fa-solid fa-comments"></i>
+                                                     </a>
                                                 </td>
                                                 <?php $i++ ?>
                                             </tr>

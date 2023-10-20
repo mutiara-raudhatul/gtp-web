@@ -204,6 +204,28 @@ $edit = in_array('edit', $uri);
                                 <button type="button" class="btn btn-outline-info " data-bs-toggle="modal" data-bs-target="#facilityHomestayModal" data-bs-whatever="@getbootstrap"><i class="fa fa-plus"></i> Add Facility Homestay</button>
                             </div>
                         </div>
+                        <br>
+
+                        <?php if(session()->has('success')) : ?>
+                            <script>
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Berhasil!',
+                                    text: '<?= session('success') ?>',
+                                });
+                            </script>
+                        <?php endif; ?>
+
+                        <?php if(session()->has('failed')) : ?>
+                            <script>
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'Failed!',
+                                    text: '<?= session('failed') ?>',
+                                });
+                            </script>
+                        <?php endif; ?>
+
                         <div class="table-responsive">
                             <div class="table-wrapper">
                                 <table class="table table-sm">
@@ -224,14 +246,13 @@ $edit = in_array('edit', $uri);
                                                         <td><?= esc($value['description']); ?></td>
                                                         <td>
                                                             <div class="btn-group" role="group" aria-label="Basic example">
-                                                                <button type="button" class="btn btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap"><i class="material-icons">&#xE254;</i></button>                                                            
                                                                 <form action="<?= base_url('dashboard/facilityhomestay/delete/').$value['homestay_id']; ?>" method="post" class="d-inline">
                                                                     <?= csrf_field(); ?>
                                                                     <input type="hidden" name="homestay_id" value="<?= esc($value['homestay_id']); ?>">
                                                                     <input type="hidden" name="facility_homestay_id" value="<?= esc($value['facility_homestay_id']); ?>">
                                                                     <input type="hidden" name="description" value="<?= esc($value['description']); ?>">
                                                                     <input type="hidden" name="_method" value="DELETE">
-                                                                    <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('apakah anda yakin akan menghapus?');"><i class="material-icons">&#xE872;</i></button>
+                                                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('apakah anda yakin akan menghapus?');"><i class="fa fa-times"></i></button>
                                                                 </form>
                                                             </div>
                                                         </td> 

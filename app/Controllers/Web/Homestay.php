@@ -9,6 +9,7 @@ use App\Models\FacilityUnitModel;
 use App\Models\FacilityUnitDetailModel;
 use App\Models\FacilityHomestayModel;
 use App\Models\FacilityHomestayDetailModel;
+use App\Models\DetailReservationModel;
 use CodeIgniter\RESTful\ResourcePresenter;
 use CodeIgniter\Files\File;
 
@@ -21,6 +22,7 @@ class Homestay extends ResourcePresenter
     protected $facilityUnitDetailModel;
     protected $facilityHomestayModel;
     protected $facilityHomestayDetailModel;
+    protected $detailReservationModel;
     
     protected $helpers = ['auth', 'url', 'filesystem'];
 
@@ -33,6 +35,7 @@ class Homestay extends ResourcePresenter
         $this->facilityUnitDetailModel = new FacilityUnitDetailModel();
         $this->facilityHomestayModel = new FacilityHomestayModel();
         $this->facilityHomestayDetailModel = new FacilityHomestayDetailModel();
+        $this->detailReservationModel = new DetailReservationModel();
     }
 
     /**
@@ -90,11 +93,28 @@ class Homestay extends ResourcePresenter
         }
         $fc = $facilities;
 
+        $datareview = array();
+        $datarating = array();
+        foreach($list_unit as $unit){
+            $unit_number=$unit['unit_number'];
+            $unit_type=$unit['unit_type'];
+            $dreview = $this->detailReservationModel->getReview($id, $unit_number, $unit_type)->getResultArray();
+            $drating = $this->detailReservationModel->getRating($id, $unit_number, $unit_type)->getRowArray();
+            $datareview[]=$dreview;
+            $datarating[]=$drating;
+
+        }
+
+        $review = $datareview;
+        $rating = $datarating;
+
         $data = [
             'title' => $homestay['name'],
             'data' => $homestay,
             'unit' => $list_unit,
             'facility' => $fc,
+            'review' => $review,
+            'rating' => $rating,
             'folder' => 'homestay'
         ];
 
@@ -136,7 +156,6 @@ class Homestay extends ResourcePresenter
             'id' => $id,
             'name' => $request['name'],
             'address' => $request['address'],
-            'price' => $request['price'],
             'contact_person' => $request['contact_person'],
             'description' => $request['description']
         ];
@@ -169,6 +188,8 @@ class Homestay extends ResourcePresenter
         if ($addHM) {
             return redirect()->to(base_url('dashboard/homestay/').$id.'/edit');
         } else {
+            $session = session();
+            $session->setFlashdata('error', 'Data tersebut sudah ada');
             return redirect()->back()->withInput();
         }
     }
@@ -190,13 +211,25 @@ class Homestay extends ResourcePresenter
             }
         }
 
-        $addFH = $this->facilityHomestayDetailModel->add_new_facilityHomestayDetail($requestData);
-       
-        if ($addFH) {
-            return redirect()->to(base_url('dashboard/homestay/new/').$id);
-        } else {
+        $checkExistingData = $this->facilityHomestayDetailModel->checkIfDataExists($requestData);
+
+        if ($checkExistingData) {
+            // Data sudah ada, set pesan error flash data
+            $session = session();
+            $session->setFlashdata('error', 'Data sudah ada');
             return redirect()->back()->withInput();
+        } else {
+            // Data belum ada, jalankan query insert
+            $addFH = $this->facilityHomestayDetailModel->add_new_facilityHomestayDetail($requestData);
+       
+            if ($addFH) {
+                return redirect()->to(base_url('dashboard/homestay/new/').$id);
+            } else {
+                return redirect()->back()->withInput();
+            }
         }
+        
+
 
         // if ($addFH) {
         //     // return view('dashboard/detail-package-form');

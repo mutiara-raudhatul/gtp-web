@@ -46,14 +46,21 @@ class PackageDayModel extends Model
     //     return $query;
     // }
 
+    public function get_day_by_id($id)
+    {
+        $query = $this->db->table($this->table)
+            ->select("*")
+            ->where('package_id', $id)
+            ->get();
+        return $query;
+    }
+
     public function get_package_day_by_id($package_id)
     {
-
         $query = $this->db->table($this->table)
             ->select("*")
             ->where('package_id', $package_id)
             ->get();
-
         return $query;
     }
     
@@ -65,6 +72,15 @@ class PackageDayModel extends Model
     //     return $id;
     // }
 
+    public function checkIfDataExists($requestData)
+    {
+        return $this->table($this->table)
+            ->where('day', $requestData['day'])
+            ->where('package_id', $requestData['package_id'])
+            ->get()
+            ->getRow();
+    }
+    
     public function add_new_packageDay($packageDay = null)
     {
         $insert = $this->db->table($this->table)
