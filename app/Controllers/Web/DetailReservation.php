@@ -367,17 +367,24 @@ class DetailReservation extends ResourcePresenter
         $booking_unit = $this->detailReservationModel->get_unit_homestay_booking($id)->getResultArray();
 
         if(!empty($booking_unit)){
+            $data_unit_booking=array();
+            $data_price=array();
             foreach($booking_unit as $booking){
                 $homestay_id=$booking['homestay_id'];
                 $unit_type=$booking['unit_type'];
                 $unit_number=$booking['unit_number'];
                 $reservation_id=$booking['reservation_id'];
 
-                $data_unit_booking = $this->detailReservationModel->get_unit_homestay_booking_data($homestay_id,$unit_type,$unit_number,$reservation_id)->getResultArray();
-
-                $total_price_homestay = $this->detailReservationModel->get_price_homestay_booking($homestay_id,$unit_type,$unit_number,$reservation_id)->getRow();
-                $tph = $total_price_homestay->price;
+                $unit_booking[] = $this->detailReservationModel->get_unit_homestay_booking_data($homestay_id,$unit_type,$unit_number,$id)->getRowArray();
+                $total_price_homestay = $this->detailReservationModel->get_price_homestay_booking($homestay_id,$unit_type,$unit_number,$id)->getRow();
+                $total []= $total_price_homestay->price;
             }
+
+            $data_price=$total;
+            // dd($data_price);
+            $tph = array_sum($data_price);
+            $data_unit_booking=$unit_booking;
+
         } else{
             $data_unit_booking=[];
             $tph = '0';
@@ -430,17 +437,24 @@ class DetailReservation extends ResourcePresenter
         $booking_unit = $this->detailReservationModel->get_unit_homestay_booking($id)->getResultArray();
 
         if(!empty($booking_unit)){
+            $data_unit_booking=array();
+            $data_price=array();
             foreach($booking_unit as $booking){
                 $homestay_id=$booking['homestay_id'];
                 $unit_type=$booking['unit_type'];
                 $unit_number=$booking['unit_number'];
                 $reservation_id=$booking['reservation_id'];
 
-                $data_unit_booking = $this->detailReservationModel->get_unit_homestay_booking_data($homestay_id,$unit_type,$unit_number,$reservation_id)->getResultArray();
-
-                $total_price_homestay = $this->detailReservationModel->get_price_homestay_booking($homestay_id,$unit_type,$unit_number,$reservation_id)->getRow();
-                $tph = $total_price_homestay->price;
+                $unit_booking[] = $this->detailReservationModel->get_unit_homestay_booking_data($homestay_id,$unit_type,$unit_number,$id)->getRowArray();
+                $total_price_homestay = $this->detailReservationModel->get_price_homestay_booking($homestay_id,$unit_type,$unit_number,$id)->getRow();
+                $total []= $total_price_homestay->price;
             }
+
+            $data_price=$total;
+            // dd($data_price);
+            $tph = array_sum($data_price);
+            $data_unit_booking=$unit_booking;
+
         } else{
             $data_unit_booking=[];
             $tph = '0';

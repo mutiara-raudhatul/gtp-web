@@ -26,7 +26,15 @@ $edit = in_array('edit', $uri);
             currentUrl = '<?= current_url(); ?>';
         </script>
 
-
+                <?php if(session()->has('warning')) : ?>
+                    <script>
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Wait!',
+                            text: '<?= session('warning') ?>',
+                        });
+                    </script>
+                <?php endif; ?>
         <div class="col-md-12 col-12">
             <div class="card">
                 <div class="card-header">
@@ -72,7 +80,7 @@ $edit = in_array('edit', $uri);
                                             <div class="col-md-3">
                                                 <label for="unit_type">Type Unit</label>
                                                 <select class="form-select" name="unit_type" required>
-                                                        <option >Select Type</option>
+                                                        <option value="" selected>Select Type</option>
                                                     <?php foreach ($unit_type as $item => $keyy) : ?>
                                                         <option value="<?= esc($keyy['id']); ?>"><?= esc($keyy['name_type']); ?></option>                                                                
                                                     <?php endforeach; ?>
@@ -89,13 +97,13 @@ $edit = in_array('edit', $uri);
                                             <div class="col-md-5">
                                                 <div class="form-group">
                                                     <label for="capacity">Capacity</label>
-                                                    <input type="number" class="form-control" id="capacity" name="capacity" value="" required>
+                                                    <input type="number" class="form-control" min="1" id="capacity" name="capacity" value="" required>
                                                 </div>
                                             </div>
                                             <div class="col-md-7">
                                                 <div class="form-group">
                                                     <label for="price">Price</label>
-                                                    <input type="number" class="form-control" id="price" name="price" required>
+                                                    <input type="number" class="form-control"  min="0" id="price" name="price" required>
                                                 </div>
                                             </div>
                                         </div>
@@ -140,8 +148,8 @@ $edit = in_array('edit', $uri);
                                                     <div class="row g-4">
                                                         <div class="col-md-12">
                                                             <label for="unit_homestay">Unit Homestay</label>
-                                                            <select class="form-select" name="unit_homestay">
-                                                                    <option selected disabled>Select Unit</option>
+                                                            <select class="form-select" name="unit_homestay" id="unit_homestay" required>
+                                                                    <option value="" selected>Select Unit</option>
                                                                 <?php foreach ($unit as $item => $keyy) : ?>
                                                                     <option value="<?= esc($keyy['homestay_id']); ?>-<?=esc($keyy['unit_type']); ?>-<?= esc($keyy['unit_number']); ?>">[<?= esc($keyy['name_type']); ?>] <?= esc($keyy['unit_number']); ?> <?= esc($keyy['nama_unit']); ?></option>                                                                
                                                                 <?php endforeach; ?>
@@ -152,8 +160,8 @@ $edit = in_array('edit', $uri);
                                                         <div class="col-md-12">
                                                             <input hidden type="text" class="form-control" id="package" name="package" placeholder="Pxxxxx" disabled value="">
                                                             <label for="facility_unit_id">Facility Unit</label>
-                                                            <select class="form-select" name="facility_unit_id">
-                                                                    <option selected disabled>Select Facility</option>
+                                                            <select class="form-select" name="facility_unit_id" required>
+                                                                    <option value="" selected>Select Facility</option>
                                                                     <?php foreach ($facility_unit as $t) : ?>
                                                                         <?php if ($edit) : ?>
                                                                             <option value="<?= esc($t['id']); ?>" ><?= esc($t['name']); ?></option>
@@ -167,13 +175,13 @@ $edit = in_array('edit', $uri);
                                                     <div class="row g-4">
                                                         <div class="col-md-12">
                                                             <label for="description_facility">Description</label>
-                                                            <input type="text" class="form-control" id="description_facility" name="description_facility">
+                                                            <input type="text" class="form-control" id="description_facility" name="description_facility" required>
                                                         </div>
                                                     </div><br>
                                             </div>
                                             <div class="modal-footer">
                                                 <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
-                                                <button type="submit" class="btn btn-outline-primary me-1 mb-1"><i class="fa-solid fa-add"></i></button>
+                                                <button type="submit" class="btn btn-outline-primary me-1 mb-1" onclick="cekPilihan()"><i class="fa-solid fa-add"></i></button>
                                                 <button type="reset" class="btn btn-outline-danger me-1 mb-1"><i class="fa-solid fa-trash-can"></i> </button>
                                             </div>
                                         </div>
@@ -200,7 +208,7 @@ $edit = in_array('edit', $uri);
                                                 <div class="col-md-12">
                                                     <div class="form-group">
                                                         <label for="facility_name">Facility Name</label>
-                                                        <input type="text" class="form-control" id="facility_name" name="facility_name" autocomplete="off">
+                                                        <input type="text" class="form-control" id="facility_name" name="facility_name" required autocomplete="off">
                                                     </div>
                                                 </div>
                                             </div>

@@ -50,6 +50,7 @@ $edit = in_array('edit', $uri);
                         <div class="form-group">
                             <label for="package">Package</label>
                             <select id="package" name="package" class="form-control" required>
+                                <option value="" selected>Select Package</option>
                                 <?php foreach ($data as $item => $keyy) : ?>
                                     <?php if($edit): 
                                         if($detail['package_id']==$keyy['id']): ?>
@@ -219,6 +220,7 @@ $edit = in_array('edit', $uri);
                                                 <div class="col-md-12">
                                                     <label for="pk_unit">Unit Homestay</label>
                                                     <select class="form-select" name="pk_unit" required>
+                                                        <option value="" selected>Select Unit Homestay</option>
                                                         <?php foreach ($list_unit as $item => $keyy) : ?>
                                                             <option value="<?= esc($keyy['homestay_id']); ?>-<?= esc($keyy['unit_type']); ?>-<?= esc($keyy['unit_number']); ?>"> 
                                                                 [<?= esc($keyy['name']); ?>] <?= esc($keyy['name_type']); ?> <?= esc($keyy['unit_number']); ?> <?= esc($keyy['nama_unit']); ?>

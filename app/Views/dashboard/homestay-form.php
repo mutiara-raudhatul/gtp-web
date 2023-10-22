@@ -42,7 +42,7 @@ $edit = in_array('edit', $uri);
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label for="facility_name">Facility Name</label>
-                                                <input type="text" class="form-control" id="facility_name" name="facility_name">
+                                                <input type="text" class="form-control" id="facility_name" name="facility_name" required>
                                             </div>
                                         </div>
                                     </div>
@@ -77,8 +77,8 @@ $edit = in_array('edit', $uri);
                                     <div class="row g-4">
                                         <div class="col-md-12">
                                             <label for="facilityHomestay">Facility Homestay</label>
-                                            <select class="form-select" name="facility">
-                                                    <option selected disabled>Select the facility</option>
+                                            <select class="form-select" name="facility" required>
+                                                    <option value="" selected>Select the facility</option>
                                                     <?php foreach ($facility as $item => $keyy) : ?>
                                                         <option value="<?= esc($keyy['id']); ?>"><?= esc($keyy['name']); ?></option>                                                                
                                                     <?php endforeach; ?>
@@ -88,7 +88,7 @@ $edit = in_array('edit', $uri);
                                     <div class="row g-4">
                                         <div class="col-md-12">
                                             <label for="description_facility">Description</label>
-                                            <textarea  class="form-control" id="description_facility" name="description_facility" cols="30" rows="10"></textarea>
+                                            <textarea  class="form-control" id="description_facility" required name="description_facility" cols="30" rows="10"></textarea>
                                         </div>
                                     </div>
                                 </div>

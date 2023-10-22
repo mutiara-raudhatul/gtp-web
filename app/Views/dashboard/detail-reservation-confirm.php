@@ -141,8 +141,8 @@ $addhome = in_array('addhome', $uri);
                             <tbody>
 
                             <?php if (isset($booking)) : ?> 
+                                <?php $i = 1; ?>                     
                                 <?php foreach ($booking as $dtb) : ?>
-                                    <?php $i = 1; ?>                     
                                     <tr>
                                         <td><?= esc($i++); ?></td>
                                         <td>[<?= esc($dtb['name']); ?>] <?= esc($dtb['name_type']); ?> <?= esc($dtb['unit_number']); ?> <?= esc($dtb['nama_unit']); ?></td>
@@ -266,11 +266,11 @@ $addhome = in_array('addhome', $uri);
                                                     <div class="col-md-5 col-12">
                                                         <div class="form-group mb-2">
                                                             <label>
-                                                            <input type="radio" name="status" value="'0'">
+                                                            <input type="radio" name="status" value="'0'" required>
                                                             <i class="fa fa-times"></i> Rejected
                                                             </label>
                                                             <label>
-                                                            <input type="radio" name="status" value="1">
+                                                            <input type="radio" name="status" value="1" required>
                                                             <i class="fa fa-check"></i> Accepted
                                                             </label>
                                                         </div>
@@ -329,7 +329,7 @@ $addhome = in_array('addhome', $uri);
                                                 <div class="col-md-5 col-12">
                                                         <div class="form-group mb-4">
                                                                 <label for="proof_of_deposit" class="form-label">Proof of Deposit</label>
-                                                                <input class="form-control" accept="image/*" type="file" name="proof_of_deposit" id="proof_of_deposit">
+                                                                <input class="form-control" accept="image/*" type="file" name="proof_of_deposit" id="proof_of_deposit" required>
                                                         </div>
                                                         </div>
                                                         <div col="col-md-5 col-12">
@@ -403,7 +403,7 @@ $addhome = in_array('addhome', $uri);
                                                         <div class="col-md-5 col-12">
                                                                     <div class="form-group mb-4">
                                                                         <label for="proof_of_payment" class="form-label">  Proof of Full Payment</label>
-                                                                        <input class="form-control" accept="image/*" type="file" name="proof_of_payment" id="proof_of_payment">
+                                                                        <input class="form-control" accept="image/*" type="file" name="proof_of_payment" id="proof_of_payment" required>
                                                                     </div>
                                                                 </div>
                                                                 <div col="col-md-5 col-12">

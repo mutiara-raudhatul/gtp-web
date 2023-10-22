@@ -149,13 +149,13 @@ $edit = in_array('edit', $uri);
                                         <div class="col-md-7">
                                             <div class="form-group">
                                                 <label for="package">Package</label>
-                                                <input type="text" class="form-control" id="package" name="package" placeholder="Pxxxxx" disabled value="<?= esc($data['id']) ?>">
+                                                <input type="text" class="form-control" id="package" name="package" placeholder="Pxxxxx" readonly value="<?= esc($data['id']) ?>">
                                             </div>
                                         </div>
                                         <div class="col-md-5">
                                             <div class="form-group">
                                                 <label for="day">Day</label>
-                                                <input type="number" class="form-control" id="day" name="day">
+                                                <input type="number" class="form-control" id="day" name="day" required>
                                             </div>
                                         </div>
                                     </div>
@@ -163,7 +163,7 @@ $edit = in_array('edit', $uri);
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label for="description">Description</label>
-                                                <input type="text" class="form-control" id="description" name="description">
+                                                <input type="text" class="form-control" id="description" name="description" required>
                                             </div>
                                         </div>
                                     </div>
@@ -200,7 +200,7 @@ $edit = in_array('edit', $uri);
                                                                     <input hidden type="text" class="form-control" id="package" name="package" placeholder="Pxxxxx" disabled value="<?= esc($data['id']) ?>">
                                                                     <label for="day">Activity Day</label>
                                                                     <select class="form-select" name="day">
-                                                                            <option selected disabled>Select the day</option>
+                                                                            <option value="" selected>Select the day</option>
                                                                         <?php foreach ($day as $item => $keyy) : ?>
                                                                             <option value="<?= esc($keyy['day']); ?>">Activity Day <?= esc($keyy['day']); ?></option>                                                                
                                                                         <?php endforeach; ?>
@@ -210,12 +210,12 @@ $edit = in_array('edit', $uri);
                                                             <div class="row g-4">
                                                                 <div class="col-md-3">
                                                                     <label for="activity">Activity</label>
-                                                                    <input type="number" min='1' class="form-control" id="activity" name="activity">
+                                                                    <input type="number" min='1' class="form-control" id="activity" name="activity" required>
                                                                 </div>
                                                                 <div class="col-md-4">
                                                                     <label for="activity_type">Activity Type</label>
-                                                                    <select class="form-control" name="activity_type" id="activity_type">
-                                                                        <option disabled selected>Select Type</option>
+                                                                    <select class="form-control" name="activity_type" id="activity_type" required>
+                                                                        <option value="" selected>Select Type</option>
                                                                         <option value="CP">Culinary</option>
                                                                         <option value="SP">Souvenir Place</option>
                                                                         <option value="HO">Homestay</option>
@@ -226,8 +226,8 @@ $edit = in_array('edit', $uri);
                                                                 </div>
                                                                 <div class="col-md-5">
                                                                     <label for="object">Object</label>
-                                                                    <select class="form-control" name="object" id="object">
-                                                                        <option disabled selected>Select Object</option>
+                                                                    <select class="form-control" name="object" id="object" required>
+                                                                        <option value="" selected>Select Object</option>
                                                                         <option value=""></option>
                                                                     </select>                                                                
                                                                 </div>
@@ -235,7 +235,7 @@ $edit = in_array('edit', $uri);
                                                             <div class="row g-4">
                                                                 <div class="col-md-12">
                                                                     <label for="description_activity">Description</label>
-                                                                    <input type="text" class="form-control" id="description_activity" name="description_activity">
+                                                                    <input type="text" class="form-control" id="description_activity" name="description_activity" required>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -364,7 +364,7 @@ $edit = in_array('edit', $uri);
     //     document.getElementById('video').setAttribute('src', '');
     // });
 
-    function checkRequired(event) {
+    function required(event) {
         if (!$('#geo-json').val()) {
             event.preventDefault();
             Swal.fire('Please select location for the New Package');
