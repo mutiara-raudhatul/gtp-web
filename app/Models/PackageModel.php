@@ -58,11 +58,11 @@ class PackageModel extends Model
         $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.type_id,{$this->table}.price,{$this->table}.contact_person,{$this->table}.description,{$this->table}.video_url,{$this->table}.min_capacity";
         $geoJson = "ST_AsGeoJSON({$this->table}.geom) AS geoJson";
         $query = $this->db->table($this->table)
-            ->select("max(day) as days, {$columns}, {$coords}, {$geoJson}")
-            ->where('package.id', $id)
+            ->select("max(day) as days, {$columns}, {$coords}, {$geoJson}, 
+            package_type.type_name, package_day.day")
             ->join('package_type', 'package.type_id = package_type.id')
             ->join('package_day', 'package.id = package_day.package_id')
-            ->select('package_type.type_name, package_day.day')
+            ->where('package.id', $id)
             ->get();
         return $query;
     }

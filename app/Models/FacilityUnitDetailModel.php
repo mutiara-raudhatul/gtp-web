@@ -38,6 +38,20 @@ class FacilityUnitDetailModel extends Model
         return $query;
     }
 
+    public function get_data_facility_unit_detail($unit_number=null, $homestay_id=null, $unit_type=null)
+    {
+        // dd($unit_number);
+        $query = $this->db->table($this->table)
+            ->select('*')
+            ->join('facility_unit', 'facility_unit_detail.facility_unit_id = facility_unit.id')
+            ->where('homestay_id', $homestay_id)
+            ->where('unit_type', $unit_type)
+            ->where('unit_number', $unit_number)
+            ->get();
+            
+        return $query;
+    }
+
     public function add_new_facilityUnitDetail($id, $requestData)
     {
         $query = false;

@@ -69,6 +69,8 @@ class Homestay extends ResourcePresenter
             return redirect()->to(substr(current_url(), 0, -strlen($id)));
         }
 
+        $list_facility_home = $this->facilityHomestayDetailModel->get_detailFacilityHomestay_by_id($id)->getResultArray();
+
         $list_gallery = $this->galleryHomestayModel->get_gallery($id)->getResultArray();
         $galleries = array();
         foreach ($list_gallery as $gallery) {
@@ -79,16 +81,20 @@ class Homestay extends ResourcePresenter
         // $list_unit = $this->unitHomestayModel->get_unit_homestay($id)->getRowArray();
         $list_unit = $this->unitHomestayModel->get_unit_homestay($id)->getResultArray();
 
-        $unithomes = array();
-        foreach ($list_unit as $unithome) {
-            $unithomes[] = $unithome['id'];
-        }
-        $homestay['unithomes'] = $unithomes;
+        // $unithomes = array();
+        // foreach ($list_unit as $unithome) {
+        //     $unithomes[] = $unithome['unit_number'];
+        //     $unithomes[] = $unithome['homestay_id'];
+        //     $unithomes[] = $unithome['id'];
+        // }
+        // $homestay['unithomes'] = $unithomes;
 
         $facilities = array();
-        foreach ($homestay['unithomes'] as $uh_id) {
-            $unit_homestay_id=$uh_id;
-            $list_facility = $this->facilityUnitDetailModel->get_facility_unit_detail($unit_homestay_id)->getResultArray();
+        foreach ($list_unit as $unit) {
+            $unit_number=$unit['unit_number'];
+            $homestay_id=$unit['homestay_id'];
+            $unit_type=$unit['unit_type'];
+            $list_facility = $this->facilityUnitDetailModel->get_data_facility_unit_detail($unit_number, $homestay_id, $unit_type)->getResultArray();
             $facilities[]=$list_facility;
         }
         $fc = $facilities;
@@ -97,9 +103,10 @@ class Homestay extends ResourcePresenter
         $datarating = array();
         foreach($list_unit as $unit){
             $unit_number=$unit['unit_number'];
+            $homestay_id=$unit['homestay_id'];
             $unit_type=$unit['unit_type'];
-            $dreview = $this->detailReservationModel->getReview($id, $unit_number, $unit_type)->getResultArray();
-            $drating = $this->detailReservationModel->getRating($id, $unit_number, $unit_type)->getRowArray();
+            $dreview = $this->detailReservationModel->getReview($unit_number, $homestay_id, $unit_type)->getResultArray();
+            $drating = $this->detailReservationModel->getRating($unit_number, $homestay_id, $unit_type)->getResultArray();
             $datareview[]=$dreview;
             $datarating[]=$drating;
 
@@ -111,6 +118,7 @@ class Homestay extends ResourcePresenter
         $data = [
             'title' => $homestay['name'],
             'data' => $homestay,
+            'facilityhome' => $list_facility_home,
             'unit' => $list_unit,
             'facility' => $fc,
             'review' => $review,
@@ -229,25 +237,6 @@ class Homestay extends ResourcePresenter
             }
         }
         
-
-
-        // if ($addFH) {
-        //     // return view('dashboard/detail-package-form');
-        //     $facilityHomestay = $this->packageModel->get_package_by_id($id)->getRowArray();
-        //     $facilityHomestay = $this->homestayModel->get_facility_homestay_by_id($id)->getRowArray();
-
-        //     $id=$facilityHomestay['id'];
-        //     $data = [
-        //         'title' => 'New Facility Homestay',
-        //         'data' => $facilityHomestay
-        //     ];
-            
-        //     // return view('dashboard/detail-package-form', $data);
-
-        //     return redirect()->to(base_url('dashboard/packageday/').$id);
-        // } else {
-        //     return redirect()->back()->withInput();
-        // }
     }
 
 
@@ -288,7 +277,6 @@ class Homestay extends ResourcePresenter
             'id' => $id,
             'name' => $request['name'],
             'address' => $request['address'],
-            'price' => $request['price'],
             'contact_person' => $request['contact_person'],
             'description' => $request['description'],
         ];
@@ -327,4 +315,17 @@ class Homestay extends ResourcePresenter
             return redirect()->back()->withInput();
         }
     }
+
+    
+    // public function get_list_hm_api() {
+    //     $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
+    //     $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.address,{$this->table}.contact_person,{$this->table}.description";
+    //     $vilGeom = "village.id = '1' AND ST_Contains(village.geom, {$this->table}.geom)";
+    //     $query = $this->db->table($this->table)
+    //         ->select("{$columns}, {$coords}")
+    //         ->from('village')
+    //         ->where($vilGeom)
+    //         ->get();
+    //     return $query;
+    // }
 }

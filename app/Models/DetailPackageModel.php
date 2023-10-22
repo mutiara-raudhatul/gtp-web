@@ -56,7 +56,7 @@ class DetailPackageModel extends Model
         return $query;
     }
 
-    public function get_activity_day($package_id, $day)
+    public function get_activity_day($day, $package_id)
     {
         $query = $this->db->table($this->table)
             ->select("*")
@@ -116,12 +116,66 @@ class DetailPackageModel extends Model
         // Gabungkan hasil dari kedua model
         $combinedData = array_merge($culinaryData, $souvenirData, $worshipData, $facilityData, $attractionData, $eventData, $homestayData);
 
-        // Urutkan data berdasarkan kolom "activity"
         usort($combinedData, function($a, $b) {
-            return strcmp($a['activity'], $b['activity']);
+            $dayComparison = strcmp($a['day'], $b['day']);
+            if ($dayComparison === 0) {
+                // Jika 'day' sama, bandingkan berdasarkan 'activity'
+                return strcmp($a['activity'], $b['activity']);
+            }
+            // Urutkan berdasarkan 'day' terlebih dahulu
+            return $dayComparison;
         });
 
         return $combinedData;
+    }
+
+
+    public function culinary_place($package_id)
+    {
+        $culinaryPlaceModel = new CulinaryPlaceModel();
+
+        $culinary_place = $culinaryPlaceModel->select('package_id, day, activity, activity_type, object_id, detail_package.description, name, geom, ST_Y(ST_Centroid(geom)) AS lat, ST_X(ST_Centroid(geom)) AS lng')
+        ->join('detail_package', 'detail_package.object_id=culinary_place.id')
+        ->where('detail_package.package_id', $package_id)
+        ->get()->getResultArray();
+
+        return $culinary_place;
+    }
+
+    public function worship_place($package_id)
+    {
+        $worshipPlaceModel = new WorshipPlaceModel();
+
+        $worship_place = $worshipPlaceModel->select('package_id, day, activity, activity_type, object_id, detail_package.description, name, geom, ST_Y(ST_Centroid(geom)) AS lat, ST_X(ST_Centroid(geom)) AS lng')
+        ->join('detail_package', 'detail_package.object_id=worship_place.id')
+        ->where('detail_package.package_id', $package_id)
+        ->get()->getResultArray();
+
+        return $worship_place;
+    }
+
+    public function souvenir_place($package_id)
+    {
+        $souvenirPlaceModel = new SouvenirPlaceModel();
+
+        $souvenir_place = $souvenirPlaceModel->select('package_id, day, activity, activity_type, object_id, detail_package.description, name, geom, ST_Y(ST_Centroid(geom)) AS lat, ST_X(ST_Centroid(geom)) AS lng')
+        ->join('detail_package', 'detail_package.object_id=souvenir_place.id')
+        ->where('detail_package.package_id', $package_id)
+        ->get()->getResultArray();
+
+        return $souvenir_place;
+    }
+
+    public function attraction($package_id)
+    {
+        $attractionModel = new AttractionModel();
+
+        $attraction = $attractionModel->select('package_id, day, activity, activity_type, object_id, detail_package.description, name, geom, ST_Y(ST_Centroid(geom)) AS lat, ST_X(ST_Centroid(geom)) AS lng')
+        ->join('detail_package', 'detail_package.object_id=attraction.id')
+        ->where('detail_package.package_id', $package_id)
+        ->get()->getResultArray();
+
+        return $attraction;
     }
 
     public function getRouteData()

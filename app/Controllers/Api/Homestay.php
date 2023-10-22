@@ -94,4 +94,15 @@ class Homestay extends ResourceController
             return $this->respondDeleted($response);
         }
     }
+
+    public function maps() {
+        $contents = $this->homestayModel->get_list_hm_api()->getResultArray();
+        $data = [
+            'title' => 'Homestay',
+            'data' => $contents,
+        ];
+        // dd($data);
+        return view('maps/homestay', $data);
+    }
+
 }

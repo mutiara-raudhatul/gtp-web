@@ -42,13 +42,12 @@ class Reservation extends ResourcePresenter
      */
     public function index()
     {
-        $contents = $this->reservationModel->get_list_reservation()->getResultArray();
+        $user=user()->username;
+        $contents = $this->reservationModel->get_list_reservation_by_user($user)->getResultArray();
         $data = [
             'title' => 'Reservation',
             'data' => $contents,
         ];
-
-        // dd($data);
 
         return view('web/reservation', $data);
     }
@@ -95,13 +94,24 @@ class Reservation extends ResourcePresenter
     {
         $contents = $this->packageModel->get_package_by_id_custom($id)->getResultArray();
         $list_unit = $this->unitHomestayModel->get_unit_homestay_all()->getResultArray();
-        $data = [
-            'title' => 'Reservation of Package Custom',
-            'data' => $contents,
-            'list_unit' => $list_unit,
-        ];
-// dd($data);
-        return view('web/reservation-custom-form', $data);
+
+        foreach ($contents as $con){
+            if($con['days']==null) {
+                $session = session();
+                $session->setFlashdata('warning', 'Anda belum menambahkan aktivitas package.');
+
+                return redirect()->back();
+            } else {
+                $data = [
+                    'title' => 'Reservation of Package Custom',
+                    'data' => $contents,
+                    'list_unit' => $list_unit,
+                ];
+                
+                return view('web/reservation-custom-form', $data);
+            }
+        }
+
     }
 
     public function packagecustom()

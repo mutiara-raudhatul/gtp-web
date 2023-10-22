@@ -183,7 +183,6 @@
                 initMapNew();
                 map.setZoom(15);
                     <?php 
-                    
                     foreach ($dp as $dd) {
                       $loop++;
                       $id_object = $dd['id_object'];

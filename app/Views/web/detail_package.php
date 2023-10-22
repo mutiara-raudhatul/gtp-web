@@ -22,7 +22,16 @@
         <div class="col-md-7 col-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title text-center">Package Information</h4>
+                    <div class="row">
+                    <div class="col-3">
+                    </div>
+                    <div class="col-6">
+                        <h4 class="card-title text-center">Package Information</h4>
+                    </div>
+                    <div class="col-3">
+                        <a href="<?= base_url('/web/reservation'); ?>" class="btn btn-primary float-end"><i class="fa-solid fa-book me-3"></i>Booking</a>
+                    </div>
+                    </div>
                 </div>
                 <div class="rating text-center ">
                     <?php for ($i = 1; $i <= 5; $i++) : ?>
@@ -33,6 +42,7 @@
                         <?php endif; ?>
                     <?php endfor; ?>
                 </div>
+                
                 <div class="card-body">
                     <div class="row">
                         <div class="col table-responsive">
@@ -152,12 +162,45 @@
                 </div>
 
                 <?= $this->include('web/layouts/map-body'); ?>
+                <div class="card-body">
+                    <div class="col-auto ">
+                        <br>
+                        <div class="btn-group float-right" role="group">
+                            <?php foreach ($day as $d) : ?>
+                                <?php  $loop = 0; ?>
+                                <?php $activitiesForDay = array_filter($activity, function($activity) use ($d) {
+                                    return $activity['day'] === $d['day'];
+                                }); ?>
+                                <?php if (!empty($activitiesForDay)): ?>
+                                    <?php foreach ($activity as $index => $currentActivity) :?>
+                                        <?php  $loop++; ?>
+                                        <?php if ($currentActivity['day'] === $d['day']) : ?>
+
+                                                <?php if (isset($activity[$index + 1])): 
+                                                    $nextActivity = $activity[$index + 1];
+                                                ?>    
+                                                    <button type="button" onclick="routeBetweenObjects(<?= $currentActivity['lat'] ?>, <?= $currentActivity['lng'] ?>, <?= $nextActivity['lat']?>, <?= $nextActivity['lng'] ?>)" class="btn btn-outline-primary"><i class="fa fa-road"></i> Day <?= esc($currentActivity['day']);?> Activity <?= esc($currentActivity['activity']);?></button>
+                                                <?php endif; ?>    
+
+                                        <?php endif; ?>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                </div>
                 <script>
                     initMap(<?= esc($data['lat']); ?>, <?= esc($data['lng']); ?>)
                 </script>
-                <script>
-                    objectMarker("<?= esc($data['id']); ?>", <?= esc($data['lat']); ?>, <?= esc($data['lng']); ?>);
-                </script>
+                <?php foreach($day as $d) : ?>
+                    <?php foreach($activity as $ac) : ?>
+                    <script>
+                        objectMarker("<?= esc($ac['object_id']); ?>", <?= esc($ac['lat']); ?>, <?= esc($ac['lng']); ?>, true, <?= $loop; ?>);
+                    </script>
+                    <?php endforeach; ?>
+                <?php endforeach; ?>
+            <!-- Direction section -->
+            <?= $this->include('web/layouts/direction'); ?>
             </div>
 
         </div>

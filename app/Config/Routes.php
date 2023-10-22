@@ -43,7 +43,6 @@ $routes->get('/login', 'Web\Admin::login');
 
 
 $routes->group('web', function ($routes) {
-
     $routes->group('profile', function ($routes) {
         $routes->get('/', 'Home::profile');
         $routes->get('update', 'Home::update');
@@ -64,8 +63,6 @@ $routes->group('web', ['namespace' => 'App\Controllers\Web'], function ($routes)
         $routes->get('/', 'Tracking::index');
     });
 
-    // $routes->presenter('attraction');
-
     $routes->group('talao', function ($routes) {
         $routes->presenter('talao');
         $routes->get('/', 'Talao::detail');
@@ -74,34 +71,35 @@ $routes->group('web', ['namespace' => 'App\Controllers\Web'], function ($routes)
     $routes->presenter('event');
     $routes->presenter('package');
     $routes->presenter('ulakan');
+    $routes->resource('homestay');
+    $routes->presenter('homestay');
+    $routes->presenter('culinaryPlace');
+    $routes->presenter('souvenirPlace');
+    $routes->presenter('worshipPlace');
+    $routes->presenter('servicepackage');
+    $routes->resource('servicepackage');
+    $routes->post('servicepackage/createservicepackage/(:segment)', 'ServicePackage::createservicepackage/$1');
+    $routes->delete('servicepackage/delete/(:any)', 'ServicePackage::delete/$1');
+    
     $routes->get('reservation/custombooking/(:segment)', 'Reservation::custombooking/$1', ['filter' => 'login']);
+    $routes->post('reservation/uploaddeposit/(:any)', 'Reservation::uploaddeposit/$1', ['filter' => 'login']);
+    $routes->post('reservation/uploadfullpayment/(:any)', 'Reservation::uploadfullpayment/$1', ['filter' => 'login']);
     $routes->presenter('reservation', ['filter' => 'login']);
     $routes->resource('reservation', ['filter' => 'login']);
+
     $routes->get('detailreservation/packagecustom/(:any)', 'DetailReservation::packagecustom/$1', ['filter' => 'login']);//--------
-    $routes->post('detailreservation/addcustom', 'DetailReservation::addcustom', ['filter' => 'login']);//--------
-    $routes->post('detailreservation/createday/(:segment)', 'DetailReservation::createday/$1');//--------
-    $routes->post('detailreservation/createactivity/(:segment)', 'DetailReservation::createactivity/$1');//--------
+    $routes->post('detailreservation/addcustom', 'DetailReservation::addcustom', ['filter' => 'login']);
+    $routes->post('detailreservation/createday/(:segment)', 'DetailReservation::createday/$1');
+    $routes->post('detailreservation/createactivity/(:segment)', 'DetailReservation::createactivity/$1');
     $routes->delete('detailreservation/deleteunit/(:any)', 'DetailReservation::deleteunit/$1');
     $routes->delete('detailreservation/deleteday/(:any)', 'DetailReservation::deleteday/$1');
     $routes->delete('detailreservation/delete/(:any)', 'DetailReservation::delete/$1');
-    $routes->post('servicepackage/createservicepackage/(:segment)', 'ServicePackage::createservicepackage/$1');//--------
-    $routes->delete('servicepackage/delete/(:any)', 'ServicePackage::delete/$1');//--------
-    $routes->presenter('servicepackage');
-    $routes->resource('servicepackage');
-
-    $routes->post('reservation/uploaddeposit/(:any)', 'Reservation::uploaddeposit/$1', ['filter' => 'login']);
-    $routes->post('reservation/uploadfullpayment/(:any)', 'Reservation::uploadfullpayment/$1', ['filter' => 'login']);
     $routes->get('detailreservation/addhome/(:segment)', 'DetailReservation::addhome/$1', ['filter' => 'login']);
     $routes->get('detailreservation/review/(:any)', 'DetailReservation::review/$1');//--------
     $routes->post('detailreservation/savereview/(:any)', 'DetailReservation::savereview/$1');//--------
     $routes->post('detailreservation/savereviewunit/(:any)', 'DetailReservation::savereviewunit/$1');//--------
     $routes->presenter('detailreservation', ['filter' => 'login']);
     $routes->resource('detailreservation', ['filter' => 'login']);
-    $routes->resource('homestay');
-    $routes->presenter('homestay');
-    $routes->presenter('culinaryPlace');
-    $routes->presenter('souvenirPlace');
-    $routes->presenter('worshipPlace');
 
     // $routes->get('visitHistory', 'VisitHistory::visitHistory', ['filter' => 'role:user']);
 
@@ -123,23 +121,23 @@ $routes->group('dashboard', ['namespace' => 'App\Controllers\Web', 'filter' => '
     $routes->get('event', 'Dashboard::event');
     $routes->get('package', 'Dashboard::package');
     $routes->get('facility', 'Dashboard::facility');
-    $routes->get('servicepackage', 'Dashboard::servicepackage');//--------
-    $routes->get('packageday/(:segment)', 'Packageday::newday/$1');//--------
-    $routes->post('packageday/createday/(:segment)', 'Packageday::createday/$1');//--------
-    $routes->post('packageday/createactivity/(:segment)', 'Packageday::createactivity/$1');//--------
+    $routes->get('servicepackage', 'Dashboard::servicepackage');
+    $routes->get('packageday/(:segment)', 'Packageday::newday/$1');
+    $routes->post('packageday/createday/(:segment)', 'Packageday::createday/$1');
+    $routes->post('packageday/createactivity/(:segment)', 'Packageday::createactivity/$1');
     $routes->delete('packageday/delete/(:any)', 'Packageday::delete/$1');
     $routes->delete('packageday/deleteday/(:any)', 'Packageday::deleteday/$1');
-
-    $routes->post('facilityhomestay/createfacility/(:segment)', 'Facilityhomestay::createfacility/$1');//--------
-    $routes->post('facilityhomestay/createfacilityhomestay/(:segment)', 'Facilityhomestay::createfacilityhomestay/$1');//--------
+    
+    $routes->post('facilityhomestay/createfacility/(:segment)', 'Facilityhomestay::createfacility/$1');
+    $routes->post('facilityhomestay/createfacilityhomestay/(:segment)', 'Facilityhomestay::createfacilityhomestay/$1');
     $routes->delete('facilityhomestay/delete/(:any)', 'Facilityhomestay::delete/$1');
 
     $routes->get('homestay', 'Dashboard::homestay');
     $routes->resource('homestay');
     $routes->presenter('homestay');
-    $routes->post('homestay/createfacility/', 'Homestay::createfacility');//--------
+    $routes->post('homestay/createfacility/', 'Homestay::createfacility');
 
-    $routes->get('unithomestay/new/(:segment)', 'UnitHomestay::new/$1');//--------
+    $routes->get('unithomestay/new/(:segment)', 'UnitHomestay::new/$1');
     $routes->delete('unithomestay/delete/(:any)', 'UnitHomestay::delete/$1');
     $routes->delete('unithomestay/deletefacilityunit/(:any)', 'UnitHomestay::deletefacilityunit/$1');
     $routes->resource('unit');
@@ -148,12 +146,14 @@ $routes->group('dashboard', ['namespace' => 'App\Controllers\Web', 'filter' => '
     $routes->get('admin', 'Adminuser::index');
     $routes->get('admin/index', 'Adminuser::index');
     $routes->get('admin/(:num)', 'Adminuser::show/$1', ['filter' => 'role:admin']);
-
+    
+    $routes->resource('village');
     $routes->presenter('gtp');
     $routes->presenter('attraction');
     $routes->presenter('event');
     $routes->presenter('package');
     $routes->presenter('facility');
+    $routes->presenter('packageday');
     $routes->presenter('servicepackage');
     $routes->resource('servicepackage');
     $routes->post('servicepackage/createservicepackage/(:segment)', 'ServicePackage::createservicepackage/$1');//--------
@@ -164,16 +164,11 @@ $routes->group('dashboard', ['namespace' => 'App\Controllers\Web', 'filter' => '
     $routes->post('unithomestay/createfacility/(:segment)', 'UnitHomestay::createfacility/$1');//--------
     $routes->post('unithomestay/createfacilityunit/(:segment)', 'UnitHomestay::createfacilityunit/$1');//--------
 
-    $routes->presenter('packageday');
-    // $routes->resource('packageday');
-
     $routes->presenter('reservation');
     $routes->resource('reservation');
     $routes->presenter('managereservation');
     $routes->get('detailreservation/confirm/(:any)', 'DetailReservation::confirm/$1');//--------
     $routes->post('detailreservation/saveconfirm/(:any)', 'DetailReservation::saveconfirm/$1');//--------
-
-    $routes->resource('village');
 
 });
 
@@ -197,17 +192,17 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], function ($routes)
     $routes->resource('attraction');
     $routes->resource('servicepackage');
     $routes->get('packageday/(:any)', 'PackageDay::getDay/$1');
-    // $routes->resource('packageday');
     $routes->resource('facility');
     $routes->post('facility/findByRadius', 'Facility::findByRadius');
     $routes->post('facility/findByTrack', 'Facility::findByTrack');
-
+    $routes->get('event/maps', 'Event::maps');
     $routes->resource('event');
     $routes->get('package/type', 'Package::type');
     $routes->resource('package');
     $routes->post('package/findByName', 'Package::findByName');
     $routes->post('package/findByType', 'Package::findByType');
 
+    $routes->get('homestay/maps', 'Homestay::maps');
     $routes->resource('homestay');
     $routes->post('homestay/findByRadius', 'Homestay::findByRadius');
     $routes->resource('culinaryPlace');

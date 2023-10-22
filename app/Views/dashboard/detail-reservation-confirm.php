@@ -20,7 +20,7 @@ $addhome = in_array('addhome', $uri);
                     <div class="card-header">
                         <h4 class="card-title text-center">Reservation Package</h4>
                         <div class="col-auto">
-                            <a href="<?= base_url('dashboard/package/edit'); ?>/<?= esc($detail['package_id']); ?>" class="btn btn-primary float-end"><i class="fa-solid fa-pencil me-3"></i>Edit Package</a>
+                            <a href="<?= base_url('dashboard/package/edit'); ?>/<?= esc($detail['package_id']); ?>" class="btn btn-outline-primary"><i class="fa-solid fa-pencil me-3"></i>Edit Package</a>
                         </div>
                     </div>
                     <div class="card-body">
@@ -316,10 +316,11 @@ $addhome = in_array('addhome', $uri);
                                 </tbody>
                             </table>
 
-                            <!-- upload proof payment -->
                             <table class="col-12">
                                 <tbody>
                                 <tr>
+                                    <!-- upload proof payment -->
+
                                     <td class="col-md-5 col-12">
                                         <?php if ($detail['status']=='1'):
                                             if($detail['proof_of_deposit']==null): ?>
@@ -345,7 +346,7 @@ $addhome = in_array('addhome', $uri);
                                                                 <div class="row gallery" data-bs-toggle="modal" data-bs-target="#galleryModal">
                                                                         <img class="w-100 active" src="<?= base_url('media/photos/deposit/'); ?><?= $detail['proof_of_deposit'] ?>" data-bs-target="#Gallerycarousel" />
                                                                 </div>
-                                                            <!-- modal -->
+                                                            <!-- modal deposit-->
                                                             <div class="modal fade" id="galleryModal" tabindex="-1" role="dialog" aria-labelledby="galleryModalTitle" aria-hidden="true">
                                                                 <div class="modal-dialog modal-dialog-centered modal-dialog-centered" role="document">
                                                                     <div class="modal-content">
@@ -392,6 +393,7 @@ $addhome = in_array('addhome', $uri);
                                         endif; ?>
                                     </td>
 
+                                    <!-- upload proof payment -->
                                     <td class="col-md-5 col-12">
                                         <?php if ($detail['status']=='1'):
                                             if($detail['proof_of_deposit']!=null): 
@@ -418,7 +420,7 @@ $addhome = in_array('addhome', $uri);
                                                             <div class="row gallery" data-bs-toggle="modal" data-bs-target="#paymentModal">
                                                                     <img class="w-100 active" src="<?= base_url('media/photos/fullpayment/'); ?><?= $detail['proof_of_payment'] ?>" data-bs-target="#Gallerycarousel" />
                                                             </div>
-                                                        <!-- modal -->
+                                                        <!-- modal payment -->
                                                         <div class="modal fade" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="paymentModalTitle" aria-hidden="true">
                                                             <div class="modal-dialog modal-dialog-centered modal-dialog-centered" role="document">
                                                                 <div class="modal-content">

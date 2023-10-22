@@ -33,7 +33,7 @@ $edit = in_array('edit', $uri);
                     <div class="card-header">
                         <h4 class="card-title text-center"><?= $title; ?></h4>
                     </div>
-                    
+
                     <div class="card-body">
                         <?= csrf_field();  ?>
                         <div class="form-group">

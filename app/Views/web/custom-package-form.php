@@ -121,13 +121,34 @@ $edit = in_array('edit', $uri);
         <script>
             currentUrl = '<?= current_url(); ?>';
         </script>
-
+                <?php if(session()->has('warning')) : ?>
+                    <script>
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Wait!',
+                            text: '<?= session('warning') ?>',
+                        });
+                    </script>
+                <?php endif; ?>
+                <?php if(session()->has('success')) : ?>
+                    <script>
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: '<?= session('success') ?>',
+                        });
+                    </script>
+                <?php endif; ?>
+                <?php if(session()->has('failed')) : ?>
+                    <script>
+                        Swal.fire({
+                            icon: 'danger',
+                            title: 'Failed!',
+                            text: '<?= session('failed') ?>',
+                        });
+                    </script>
+                <?php endif; ?>
         <div class="col-md-12 col-12">
-                    <?php if (session()->getFlashdata('pesan')) : ?>
-                        <div class="alert alert-success col-sm-10 mx-auto" role="alert">
-                            <?= session()->getFlashdata('pesan'); ?>
-                        </div>
-                    <?php endif;  ?>
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title text-center"><?= $title; ?></h4>

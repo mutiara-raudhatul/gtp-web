@@ -17,13 +17,8 @@
                             <a href="<?= current_url(); ?>/new" class="btn btn-primary float-end"><i class="fa-solid fa-plus me-3"></i>New Reservation</a>
                         </div>
                         <br><br>
-                        <div class="table-responsive overflow-auto" id="table-user">
-                            <script>
-                                clearMarker();
-                                clearRadius();
-                                clearRoute();
-                            </script>
-                            <table class="table table-hover mb-0 table-lg">
+                        <div class="table-responsive">
+                            <table class="table table-hover dt-head-center">
                                 <thead>
                                     <tr>
                                         <th>#</th>
@@ -56,9 +51,9 @@
                                                     <?php endif; ?>  
                                                 </td>
                                                 <td>
-                                                    <a data-bs-toggle="tooltip" data-bs-placement="bottom" title="More Info" class="btn icon btn-outline-primary mx-1" href="<?=base_url('web/detailreservation/').$item['id']; ?>">
-                                                        <i class="fa-solid fa-circle-info"></i>
-                                                    </a>
+                                                        <a data-bs-toggle="tooltip" data-bs-placement="bottom" title="More Info" class="btn icon btn-outline-primary mx-1" href="<?=base_url('web/detailreservation/').$item['id']; ?>">
+                                                            <i class="fa-solid fa-circle-info"></i>
+                                                        </a>
                                                 </td>
                                                 <td>
                                                     <a data-bs-toggle="tooltip" data-bs-placement="bottom" title="Review" class="btn icon btn-outline-info mx-1" href="<?=base_url('web/detailreservation/review/').$item['id']; ?>">

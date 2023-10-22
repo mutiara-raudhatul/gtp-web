@@ -13,15 +13,39 @@ $addhome = in_array('addhome', $uri);
         <script>
             currentUrl = '<?= current_url(); ?>';
         </script>
-        
+                <?php if(session()->has('warning')) : ?>
+                    <script>
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Wait!',
+                            text: '<?= session('warning') ?>',
+                        });
+                    </script>
+                <?php endif; ?>
+                <?php if(session()->has('success')) : ?>
+                    <script>
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: '<?= session('success') ?>',
+                        });
+                    </script>
+                <?php endif; ?>
+                <?php if(session()->has('failed')) : ?>
+                    <script>
+                        Swal.fire({
+                            icon: 'danger',
+                            title: 'Oops!',
+                            text: '<?= session('failed') ?>',
+                        });
+                    </script>
+                <?php endif; ?>
+
         <!-- Object Detail Information -->
         <div class="col-md-6 col-12">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title text-center">Reservation Package</h4>
-                        <div class="col-auto">
-                            <a href="<?= base_url('dashboard/detailreservation/confirm'); ?>/<?= esc($detail['id']); ?>" class="btn btn-primary float-end"><i class="fa-solid fa-pencil me-3"></i>Confirmation</a>
-                        </div>
                     </div>
                     <div class="card-body">
                         
@@ -222,6 +246,13 @@ $addhome = in_array('addhome', $uri);
                             </div>
                         </div>
                     <!-- end modal add unit homestay -->
+
+
+                    <?php if (in_groups(['user'])) : ?>
+                        <div class="col-auto">
+                            <a href="<?= base_url('/web/reservation'); ?>" class="btn btn-outline-success float-end"><i class="fa-solid fa-check me-3"></i>Done</a>
+                        </div>
+                    <?php endif; ?>
                     </div>
                 </div>
 
@@ -233,6 +264,11 @@ $addhome = in_array('addhome', $uri);
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title text-center">Payment</h4>
+                        <?php if (in_groups(['admin'])) : ?>
+                            <div class="col-auto">
+                                <a href="<?= base_url('dashboard/detailreservation/confirm'); ?>/<?= esc($detail['id']); ?>" class="btn btn-primary"><i class="fa-solid fa-envelope me-3"></i>Confirmation</a>
+                            </div>
+                        <?php endif; ?>
                     </div>
                     <div class="card-body">
                         <div>
@@ -274,7 +310,23 @@ $addhome = in_array('addhome', $uri);
                                                  <?= esc($detail['comment']); ?></td> 
                                         <?php endif; ?>   
                                     </tr>
-                                    <tr><td><br></td></tr>
+                                    <tr>
+                                        <td><br><hr></td>
+                                        <td><br><hr></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                        <?php if($detail['status']=='1'): ?> 
+                                            <p> Pembayaran melalui 
+                                                <ul>
+                                                    <li>Bank Syariah Mandiri (BSI) - Kode 451</li>
+                                                    <li>Nomor rekening:  73492379</li>
+                                                    <li>Atas nama: Green Talao Park</li>
+                                                </ul>
+                                            </p>
+                                        <?php endif; ?>  
+                                        </td> 
+                                    </tr>
                                     <tr>
                                         <?php if($detail['proof_of_deposit']!=null): ?> 
                                             <td>Deposit Payment
@@ -290,11 +342,12 @@ $addhome = in_array('addhome', $uri);
                                     </tr>
                                 </tbody>
                             </table>
-
-                            <!-- upload proof payment -->
+                            
                             <table class="col-12">
                                 <tbody>
                                 <tr>
+                                    <!-- upload proof payment -->
+
                                     <td class="col-md-5 col-12">
                                         <?php if ($detail['status']=='1'):
                                             if($detail['proof_of_deposit']==null): ?>
@@ -320,7 +373,7 @@ $addhome = in_array('addhome', $uri);
                                                                 <div class="row gallery" data-bs-toggle="modal" data-bs-target="#galleryModal">
                                                                         <img class="w-100 active" src="<?= base_url('media/photos/deposit/'); ?><?= $detail['proof_of_deposit'] ?>" data-bs-target="#Gallerycarousel" />
                                                                 </div>
-                                                            <!-- modal -->
+                                                            <!-- modal deposit-->
                                                             <div class="modal fade" id="galleryModal" tabindex="-1" role="dialog" aria-labelledby="galleryModalTitle" aria-hidden="true">
                                                                 <div class="modal-dialog modal-dialog-centered modal-dialog-centered" role="document">
                                                                     <div class="modal-content">
@@ -367,24 +420,26 @@ $addhome = in_array('addhome', $uri);
                                         endif; ?>
                                     </td>
 
+                                    <!-- upload proof payment -->
                                     <td class="col-md-5 col-12">
                                         <?php if ($detail['status']=='1'):
-                                            if($detail['proof_of_payment']==null): ?>
-                                        <form class="form form-vertical" action="<?= base_url('web/reservation/uploadfullpayment/').$detail['id']; ?>" method="post" onsubmit="checkRequired(event)" enctype="multipart/form-data">
-                                            <div class="form-body">
-                                            <div class="col-md-5 col-12">
-                                                        <div class="form-group mb-4">
-                                                            <label for="proof_of_payment" class="form-label">  Proof of Full Payment</label>
-                                                            <input class="form-control" accept="image/*" type="file" name="proof_of_payment" id="proof_of_payment">
+                                            if($detail['proof_of_deposit']!=null): 
+                                                if($detail['proof_of_payment']==null): ?>                                        
+                                                    <form class="form form-vertical" action="<?= base_url('web/reservation/uploadfullpayment/').$detail['id']; ?>" method="post" onsubmit="checkRequired(event)" enctype="multipart/form-data">
+                                                        <div class="form-body">
+                                                        <div class="col-md-5 col-12">
+                                                                    <div class="form-group mb-4">
+                                                                        <label for="proof_of_payment" class="form-label">  Proof of Full Payment</label>
+                                                                        <input class="form-control" accept="image/*" type="file" name="proof_of_payment" id="proof_of_payment">
+                                                                    </div>
+                                                                </div>
+                                                                <div col="col-md-5 col-12">
+                                                                    <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
+                                                                    <button type="reset" class="btn btn-light-secondary me-1 mb-1">Reset</button>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div col="col-md-5 col-12">
-                                                        <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
-                                                        <button type="reset" class="btn btn-light-secondary me-1 mb-1">Reset</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </form>
+                                                    </form>
                                         <?php else: ?>
                                             <div class="col-md-5 col-12">
                                                 <div class="form-group">
@@ -392,7 +447,7 @@ $addhome = in_array('addhome', $uri);
                                                             <div class="row gallery" data-bs-toggle="modal" data-bs-target="#paymentModal">
                                                                     <img class="w-100 active" src="<?= base_url('media/photos/fullpayment/'); ?><?= $detail['proof_of_payment'] ?>" data-bs-target="#Gallerycarousel" />
                                                             </div>
-                                                        <!-- modal -->
+                                                        <!-- modal payment -->
                                                         <div class="modal fade" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="paymentModalTitle" aria-hidden="true">
                                                             <div class="modal-dialog modal-dialog-centered modal-dialog-centered" role="document">
                                                                 <div class="modal-content">
@@ -437,6 +492,7 @@ $addhome = in_array('addhome', $uri);
                                                 
                                             </div>
                                         <?php 
+                                            endif;
                                             endif;
                                             endif; ?>
                                     </td>

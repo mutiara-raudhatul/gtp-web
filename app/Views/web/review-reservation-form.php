@@ -74,15 +74,18 @@ $addhome = in_array('addhome', $uri);
                                         <tr>
                                             <td class="fw-bold">Description</td>
                                         </tr>
-                                        <tr>
-                                            <td><?= esc($data_package['description']); ?></td>
-                                        </tr>
                                     </tbody>  
                                 </table>
+                                <p><?= esc($data_package['description']); ?></p>
                             </div>
                         </div>
 
                         <div class="row">
+                        <?php if($detail['status']==null): ?>
+                            <p class="btn-warning"><i>You can add a review if your reservation is complete</i></p>
+                        <?php elseif($detail['status']=='0'): ?>
+                            <p class="btn-danger"><i>You can't add a review because your reservation rejected</i></p>
+                        <?php elseif($detail['status']==1): ?>
                             <?php if($detail['review']==null): ?>
                                 <form class="form form-vertical" id="customForm" action="<?= base_url('/web/detailreservation/savereview/').$detail['id']; ?>" method="post" onsubmit="checkRequired(event)" enctype="multipart/form-data">
                                     <?= csrf_field();  ?>                                
@@ -104,8 +107,8 @@ $addhome = in_array('addhome', $uri);
                                     <textarea id="review" name="review" class="form-control" rows="4" cols="50" required></textarea><br><br>
                                     <button type="submit" class="btn btn-primary">Send</button>
                                 </form>
-                        </div>
-                        <div class="row">
+                            </div>
+                            <div class="row">
                             <?php else: ?>
                                 <div class="col table-responsive">
                                     <table class="table table-borderless">
@@ -131,6 +134,7 @@ $addhome = in_array('addhome', $uri);
                                     </table>
                                 </div>
                             <?php endif; ?>
+                        <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -142,89 +146,96 @@ $addhome = in_array('addhome', $uri);
                         <h4 class="card-title text-center">Review Homestay</h4>
                     </div>
                     <div class="card-body">
-                        <?php foreach($booking as $db): ?>
-                            <div class="row">
-                                <div class="col table-responsive">
-                                    <table class="table table-borderless">
-                                        <tbody>
-                                            <tr>
-                                                <td class="fw-bold">Homestay Name</td>
-                                                <td><?= esc($db['name']); ?></td>
-                                            </tr>
-                                            <tr>
-                                                <td class="fw-bold">Unit Homestay</td>
-                                                <td><?= esc($db['name_type']); ?> <?= esc($db['unit_number']); ?> <?= esc($db['nama_unit']); ?></td>
-                                            </tr>
-                                            <tr>
-                                                <td class="fw-bold">Price</td>
-                                                <td><?= 'Rp ' . number_format(esc($db['price']), 0, ',', '.'); ?></td>
-                                            </tr>
-                                            <tr>
-                                                <td class="fw-bold">Address</td>
-                                            </tr>
-                                            <tr>
-                                                <td><?= esc($db['address']); ?></td>
-                                            </tr>
-                                        </tbody>  
-                                    </table>
-                                </div>
-                            </div>
+                        <?php foreach($booking as $db):?>
 
-                            <div class="row">
-                                <?php if($db['review']==null): ?>
-                                    <form class="form form-vertical" id="reviewForm" action="<?= base_url('/web/detailreservation/savereviewunit/').$db['date']; ?>" method="post" enctype="multipart/form-data">
-                                        <?= csrf_field();  ?>   
-                                        <input type="hidden" name="date" value="<?= $db['date'] ?>">                             
-                                        <input type="hidden" name="unit_number" value="<?= $db['unit_number'] ?>">                             
-                                        <input type="hidden" name="homestay_id" value="<?= $db['homestay_id'] ?>">                             
-                                        <input type="hidden" name="unit_type" value="<?= $db['unit_type'] ?>">                             
-                                        <label for="rating">Rating:</label>
-                                        <div class="rating">
-                                            <input type="radio" id="star5" name="rating" value="5">
-                                            <label for="star5"><i class="fas fa-star"></i></label>
-                                            <input type="radio" id="star4" name="rating" value="4">
-                                            <label for="star4"><i class="fas fa-star"></i></label>
-                                            <input type="radio" id="star3" name="rating" value="3">
-                                            <label for="star3"><i class="fas fa-star"></i></label>
-                                            <input type="radio" id="star2" name="rating" value="2">
-                                            <label for="star2"><i class="fas fa-star"></i></label>
-                                            <input type="radio" id="star1" name="rating" value="1">
-                                            <label for="star1"><i class="fas fa-star"></i></label>
-                                        </div><br>
-                                        
-                                        <label for="review">Review:</label><br>
-                                        <textarea id="review" name="review" class="form-control" rows="4" cols="50" required></textarea><br><br>
-                                        <button type="submit" class="btn btn-primary">Send</button>
-                                    </form>
-                            </div>
-
-                            <div class="row">
-                                <?php else: ?>
+                                <div class="row">
                                     <div class="col table-responsive">
                                         <table class="table table-borderless">
                                             <tbody>
                                                 <tr>
-                                                    <td class="fw-bold">Rating</td>
-                                                    <td>
-                                                        <div class="rating2">
-                                                        <?php for ($i = 1; $i <= 5; $i++) : ?>
-                                                            <?php if ($i <= $db['rating']) : ?>
-                                                                <i name="rating2" class="fas fa-star"></i>
-                                                            <?php else: ?>
-                                                                <i name="rating2" class="far fa-star"></i>
-                                                            <?php endif; ?>
-                                                        <?php endfor; ?>
-                                                    </td>
+                                                    <td class="fw-bold">Homestay Name</td>
+                                                    <td><?= esc($db['name']); ?></td>
                                                 </tr>
                                                 <tr>
-                                                    <td class="fw-bold">Review</td>
-                                                    <td><?= esc($db['review']); ?></td>
+                                                    <td class="fw-bold">Unit Homestay</td>
+                                                    <td><?= esc($db['name_type']); ?> <?= esc($db['unit_number']); ?> <?= esc($db['nama_unit']); ?></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="fw-bold">Price</td>
+                                                    <td><?= 'Rp ' . number_format(esc($db['price']), 0, ',', '.'); ?></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="fw-bold">Address</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><?= esc($db['address']); ?></td>
                                                 </tr>
                                             </tbody>  
                                         </table>
                                     </div>
-                                <?php endif; ?>
-                            </div>
+                                </div>
+
+                                <div class="row">
+                                <?php if($db['status']==null): ?>
+                                    <p class="btn-warning"><i>You can add a review if your reservation is complete</i></p>
+                                <?php elseif($db['status']=='0'): ?>
+                                    <p class="btn-danger"><i>You can't add a review because your reservation rejected</i></p>
+                                <?php elseif($db['status']==1): ?>
+                                    <?php if($db['review']==null): ?>
+                                        <form class="form form-vertical" id="reviewForm" action="<?= base_url('/web/detailreservation/savereviewunit/').$db['date']; ?>" method="post" enctype="multipart/form-data">
+                                            <?= csrf_field();  ?>   
+                                            <input type="hidden" name="date" value="<?= $db['date'] ?>">                             
+                                            <input type="hidden" name="unit_number" value="<?= $db['unit_number'] ?>">                             
+                                            <input type="hidden" name="homestay_id" value="<?= $db['homestay_id'] ?>">                             
+                                            <input type="hidden" name="unit_type" value="<?= $db['unit_type'] ?>">                             
+                                            <label for="rating">Rating:</label>
+                                            <div class="rating">
+                                                <input type="radio" id="star5" name="rating" value="5">
+                                                <label for="star5"><i class="fas fa-star"></i></label>
+                                                <input type="radio" id="star4" name="rating" value="4">
+                                                <label for="star4"><i class="fas fa-star"></i></label>
+                                                <input type="radio" id="star3" name="rating" value="3">
+                                                <label for="star3"><i class="fas fa-star"></i></label>
+                                                <input type="radio" id="star2" name="rating" value="2">
+                                                <label for="star2"><i class="fas fa-star"></i></label>
+                                                <input type="radio" id="star1" name="rating" value="1">
+                                                <label for="star1"><i class="fas fa-star"></i></label>
+                                            </div><br>
+                                            
+                                            <label for="review">Review:</label><br>
+                                            <textarea id="review" name="review" class="form-control" rows="4" cols="50" required></textarea><br><br>
+                                            <button type="submit" class="btn btn-primary">Send</button>
+                                        </form>
+                                </div>
+
+                                <div class="row">
+                                    <?php else: ?>
+                                        <div class="col table-responsive">
+                                            <table class="table table-borderless">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="fw-bold">Rating</td>
+                                                        <td>
+                                                            <div class="rating2">
+                                                            <?php for ($i = 1; $i <= 5; $i++) : ?>
+                                                                <?php if ($i <= $db['rating']) : ?>
+                                                                    <i name="rating2" class="fas fa-star"></i>
+                                                                <?php else: ?>
+                                                                    <i name="rating2" class="far fa-star"></i>
+                                                                <?php endif; ?>
+                                                            <?php endfor; ?>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="fw-bold">Review</td>
+                                                        <td><?= esc($db['review']); ?></td>
+                                                    </tr>
+                                                </tbody>  
+                                            </table>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endif; ?>
                         <?php endforeach; ?>
                     </div>
                 </div>

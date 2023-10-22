@@ -249,24 +249,26 @@ class DetailReservation extends ResourcePresenter
             }
         }
 
-        $addPA = $this->detailPackageModel->add_new_packageActivity($requestData);
+        $checkExistingData = $this->detailPackageModel->checkIfDataExists($requestData);
 
-        if ($addPA) {
-            // return view('dashboard/detail-package-form');
-            $package = $this->packageModel->get_package_by_id($id)->getRowArray();
+        if ($checkExistingData) {
+            // Data sudah ada, set pesan error flash data
+            session()->setFlashdata('failed', 'Urutan aktivitas tersebut sudah ada.');
 
-            $id=$package['id'];
-            $data = [
-                'title' => 'New Detail Package',
-                'data' => $package
-            ];
-            
-            // return view('dashboard/detail-package-form', $data);
-
-            return redirect()->back();
-        } else {
             return redirect()->back()->withInput();
+        } else {
+            // Data belum ada, jalankan query insert
+            $addPA = $this->detailPackageModel->add_new_packageActivity($requestData);
+
+            if ($addPA) {
+                session()->setFlashdata('success', 'Aktivitas tersebut berhasil ditambahkan.');
+
+                return redirect()->back();
+            } else {
+                return redirect()->back()->withInput();
+            }
         }
+
     }
 
 
@@ -522,28 +524,41 @@ class DetailReservation extends ResourcePresenter
             }
         }
 
-        $addDR = $this->detailReservationModel->add_new_detail_reservation($requestData);
+        $checkExistingData = $this->detailReservationModel->checkIfDataExists($requestData);
 
-        if ($addDR) {
-            $data_unit = $this->unitHomestayModel->get_unit_homestay_selected($requestData['unit_number'],$requestData['homestay_id'], $requestData['unit_type'])->getRowArray();
-            $datareservation = $this->reservationModel->get_reservation_by_id($requestData['reservation_id'])->getRowArray();
+        if ($checkExistingData) {
+            // Data sudah ada, set pesan error flash data
+            session()->setFlashdata('failed', 'Homestay tersebut sudah dibooking.');
 
-            $new_price = $datareservation['total_price']+$data_unit['price'];
-            $new_deposit= $new_price/2;
-
-            $id=$requestData['reservation_id'];
-            $requestData=[
-                'total_price' => $new_price,
-                'deposit' => $new_deposit,
-            ];
-
-            // dd($id, $requestData);
-            $updateR = $this->reservationModel->update_reservation($id, $requestData);
-
-            return redirect()->back();
-        } else {
             return redirect()->back()->withInput();
+        } else {
+            // Data belum ada, jalankan query insert
+            $addDR = $this->detailReservationModel->add_new_detail_reservation($requestData);
+
+            if ($addDR) {
+                session()->setFlashdata('success', 'Unit homestay tersebut berhasil ditambahkan.');
+
+                $data_unit = $this->unitHomestayModel->get_unit_homestay_selected($requestData['unit_number'],$requestData['homestay_id'], $requestData['unit_type'])->getRowArray();
+                $datareservation = $this->reservationModel->get_reservation_by_id($requestData['reservation_id'])->getRowArray();
+
+                $new_price = $datareservation['total_price']+$data_unit['price'];
+                $new_deposit= $new_price/2;
+
+                $id=$requestData['reservation_id'];
+                $requestData=[
+                    'total_price' => $new_price,
+                    'deposit' => $new_deposit,
+                ];
+
+                // dd($id, $requestData);
+                $updateR = $this->reservationModel->update_reservation($id, $requestData);
+
+                return redirect()->back();
+            } else {
+                return redirect()->back()->withInput();
+            }
         }
+
     }
 
 
@@ -741,7 +756,7 @@ class DetailReservation extends ResourcePresenter
                 $unit_number=$booking['unit_number'];
                 $reservation_id=$booking['reservation_id'];
 
-                $data_unit_booking = $this->detailReservationModel->get_unit_homestay_booking_data($homestay_id,$unit_type,$unit_number,$reservation_id)->getResultArray();
+                $data_unit_booking = $this->detailReservationModel->get_unit_homestay_booking_data_reservation($homestay_id,$unit_type,$unit_number,$reservation_id)->getResultArray();
             }
         } else{
             $data_unit_booking=[];

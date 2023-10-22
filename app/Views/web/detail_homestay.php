@@ -69,27 +69,33 @@
                                     <div class="card-body">
                                         <h5 class="card-title"> <?= esc($item['name_type']); ?> <?= esc($item['nama_unit']); ?> <?= esc($item['unit_number']); ?></h5>
                                         <div class="rating text-center ">
-                                            <?php foreach($rating as $rate): ?>
-                                                <?php if($rate['unit_number']==$item['unit_number'] && $rate['homestay_id']==$item['homestay_id'] && $rate['unit_type']==$item['unit_type']): ?>
-                                                    <?php for ($i = 1; $i <= 5; $i++) : ?>
-                                                        <?php if ($i <= $rate['rating']) : ?>
-                                                            <i name="rating" class="fas fa-star"></i>
-                                                        <?php else: ?>
-                                                            <i name="rating" class="far fa-star"></i>
+                                                <?php foreach($rating as $date): ?>
+                                                    <?php foreach($date as $dt => $rate): ?>
+                                                        <?php if($rate['rating']!=null): ?>
+                                                            <?php if($rate['unit_number']==$item['unit_number'] && $rate['homestay_id']==$item['homestay_id'] && $rate['unit_type']==$item['unit_type']): ?>
+                                                                <?php for ($i = 1; $i <= 5; $i++) : ?>
+                                                                    <?php if ($i <= $rate['rating']) : ?>
+                                                                        <i name="rating" class="fas fa-star"></i>
+                                                                    <?php else: ?>
+                                                                        <i name="rating" class="far fa-star"></i>
+                                                                    <?php endif; ?>
+                                                                <?php endfor; ?>
+                                                            <?php endif; ?>
                                                         <?php endif; ?>
-                                                    <?php endfor; ?>
-                                                <?php endif; ?>
-                                            <?php endforeach; ?>
+                                                    <?php endforeach; ?>
+                                                <?php endforeach; ?>
                                         </div>
                                         <p class="card-text">
                                             Price : <?= 'Rp ' . number_format(esc($item['price']), 0, ',', '.'); ?> <br>
                                             Capacity : <?= esc($item['capacity']); ?> orang
                                         </p>
+
+                                        <p class="card-text"><?= esc($item['description']); ?></p>
                                         <p class="card-text">Facility :
                                             <?php if (isset($facility)) : ?>                      
                                                 <?php foreach ($facility as $dt_fc) : ?>
                                                     <?php foreach ($dt_fc as $dt) : ?>
-                                                        <?php if ($dt['unit_homestay_id']==$item['id']): ?>
+                                                        <?php if($dt['unit_number']==$item['unit_number'] && $dt['homestay_id']==$item['homestay_id'] && $dt['unit_type']==$item['unit_type']): ?>
                                                         <li>
                                                              <?= esc($dt['name']); ?> (<?= esc($dt['description']); ?>)
                                                         </li>
@@ -98,63 +104,33 @@
                                                 <?php endforeach; ?>
                                             <?php endif; ?>
                                         </p>
-                                        <p class="card-text"><?= esc($item['description']); ?></p>
-                                        <button type="button" class="btn btn-outline-info " data-bs-toggle="modal" data-bs-target="#reviewModal" data-bs-whatever="@getbootstrap"><i class="fa fa-comments"></i></button>
-
-                                        <br> <br>
-
-                                        <div class="modal fade" id="reviewModal" tabindex="-1" role="dialog" aria-labelledby="reviewModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="reviewModalLabel">Review </h5>
-                                                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                                            <span aria-hidden="true">&times;</span>
+                                        <?php foreach ($review as $dt) : ?>
+                                            <?php foreach ($dt as $value => $d) : ?>
+                                                <?php if($d['unit_number']==$item['unit_number'] && $d['homestay_id']==$item['homestay_id'] && $d['unit_type']==$item['unit_type']): ?>
+                                                    <p class="d-inline-flex gap-1">
+                                                        <button class="btn btn-outline-info" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                                                            <i class="fa fa-comments"></i>
                                                         </button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <!-- Isi form review di sini -->
-                                                        <?php if($review==null): ?>
-                                                            <p class="text-center"><i>There are no reviews yet</i></p>
-                                                        <?php endif; ?>
-                                                        <div class="row">
-                                                            <div class="col">
-                                                                <?php foreach ($review as $dt) : ?>
-                                                                    <?php foreach ($dt as $d) : ?>
-                                                                        <?php if($d['unit_number']==$item['unit_number'] && $d['homestay_id']==$item['homestay_id'] && $d['unit_type']==$item['unit_type']): ?>
-                                                                            <strong>@<?= esc($d['username']) ?></strong>
-                                                                            <br>
-                                                                            <div>Rating  :
-                                                                                <div class="rating text-center ">
-                                                                                    <?php for ($i = 1; $i <= 5; $i++) : ?>
-                                                                                        <?php if ($i <= $d['rating']) : ?>
-                                                                                            <i name="rating" class="fas fa-star"></i>
-                                                                                        <?php else: ?>
-                                                                                            <i name="rating" class="far fa-star"></i>
-                                                                                        <?php endif; ?>
-                                                                                    <?php endfor; ?>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div>Review  : <?= esc($d['review']) ?></div>
-                                                                            <hr>
+                                                    </p>
+                                                    <div class="collapse" id="collapseExample">
+                                                        <div class="card card-body">
+                                                            <strong>@<?= esc($d['username']) ?></strong>
+                                                            <div class="rating2 ">Rating  :
+                                                                    <?php for ($i = 1; $i <= 5; $i++) : ?>
+                                                                        <?php if ($i <= $d['rating']) : ?>
+                                                                            <i name="rating2" class="fas fa-star"></i>
+                                                                        <?php else: ?>
+                                                                            <i name="rating2" class="far fa-star"></i>
                                                                         <?php endif; ?>
-                                                                    <?php endforeach; ?>
-                                                                <?php endforeach; ?>
-                                                                </p>
-                                                                <br> 
+                                                                    <?php endfor; ?>
                                                             </div>
+                                                            <div>Review  : <?= esc($d['review']) ?></div>
+                                                            <hr>
                                                         </div>
                                                     </div>
-                                                    <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                                        Close
-                                                    </button>                                                    
-                                                </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <a href="#" class="btn btn-primary">Status (perbaiki db pindah dari homestay ke unit)<?= esc($data['status']); ?></a>
+                                                <?php endif; ?>
+                                            <?php endforeach; ?>
+                                        <?php endforeach; ?>
                                     </div>
                                 </div>
                             </div>

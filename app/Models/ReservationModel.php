@@ -35,6 +35,18 @@ class ReservationModel extends Model
         return $query;
     }
 
+    public function get_list_reservation_by_user($username) {
+        $query = $this->db->table($this->table)
+            ->select("`reservation.id`, `reservation.user_id`, `users.username`,`reservation.package_id`, `package.name`, `reservation.request_date`, `reservation.check_in`, `reservation.check_out`, `reservation.status`,`reservation.confirmation_date`,`reservation.comment`,`users.username` ")
+            ->join('package', 'reservation.package_id = package.id')
+            ->join('users', 'reservation.user_id = users.id')
+            ->orderBy('reservation.id', 'ASC')
+            ->where('users.username', $username)
+            ->get();
+
+        return $query;
+    }
+
     public function get_reservation_by_id($id = null)
     {
         $query = $this->db->table($this->table)

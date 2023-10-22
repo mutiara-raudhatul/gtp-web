@@ -67,6 +67,20 @@
                                 ?></p>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col">
+                            <p class="fw-bold">Facility</p>
+                            <p>
+                                <?php if (isset($facilityhome)) : ?>                      
+                                    <?php foreach ($facilityhome as $dt_fc) : ?>
+                                        <li>
+                                            <?= esc($dt_fc['name']); ?> (<?= esc($dt_fc['description']); ?>)
+                                        </li>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -83,38 +97,33 @@
                                     <div class="card-body">
                                         <h5 class="card-title"> <?= esc($item['name_type']); ?> <?= esc($item['nama_unit']); ?> <?= esc($item['unit_number']); ?></h5>
                                         <div class="rating text-center ">
-                                            <?php foreach($rating as $dt => $rate): ?>
-                                                <?php if(empty($rate['rating'])): ?>
-                                                    <i name="rating" class="far fa-star"></i>
-                                                    <i name="rating" class="far fa-star"></i>
-                                                    <i name="rating" class="far fa-star"></i>
-                                                    <i name="rating" class="far fa-star"></i>
-                                                    <i name="rating" class="far fa-star"></i>
-                                                <?php endif; ?>   
-                                            <?php endforeach; ?> 
-
-                                            <?php foreach($rating as $rate): ?>
-                                                <?php if($rate['unit_number']==$item['unit_number'] && $rate['homestay_id']==$item['homestay_id'] && $rate['unit_type']==$item['unit_type']): ?>
-                                                    <?php for ($i = 1; $i <= 5; $i++) : ?>
-                                                        <?php if ($i <= $rate['rating']) : ?>
-                                                            <i name="rating" class="fas fa-star"></i>
-                                                        <?php else: ?>
-                                                            <i name="rating" class="far fa-star"></i>
+                                                <?php foreach($rating as $date): ?>
+                                                    <?php foreach($date as $dt => $rate): ?>
+                                                        <?php if($rate['rating']!=null): ?>
+                                                            <?php if($rate['unit_number']==$item['unit_number'] && $rate['homestay_id']==$item['homestay_id'] && $rate['unit_type']==$item['unit_type']): ?>
+                                                                <?php for ($i = 1; $i <= 5; $i++) : ?>
+                                                                    <?php if ($i <= $rate['rating']) : ?>
+                                                                        <i name="rating" class="fas fa-star"></i>
+                                                                    <?php else: ?>
+                                                                        <i name="rating" class="far fa-star"></i>
+                                                                    <?php endif; ?>
+                                                                <?php endfor; ?>
+                                                            <?php endif; ?>
                                                         <?php endif; ?>
-                                                    <?php endfor; ?>
-                                                <?php endif; ?>
-                                            <?php endforeach; ?>
+                                                    <?php endforeach; ?>
+                                                <?php endforeach; ?>
                                         </div>
                                         <br><br>
                                         <p class="card-text">
                                             Price : <?= 'Rp ' . number_format(esc($item['price']), 0, ',', '.'); ?> <br>
                                             Capacity : <?= esc($item['capacity']); ?> orang
                                         </p>
+                                        <p class="card-text"><?= esc($item['description']); ?></p>
                                         <p class="card-text">Facility :
                                             <?php if (isset($facility)) : ?>                      
                                                 <?php foreach ($facility as $dt_fc) : ?>
                                                     <?php foreach ($dt_fc as $dt) : ?>
-                                                        <?php if ($dt['unit_homestay_id']==$item['id']): ?>
+                                                        <?php if($dt['unit_number']==$item['unit_number'] && $dt['homestay_id']==$item['homestay_id'] && $dt['unit_type']==$item['unit_type']): ?>
                                                         <li>
                                                              <?= esc($dt['name']); ?> (<?= esc($dt['description']); ?>)
                                                         </li>
@@ -123,7 +132,6 @@
                                                 <?php endforeach; ?>
                                             <?php endif; ?>
                                         </p>
-                                        <p class="card-text"><?= esc($item['description']); ?></p>
                                         <?php foreach ($review as $dt) : ?>
                                             <?php foreach ($dt as $value => $d) : ?>
                                                 <?php if($d['unit_number']==$item['unit_number'] && $d['homestay_id']==$item['homestay_id'] && $d['unit_type']==$item['unit_type']): ?>

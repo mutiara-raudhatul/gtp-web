@@ -3,6 +3,7 @@
 namespace App\Controllers\Web;
 
 use App\Models\PackageModel;
+use App\Models\PackageDayModel;
 use App\Models\DetailPackageModel;
 use App\Models\GalleryPackageModel;
 use App\Models\PackageTypeModel;
@@ -16,6 +17,7 @@ class Package extends ResourcePresenter
 {
     protected $packageModel;
     protected $detailPackageModel;
+    protected $packageDayModel;
     protected $galleryPackageModel;
     protected $packageTypeModel;
     protected $servicePackageModel;
@@ -35,6 +37,7 @@ class Package extends ResourcePresenter
     public function __construct()
     {
         $this->packageModel = new PackageModel();
+        $this->packageDayModel = new PackageDayModel();
         $this->detailPackageModel = new DetailPackageModel();
         $this->galleryPackageModel = new GalleryPackageModel();
         $this->packageTypeModel = new PackageTypeModel();
@@ -88,11 +91,11 @@ class Package extends ResourcePresenter
 
         $detailPackage = $this->detailPackageModel->get_detailPackage_by_id($id)->getResultArray();
         
-        $getday = $this->detailPackageModel->get_day_by_package($id)->getResultArray();
+        $getday = $this->packageDayModel->get_list_package_day($id)->getResultArray();
 
-        foreach ($getday as $day){
-            $getactivityday = $this->detailPackageModel->get_activity_day($id, $day)->getResultArray();
-        }
+        // foreach ($getday as $day){
+        //     $getactivityday = $this->detailPackageModel->get_activity_day($id, $day)->getResultArray();
+        // }
 
         $combinedData = $this->detailPackageModel->getCombinedData($id);
         $routeData = $this->detailPackageModel->getRouteData();

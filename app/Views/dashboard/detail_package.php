@@ -134,17 +134,19 @@
                         <br>
                         <div class="btn-group float-right" role="group">
                             <?php foreach ($day as $d) : ?>
+                                <?php  $loop = 0; ?>
                                 <?php $activitiesForDay = array_filter($activity, function($activity) use ($d) {
                                     return $activity['day'] === $d['day'];
                                 }); ?>
                                 <?php if (!empty($activitiesForDay)): ?>
                                     <?php foreach ($activity as $index => $currentActivity) :?>
+                                        <?php  $loop++; ?>
                                         <?php if ($currentActivity['day'] === $d['day']) : ?>
 
                                                 <?php if (isset($activity[$index + 1])): 
                                                     $nextActivity = $activity[$index + 1];
                                                 ?>    
-                                                    <button type="button" onclick="routeBetweenObjects(<?= $currentActivity['lat'] ?>, <?= $currentActivity['lng'] ?>, <?= $nextActivity['lat']?>, <?= $nextActivity['lng'] ?>)" class="btn btn-outline-primary"><i class="fa fa-road"></i> Day <?= esc($d['day']);?></button>
+                                                    <button type="button" onclick="routeBetweenObjects(<?= $currentActivity['lat'] ?>, <?= $currentActivity['lng'] ?>, <?= $nextActivity['lat']?>, <?= $nextActivity['lng'] ?>)" class="btn btn-outline-primary"><i class="fa fa-road"></i> Day <?= esc($currentActivity['day']);?> Activity <?= esc($currentActivity['activity']);?></button>
                                                 <?php endif; ?>    
 
                                         <?php endif; ?>
@@ -160,7 +162,7 @@
                 <?php foreach($day as $d) : ?>
                     <?php foreach($activity as $ac) : ?>
                     <script>
-                        objectMarker("<?= esc($ac['object_id']); ?>", <?= esc($ac['lat']); ?>, <?= esc($ac['lng']); ?>);
+                        objectMarker("<?= esc($ac['object_id']); ?>", <?= esc($ac['lat']); ?>, <?= esc($ac['lng']); ?>, true, <?= $loop; ?>);
                     </script>
                     <?php endforeach; ?>
                 <?php endforeach; ?>

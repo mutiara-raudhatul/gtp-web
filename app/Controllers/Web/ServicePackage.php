@@ -165,7 +165,7 @@ class ServicePackage extends ResourcePresenter
             $addSP = $this->detailServicePackageModel->add_new_detail_service($id, $requestData);
        
             if ($addSP) {
-                session()->setFlashdata('success', 'Fasilitas Homestay tersebut berhasil ditambahkan.');
+                session()->setFlashdata('success', 'Service package tersebut berhasil ditambahkan.');
 
                 return redirect()->back();
             } else {

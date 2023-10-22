@@ -79,4 +79,14 @@ class Event extends ResourceController
             //     return $this->failNotFound($response);
         }
     }
+
+    public function maps() {
+        $contents = $this->eventModel->get_list_event_api()->getResultArray();
+        $data = [
+            'title' => 'Event',
+            'data' => $contents,
+        ];
+        // dd($data);
+        return view('maps/event', $data);
+    }
 }

@@ -342,6 +342,8 @@ function routeBetweenObjects(startLat, startLng, endLat, endLng) {
     boundToRoute(start, end);
 }
 
+
+
 // Display tourism attraction digitizing
 // Tracking Mangrove
 function digitTracking() {
@@ -593,13 +595,13 @@ function objectInfoWindow(id){
                 let name = data.name;
                 let lat = data.lat;
                 let lng = data.lng;
-                let price = (data.price == 0) ? 'Free' : 'Rp ' + data.price;
+                let contact_person = (data.contact_person == 0) ? '-' : data.contact_person;
                 let address = data.address;
 
                 content =
                     '<div class="text-center">' +
                     '<p class="fw-bold fs-6">'+ name +'</p> <br>' +
-                    '<p><i class="fa-solid fa-money-bill me-2"></i> '+ price +'</p>' +
+                    '<p><i class="fa-solid fa-phone me-2"></i> '+ contact_person +'</p>' +
                     '<p><i class="fa-solid fa-map-pin"></i> '+ address +'</p>' +
                     '</div>';
                 contentButton =

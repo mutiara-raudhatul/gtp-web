@@ -29,7 +29,7 @@ class HomestayModel extends Model
     public function get_list_homestay()
     {
         $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
-        $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.address,{$this->table}.contact_person,{$this->table}.description,{$this->table}.status";
+        $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.address,{$this->table}.contact_person,{$this->table}.description";
         $query = $this->db->table($this->table)
             ->select("{$columns}, {$coords}")
             ->get();
@@ -39,7 +39,7 @@ class HomestayModel extends Model
     // public function get_homestay_by_id($id = null)
     // {
     //     $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
-    //     $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.address,{$this->table}.price,{$this->table}.contact_person,{$this->table}.description,{$this->table}.status";
+    //     $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.address,{$this->table}.price,{$this->table}.contact_person,{$this->table}.description";
     //     $query = $this->db->table($this->table)
     //         ->select("{$columns}, {$coords}")
     //         ->where('id', $id)
@@ -52,7 +52,7 @@ class HomestayModel extends Model
     public function get_homestay_by_id($id = null)
     {
         $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
-        $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.address,{$this->table}.contact_person,{$this->table}.description,{$this->table}.status";
+        $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.address,{$this->table}.contact_person,{$this->table}.description";
         $geoJson = "ST_AsGeoJSON({$this->table}.geom) AS geoJson";
         $query = $this->db->table($this->table)
             ->select("{$columns}, {$coords}, {$geoJson}")
@@ -70,7 +70,7 @@ class HomestayModel extends Model
                     * cos(radians(ST_X(ST_CENTROID({$this->table}.geom))) - radians({$long})) 
                     + sin(radians({$lat}))* sin(radians(ST_Y(ST_CENTROID({$this->table}.geom))))))";
         $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
-        $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.address,{$this->table}.contact_person,{$this->table}.description,{$this->table}.status";
+        $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.address,{$this->table}.contact_person,{$this->table}.description";
         $query = $this->db->table($this->table)
             ->select("{$columns}, {$coords}, {$distance} as distance")
             ->having(['distance <=' => $radius])
@@ -119,4 +119,30 @@ class HomestayModel extends Model
             ->update();
         return $query;
     }
+
+    public function get_list_hm_apii() {
+        $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
+        $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.address,{$this->table}.contact_person,{$this->table}.description";
+        $vilGeom = "village.id = '1' AND ST_Contains(village.geom, {$this->table}.geom)";
+        $query = $this->db->table($this->table)
+            ->select("{$columns}, {$coords}")
+            ->from('village')
+            ->where($vilGeom)
+            ->get();
+        return $query;
+    }
+
+    public function get_list_hm_api() {
+        $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
+        $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.address,{$this->table}.contact_person,{$this->table}.description";
+        // $vilGeom = "village.id = '1' AND ST_Contains(village.geom, {$this->table}.geom)";
+        $query = $this->db->table($this->table)
+            ->select("{$columns}, {$coords}")
+            ->from('village')
+            // ->where($vilGeom)
+            ->distinct()
+            ->get();
+        return $query;
+    }
+
 }
