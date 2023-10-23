@@ -30,6 +30,8 @@ class UnitHomestayModel extends Model
             ->select('*')
             ->join('homestay', 'unit_homestay.homestay_id=homestay.id')
             ->join('homestay_unit_type', 'unit_homestay.unit_type=homestay_unit_type.id')
+            ->orderby('homestay.id', 'ASC')
+            ->orderby('homestay_unit_type.id', 'ASC')
             ->get();
         return $query;
     }

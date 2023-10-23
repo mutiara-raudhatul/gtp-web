@@ -63,6 +63,7 @@ class PackageModel extends Model
             ->join('package_type', 'package.type_id = package_type.id')
             ->join('package_day', 'package.id = package_day.package_id')
             ->select('package_type.type_name, package_day.day')
+            ->where('type_name <>', 'custom')
             ->groupby('package.id')
             ->get();
         return $query;

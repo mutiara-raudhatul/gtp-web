@@ -3,6 +3,7 @@
 namespace App\Controllers\Web;
 
 use App\Models\ReservationModel;
+use App\Models\DetailReservationModel ;
 use App\Models\UnitHomestayModel;
 use App\Models\PackageModel;
 use App\Models\PackageDayModel;
@@ -12,6 +13,7 @@ use CodeIgniter\Files\File;
 class Reservation extends ResourcePresenter
 {
     protected $reservationModel;
+    protected $detailReservationModel ;
     protected $unitHomestayModel;
     protected $packageModel;
     protected $packageDayModel;
@@ -29,6 +31,7 @@ class Reservation extends ResourcePresenter
     public function __construct()
     {
         $this->reservationModel = new ReservationModel();
+        $this->detailReservationModel = new DetailReservationModel ();
         $this->unitHomestayModel = new UnitHomestayModel();
         $this->packageModel = new PackageModel();
         $this->packageDayModel = new PackageDayModel();
@@ -425,6 +428,41 @@ dd($contents);
             ]
         ];
         return $this->respond($response, 400);
+    }
+
+
+    public function delete($id=null, $package_id=null, $user_id=null)
+    {
+        $request = $this->request->getPost();
+
+        $id=$request['id'];
+        $package_id=$request['package_id'];
+        $user_id=$request['user_id'];
+
+        $array1 = array('reservation_id' => $id);
+        $detailReservation = $this->detailReservationModel->where($array1)->find();
+        $deleteDR= $this->detailReservationModel->where($array1)->delete();
+
+        if ($deleteDR) {
+            //jika success
+            $array2 = array('id' => $id, 'package_id' => $package_id,'user_id'=>$user_id);
+            $reservation = $this->reservationModel->where($array2)->find();
+            // dd($packageDay);
+            $deleteRE= $this->reservationModel->where($array2)->delete();
+
+            if($deleteRE){
+                session()->setFlashdata('success', 'Reservation "'.$id.'" Berhasil di Hapus.');
+                return redirect()->back();
+            }
+        } else {
+            $response = [
+                'status' => 404,
+                'message' => [
+                    "Package not found"
+                ]
+            ];
+            return $this->failNotFound($response);
+        }    
     }
 
 }

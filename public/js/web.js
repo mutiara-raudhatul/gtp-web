@@ -1939,7 +1939,7 @@ function deleteObject(id = null, name = null, user = false) {
     } else if (id.substring(0,1) === 'S') {
         content = 'Admin';
         apiUri = 'admin/'
-    } else if (id.substring(0,3) === 'R') {
+    } else if (id.substring(0,7) === 'R') {
         content = 'Reservation';
         apiUri = 'reservation/'
     } else if (user === true) {

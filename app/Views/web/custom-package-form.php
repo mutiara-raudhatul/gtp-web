@@ -321,7 +321,7 @@ $edit = in_array('edit', $uri);
                                             </div>
                                             <div class="col-sm-2 ">
                                                 <div class="btn-group float-end" role="group" aria-label="Basic example">
-                                                    <button type="button" class="btn btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap"><i class="material-icons">&#xE254;</i></button>                                                            
+                                                    <!-- <button type="button" class="btn btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap"><i class="material-icons">&#xE254;</i></button>                                                             -->
                                                     <form action="<?= base_url('web/detailreservation/deleteday') . '/' . $key['package_id']; ?>" method="post" class="d-inline">
                                                         <?= csrf_field(); ?>
                                                         <input type="hidden" name="package_id" value="<?= esc($key['package_id']); ?>">

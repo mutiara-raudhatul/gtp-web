@@ -248,11 +248,9 @@ $addhome = in_array('addhome', $uri);
                     <!-- end modal add unit homestay -->
 
 
-                    <?php if (in_groups(['user'])) : ?>
                         <div class="col-auto">
                             <a href="<?= base_url('/web/reservation'); ?>" class="btn btn-outline-success float-end"><i class="fa-solid fa-check me-3"></i>Done</a>
                         </div>
-                    <?php endif; ?>
                     </div>
                 </div>
 

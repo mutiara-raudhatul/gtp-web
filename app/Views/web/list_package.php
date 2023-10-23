@@ -30,9 +30,6 @@
                                         <?php $i = 1; ?>
                                         <?php foreach ($data as $item) : ?>
                                             <tr>
-                                                <script>
-                                                    objectMarker("<?= esc($item['id']); ?>", <?= esc($item['lat']); ?>, <?= esc($item['lng']); ?>);
-                                                </script>
                                                 <td><?= esc($i); ?></td>
                                                 <td><?= esc($item['name']); ?></td>
                                                 <td><?= esc($item['type_name']); ?></td>
@@ -46,9 +43,6 @@
                                                 <?php $i++ ?>
                                             </tr>
                                         <?php endforeach; ?>
-                                        <script>
-                                            boundToObject();
-                                        </script>
                                     <?php endif; ?>
                                 </tbody>
                             </table>
@@ -65,11 +59,4 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('javascript') ?>
-<script>
-    $('#direction-row').hide();
-    $('#check-track-col').hide();
-    $('#check-nearby-col').hide();
-    $('#result-track-col').hide();
-    $('#result-nearby-col').hide();
-</script>
 <?= $this->endSection() ?>
