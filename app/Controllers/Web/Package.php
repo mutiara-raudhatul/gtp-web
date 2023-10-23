@@ -56,7 +56,7 @@ class Package extends ResourcePresenter
      */
     public function index()
     {
-        $contents = $this->packageModel->get_list_package()->getResultArray();
+        $contents = $this->packageModel->get_list_package_default()->getResultArray();
         $data = [
             'title' => 'Package',
             'data' => $contents,
@@ -161,6 +161,7 @@ class Package extends ResourcePresenter
             'id' => $id,
             'name' => $request['name'],
             'type_id' => $request['type'],
+            'min_capacity' => $request['min_capacity'],
             'price' => $request['price'],
             'description' => $request['description'],
             'contact_person' => $request['contact_person'],
@@ -172,8 +173,8 @@ class Package extends ResourcePresenter
             }
         }
 
-        $geom = $request['multipolygon'];
-        $geojson = $request['geo-json'];
+        // $geom = $request['multipolygon'];
+        // $geojson = $request['geo-json'];
 
         if (isset($request['video'])) {
             $folder = $request['video'];
@@ -186,7 +187,7 @@ class Package extends ResourcePresenter
             $requestData['video_url'] = $vidFile->getFilename();
         }
         
-        $addPA = $this->packageModel->add_new_package($requestData, $geom);
+        $addPA = $this->packageModel->add_new_package($requestData);
 
         // $detailService=$request['service'];
 
@@ -292,6 +293,7 @@ class Package extends ResourcePresenter
             'id' => $id,
             'name' => $request['name'],
             'type_id' => $request['type'],
+            'min_capacity' => $request['min_capacity'],
             'price' => $request['price'],
             'description' => $request['description'],
             'contact_person' => $request['contact_person']
@@ -302,7 +304,7 @@ class Package extends ResourcePresenter
             }
         }
 
-        $geom = $request['multipolygon'];
+        // $geom = $request['multipolygon'];
         // $geojson = $request['geo-json'];
 
         if (isset($request['video'])) {
@@ -318,7 +320,7 @@ class Package extends ResourcePresenter
             $requestData['video_url'] = null;
         }
         $updatePA = $this->packageModel->update_package($id, $requestData);
-        $updateGeom = $this->packageModel->update_geom($id, $geom);
+        // $updateGeom = $this->packageModel->update_geom($id, $geom);
 
         if (isset($request['gallery'])) {
             $folders = $request['gallery'];

@@ -61,7 +61,7 @@ function initMap(lat = -0.7102134517843606, lng = 100.19420485758688) {
     directionsService = new google.maps.DirectionsService();
     const center = new google.maps.LatLng(lat, lng);
     map = new google.maps.Map(document.getElementById("googlemaps"), {
-        zoom: 17,
+        zoom: 16,
         center: center,
         mapTypeId: 'roadmap',
     });
@@ -318,6 +318,7 @@ function routeAllActivitiesInDay(activities) {
 function routeBetweenObjects(startLat, startLng, endLat, endLng) {
     clearRadius();
     clearRoute();
+    initMap();
     google.maps.event.clearListeners(map, 'click');
     
     // Create LatLng objects for the start and end coordinates
@@ -327,7 +328,7 @@ function routeBetweenObjects(startLat, startLng, endLat, endLng) {
     let request = {
         origin: start,
         destination: end,
-        travelMode: 'DRIVING'
+        travelMode: 'DRIVING' 
     };
 
     directionsService.route(request, function(result, status) {
@@ -742,7 +743,7 @@ function boundToRoute(start, end) {
     bounds = new google.maps.LatLngBounds();
     bounds.extend(start);
     bounds.extend(end);
-    map.panToBounds(bounds, 100);
+
 }
 
 // Add user position to map bound

@@ -57,6 +57,7 @@ $edit = in_array('edit', $uri);
                     <br>
                 <!-- end button modal -->
 
+
                 <!-- modal add unit homestay -->
                     <div class="modal fade" id="unitHomestayModal" tabindex="-1" aria-labelledby="unitHomestayModalLabel" aria-hidden="true">
                         <div class="modal-dialog">
@@ -115,10 +116,10 @@ $edit = in_array('edit', $uri);
                                                 </div>
                                             </div>
                                         </div>
-                                        <!-- <div class="form-group mb-4">
+                                        <div class="form-group mb-4">
                                             <label for="gallery" class="form-label">Gallery</label>
                                             <input class="form-control" accept="image/*" type="file" name="gallery[]" id="gallery" multiple>
-                                        </div> -->
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -237,6 +238,67 @@ $edit = in_array('edit', $uri);
                                 <div class="col-sm-6">
                                     <div class="card border border-primary-subtle p-2 mb-2">
                                         <div class="card-body">
+                                            <div class="btn-group float-end" role="group" aria-label="Basic mixed styles example">
+                                                <button type="button" class="btn btn-outline-primary float-end" data-bs-toggle="modal" data-bs-target="#exampleModal<?=esc($itemunit['unit_number'])?><?=esc($itemunit['unit_type'])?>" data-bs-whatever="@getbootstrap"><i class="fa fa-photo"></i></button>
+                                                <button type="button" id="editButtonUnit" class="btn btn btn-outline-warning btn-sm float-end" data-bs-toggle="modal" data-bs-target="#editUnitHomestayModal<?=esc($itemunit['unit_number'])?><?=esc($itemunit['unit_type'])?>"  data-bs-whatever="@getbootstrap"><i class="material-icons">&#xE254;</i></button>                                                            
+                                                <form action="<?= base_url('dashboard/unithomestay/delete/').$itemunit['nama_unit']; ?>" method="post" class="d-inline">
+                                                    <?= csrf_field(); ?>
+                                                    <input type="hidden" name="homestay_id" value="<?= esc($itemunit['homestay_id']); ?>">
+                                                    <input type="hidden" name="unit_type" value="<?= esc($itemunit['unit_type']); ?>">
+                                                        <input type="hidden" name="unit_number" value="<?= esc($itemunit['unit_number']); ?>">                                                    
+                                                        <input type="hidden" name="nama_unit" value="<?= esc($itemunit['nama_unit']); ?>">
+                                                    <input type="hidden" name="description" value="<?= esc($itemunit['description']); ?>">
+                                                    <input type="hidden" name="price" value="<?= esc($itemunit['price']); ?>">
+                                                    <input type="hidden" name="capacity" value="<?= esc($itemunit['capacity']); ?>">
+                                                    <input type="hidden" name="_method" value="DELETE">
+                                                    <button type="submit" class="btn btn-outline-danger btn-sm float-end" onclick="return confirm('apakah anda yakin akan menghapus?');"><i class="material-icons">&#xE872;</i></button>
+                                                </form>
+                                            </div>
+
+                                            <!-- modal foto unit -->
+                                            <div class="modal fade" id="exampleModal<?=esc($itemunit['unit_number'])?><?=esc($itemunit['unit_type'])?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Gallery Unit</h1>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                            <div id="GalleryUnitcarousel<?=esc($itemunit['unit_number'])?><?=esc($itemunit['unit_type'])?>" class="carousel slide carousel-fade" data-bs-ride="carousel">
+                                                                <div class="carousel-indicators">
+                                                                    <?php $i = 0; ?>
+                                                                    <?php foreach ($gallery_unit as $dt => $x) : ?>
+                                                                        <button type="button" data-bs-target="#GalleryUnitcarousel<?=esc($itemunit['unit_number'])?><?=esc($itemunit['unit_type'])?>" data-bs-slide-to="<?= esc($i); ?>" class="<?= ($i == 0) ? 'active' : ''; ?>"></button>
+                                                                        <?php $i++; ?>
+                                                                    <?php endforeach; ?>
+                                                                </div>
+                                                                <div class="carousel-inner">
+                                                                    <?php $i = 0; ?>
+                                                                    <?php foreach ($gallery_unit as $g) : ?>
+                                                                        <?php if($g['unit_number']==$itemunit['unit_number']  &&  $g['unit_type']==$itemunit['unit_type']): ?>
+                                                                            <div class="carousel-item<?= ($i == 0) ? ' active' : ''; ?>">
+                                                                                <img class="d-block w-100" src="<?= base_url('media/photos/unithomestay/'.esc($g['url']))?>">
+                                                                            </div>
+                                                                            <?php $i++; ?>
+                                                                            <?php endif; ?>
+                                                                    <?php endforeach; ?>
+                                                                </div>
+                                                                <a class="carousel-control-prev" href="#GalleryUnitcarousel<?=esc($itemunit['unit_number'])?><?=esc($itemunit['unit_type'])?>" role="button" type="button" data-bs-slide="prev">
+                                                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                                </a>
+                                                                <a class="carousel-control-next" href="#GalleryUnitcarousel<?=esc($itemunit['unit_number'])?><?=esc($itemunit['unit_type'])?>" role="button" data-bs-slide="next">
+                                                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                                </a>
+                                                            </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- end modal foto unit -->
+
                                             <h5 class="card-title"><?= esc($itemunit['name_type']); ?> <?= esc($itemunit['unit_number']); ?> <?= esc($itemunit['nama_unit']); ?></h5>
                                             <p class="card-text">
                                                 Price : <?= 'Rp ' . number_format(esc($itemunit['price']), 0, ',', '.'); ?> <br>
@@ -277,7 +339,7 @@ $edit = in_array('edit', $uri);
                                                                                 <input type="hidden" name="facility_unit_id" value="<?= esc($dt['facility_unit_id']); ?>">
                                                                                 <input type="hidden" name="description" value="<?= esc($dt['description']); ?>">
                                                                                 <input type="hidden" name="_method" value="DELETE">
-                                                                                <button type="submit" class="btn btn-sm" onclick="return confirm('apakah anda yakin akan menghapus?');"><i class="fa fa-remove" aria-hidden="true"></i></button>
+                                                                                <button type="submit" class="btn btn-light btn-sm" onclick="return confirm('apakah anda yakin akan menghapus?');"><i class="fa fa-remove" aria-hidden="true"></i></button>
                                                                             </form>
                                                                         </div>
                                                                     </td> 
@@ -290,30 +352,33 @@ $edit = in_array('edit', $uri);
                                             </table>
                                         <?php endif; ?>
                                             <div class="btn-group float-end" role="group" aria-label="Basic example">
-                                                <button type="button" id="editButton" class="btn btn btn-outline-warning btn-sm" data-bs-toggle="modal"  data-bs-whatever="@getbootstrap"><i class="material-icons">&#xE254;</i></button>                                                            
-                                                
-
-                                                <!-- Modal -->
-                                                <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="unitHomestayModalLabel" aria-hidden="true">
+                                                <!-- Modal Edit Unit-->
+                                                <div class="modal fade" id="editUnitHomestayModal<?=esc($itemunit['unit_number'])?><?=esc($itemunit['unit_type'])?>" tabindex="-1" aria-labelledby="unitHomestayModalLabel" aria-hidden="true">
                                                     <div class="modal-dialog">
                                                         <div class="modal-content">
                                                         <span class="close">&times;</span>
-                                                        <h2>Edit Data</h2>
-                                                        <form id="editForm" class="row g-3" action="<?= base_url('dashboard/unithomestay/editunit') . '/' . $itemunit['id']; ?>" method="post" enctype="multipart/form-data">
+                                                        <form id="editForm" class="row g-3" action="<?= base_url('dashboard/unithomestay/update') . '/' . $itemunit['homestay_id']; ?>" method="post" enctype="multipart/form-data">
                                                             <div class="modal-body">
                                                                 <div class="card-header">
                                                                     <?php @csrf_field(); ?>
                                                                     <h5 class="card-title">Edit Unit <?= esc($itemunit['nama_unit']); ?></h5>
                                                                     <div class="row g-4">
-                                                                        <div class="col-md-5">
+                                                                        <div class="col-md-3">
                                                                             <div class="form-group">
-                                                                                <label for="homestay">Homestay</label>
-                                                                                <input type="text" class="form-control" id="editHomestay" name="editHomestay" placeholder="HOxxx" disabled value="<?= esc($data['id']) ?>">
+                                                                                <label for="editHomestay">Homestay</label>
+                                                                                <input type="text" class="form-control" id="editHomestay" name="editHomestay" placeholder="HOxxx" readonly value="<?= esc($data['id']) ?>">
+                                                                                <input type="hidden" class="form-control" id="editnumber" name="editnumber" readonly value="<?= esc($itemunit['unit_number']) ?>">
                                                                             </div>
                                                                         </div>
-                                                                        <div class="col-md-7">
+                                                                        <div class="col-md-4">
+                                                                            <label for="type">Unit Type</label>
+                                                                            <select class="form-select" id="unit_type" name="editunit_type">
+                                                                                    <option value="<?= esc($itemunit['unit_type']); ?>"  selected ><?= esc($keyy['name_type']); ?></option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="col-md-5">
                                                                             <div class="form-group">
-                                                                                <label for="nama_unit">Unit Name</label>
+                                                                                <label for="editNama_unit">Unit Name</label>
                                                                                 <input type="text" class="form-control" id="editNama_unit" name="editNama_unit" value="<?= esc($itemunit['nama_unit']); ?>">
                                                                             </div>
                                                                         </div>
@@ -340,8 +405,13 @@ $edit = in_array('edit', $uri);
                                                                             </div>
                                                                         </div>
                                                                     </div>
+                                                                    <div class="form-group mb-4">
+                                                                        <label for="gallery" class="form-label">Gallery</label>
+                                                                        <input class="form-control" accept="image/*" type="file" name="gallery[]" id="gallery" multiple>
+                                                                    </div>
                                                                 </div>
                                                             </div>
+                                                            
                                                             <div class="modal-footer">
                                                                 <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
                                                                 <button type="submit" value="simpan" class="btn btn-outline-primary me-1 mb-1"><i class="fa-solid fa-add"></i></button>
@@ -390,19 +460,6 @@ $edit = in_array('edit', $uri);
                                                         editModal.style.display = 'none';
                                                     });
                                                 </script>
-
-                                                <form action="<?= base_url('dashboard/unithomestay/delete/').$itemunit['nama_unit']; ?>" method="post" class="d-inline">
-                                                    <?= csrf_field(); ?>
-                                                    <input type="hidden" name="homestay_id" value="<?= esc($itemunit['homestay_id']); ?>">
-                                                    <input type="hidden" name="unit_type" value="<?= esc($itemunit['unit_type']); ?>">
-                                                     <input type="hidden" name="unit_number" value="<?= esc($itemunit['unit_number']); ?>">                                                    
-                                                     <input type="hidden" name="nama_unit" value="<?= esc($itemunit['nama_unit']); ?>">
-                                                    <input type="hidden" name="description" value="<?= esc($itemunit['description']); ?>">
-                                                    <input type="hidden" name="price" value="<?= esc($itemunit['price']); ?>">
-                                                    <input type="hidden" name="capacity" value="<?= esc($itemunit['capacity']); ?>">
-                                                    <input type="hidden" name="_method" value="DELETE">
-                                                    <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('apakah anda yakin akan menghapus?');"><i class="material-icons">&#xE872;</i></button>
-                                                </form>
                                             </div>                                        
                                         </div>
                                     </div>
@@ -461,6 +518,7 @@ $edit = in_array('edit', $uri);
 
     // Get a reference to the file input element
     const photo = document.querySelector('input[id="gallery"]');
+    const photo = document.querySelector('input[id="galleryunit"]');
     const video = document.querySelector('input[id="video"]');
 
     // Create a FilePond instance
@@ -476,6 +534,13 @@ $edit = in_array('edit', $uri);
     <?php if ($edit && count($data['gallery']) > 0) : ?>
         pond.addFiles(
             <?php foreach ($data['gallery'] as $g) : ?> `<?= base_url('media/photos/homestay/' . $g); ?>`,
+            <?php endforeach; ?>
+        );
+    <?php endif; ?>
+
+    <?php if (count($gallery_unit) > 0) : ?>
+        pond.addFiles(
+            <?php foreach ($gallery_unit as $gal => $g) : ?> `<?= base_url('media/photos/unithomestay/' . $g['url']); ?>`,
             <?php endforeach; ?>
         );
     <?php endif; ?>

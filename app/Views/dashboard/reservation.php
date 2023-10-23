@@ -45,12 +45,22 @@ $users = in_array('users', $uri);
                                                 <td><?= date('d F Y, h:i:s A', strtotime($item['check_in'])); ?></td>
                                                 <td><?= date('d F Y, h:i:s A', strtotime($item['check_out'])); ?></td>
                                                 <td>
-                                                    <?php if($item['status']==null): ?>    
+                                                    <?php $date = date('Y-m-d H:i');
+                                                           if($item['status']==null): ?>    
                                                         <a href="#" class="btn-sm btn-secondary float-center"><i class="fa-solid fa-clock"></i></a>
+                                                        <i>Menunggu konfirmasi</i>
                                                     <?php elseif($item['status']==1): ?>    
                                                         <a href="#" class="btn-sm btn-success float-center"><i class="fa-solid fa-check"></i></a>
+                                                        <?php if($item['proof_of_deposit']==null) :?>
+                                                            <i>Belum bayar deposit</i>
+                                                        <?php elseif($item['proof_of_payment']==null): ?>
+                                                            <i>Sisa pembayaran belum</i>
+                                                        <?php elseif($item['proof_of_payment']!=null && $item['check_out']<$date ):  ?>
+                                                               <i>Done</i>
+                                                        <?php endif; ?>
                                                     <?php elseif($item['status']==0): ?>    
                                                         <a href="#" class="btn-sm btn-danger float-center"><i class="fa-solid fa-times"></i></a>
+                                                        <i>Reservasi ditolak</i>
                                                     <?php endif; ?>
                                                 </td>
                                                 <td>

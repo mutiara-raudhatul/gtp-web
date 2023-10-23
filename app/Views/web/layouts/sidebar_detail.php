@@ -32,7 +32,7 @@ $uri3 = $uri[3] ?? '';
 
                 <ul class="menu">
                     <li class="sidebar-item">
-                        <a href="" onclick="self.close()" class="sidebar-link">
+                        <a href="/web" onclick="self.close()" class="sidebar-link">
                             <span class="material-icons" style="font-size: 1.5rem; vertical-align: bottom">arrow_back</span> <span>Back to Home</span>
                         </a>
                     </li>

@@ -35,6 +35,10 @@
                                         <td><?= esc($data['type_name']); ?></td>
                                     </tr>
                                     <tr>
+                                        <td class="fw-bold">Minimal Capacity </td>
+                                        <td><?= esc($data['min_capacity']); ?> orang</td>
+                                    </tr>
+                                    <tr>
                                         <td class="fw-bold">Contact Person</td>
                                         <td><?= esc($data['contact_person']); ?></td>
                                     </tr>
@@ -126,8 +130,8 @@
             <div class="card">
                 <div class="card-header">
                     <h5 class="card-title">Google Maps</h5>
+                    <?= $this->include('web/layouts/map-head'); ?>
                 </div>
-
                 <?= $this->include('web/layouts/map-body'); ?>
                 <div class="card-body">
                     <div class="col-auto ">
@@ -135,41 +139,102 @@
                         <div class="btn-group float-right" role="group">
                             <?php foreach ($day as $d) : ?>
                                 <?php  $loop = 0; ?>
-                                <?php $activitiesForDay = array_filter($activity, function($activity) use ($d) {
-                                    return $activity['day'] === $d['day'];
-                                }); ?>
-                                <?php if (!empty($activitiesForDay)): ?>
-                                    <?php foreach ($activity as $index => $currentActivity) :?>
-                                        <?php  $loop++; ?>
-                                        <?php if ($currentActivity['day'] === $d['day']) : ?>
+                                <script>
+                                    function add<?= $d['day'], $d['package_id']; ?>() 
+                                    {
 
-                                                <?php if (isset($activity[$index + 1])): 
-                                                    $nextActivity = $activity[$index + 1];
-                                                ?>    
-                                                    <button type="button" onclick="routeBetweenObjects(<?= $currentActivity['lat'] ?>, <?= $currentActivity['lng'] ?>, <?= $nextActivity['lat']?>, <?= $nextActivity['lng'] ?>)" class="btn btn-outline-primary"><i class="fa fa-road"></i> Day <?= esc($currentActivity['day']);?> Activity <?= esc($currentActivity['activity']);?></button>
-                                                <?php endif; ?>    
+                                        initMap();
+                                        map.setZoom(15);
+                                        <?php 
+                                            $activitiesForDay = array_filter($activity, function($activity) use ($d) {
+                                                return $activity['day'] === $d['day'];
+                                            });
+                                            foreach ($activitiesForDay as $object) {
+                                            $loop++;                                    
 
-                                        <?php endif; ?>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
+                                            $lat_now = isset($object['lat'])?esc($object['lat']):'';
+                                            $lng_now = isset($object['lng'])?esc($object['lng']):'';
+                                            $objectid = isset($object['object_id'])?esc($object['object_id']):'';
+                                            ?>
+                                                objectMarker("<?= $objectid; ?>", <?= $lat_now; ?>, <?= $lng_now; ?>, true, <?= $loop; ?>);
+                                            
+                                            <?php 
+                                                if (1 < $loop) { ?>
+                                               
+                                                    // new01(<?= $lat_bef; ?>, <?= $lng_bef; ?>, <?= $lat_now; ?>, <?= $lng_now; ?>);
+                                                    pointA<?= $loop; ?> = new google.maps.LatLng(<?= $lat_bef; ?>, <?= $lng_bef; ?>);
+                                                    pointB<?= $loop; ?> = new google.maps.LatLng(<?= $lat_now; ?>, <?= $lng_now; ?>);
+                                                    directionsService<?= $loop; ?> = new google.maps.DirectionsService;
+                                                    directionsDisplay<?= $loop; ?> = new google.maps.DirectionsRenderer({
+                                                    suppressMarkers: true,
+                                                    map: map
+                                                    });
+                                                    directionsService<?= $loop; ?>.route({
+                                                    origin: pointA<?= $loop; ?>,
+                                                    destination: pointB<?= $loop; ?>,
+                                                    avoidTolls: true,
+                                                    avoidHighways: false,
+                                                    travelMode: google.maps.TravelMode.DRIVING
+                                                    }, function(response, status) {
+                                                    if (status == google.maps.DirectionsStatus.OK) {
+                                                        directionsDisplay<?= $loop; ?>.setDirections(response);
+                                                    } else {
+                                                        window.alert('Directions request failed due to ' + status);
+                                                    }
+                                                    });
+                                                
+                                            <?php 
+                                                } 
+                                            ?>
+                                            <?php 
+                                            $lat_bef = $lat_now;
+                                            $lng_bef = $lng_now; 
+                                            ?>
+                                            <?php 
+                                            }
+                                            ?>
+                                    }
+                                    </script>
+
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-primary btn-sm" type="button" aria-expanded="false" onclick="add<?= $d['day'], $d['package_id']; ?>();">Day <?= $d['day']; ?> Route</button>
+                                        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false" data-bs-reference="parent">
+                                            <span class="visually-hidden">Toggle Dropdown</span>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <?php if (!empty($activitiesForDay)):  ?>
+                                                <?php foreach ($activitiesForDay as $index => $currentActivity) :?>
+                                                    <?php  $loop++; ?>
+                                                    <?php if ($currentActivity['day'] === $d['day']) : ?>
+
+                                                            <?php if (isset($activitiesForDay[$index + 1])): 
+                                                                $nextActivity = $activitiesForDay[$index + 1];
+                                                            ?>    
+                                                                <li><button type="button" onclick="routeBetweenObjects( <?= $currentActivity['lat'] ?>, <?= $currentActivity['lng'] ?>, <?= $nextActivity['lat']?>, <?= $nextActivity['lng'] ?>)" class="btn btn-outline-primary"><i class="fa fa-road"></i>  Activity <?= esc($currentActivity['activity']);?> ke <?= esc($nextActivity['activity']);?></button></a></li>
+
+                                                            <?php endif; ?>    
+
+                                                    <?php endif; ?>
+                                                <?php endforeach; ?>
+                                            <?php endif; ?>
+                                        </ul>
+                                    </div>
                             <?php endforeach; ?>
                         </div>
                     </div>
                 </div>
                 <script>
-                    initMap(<?= esc($data['lat']); ?>, <?= esc($data['lng']); ?>)
+                    initMap(-0.7102134517843606, 100.19420485758688)
                 </script>
                 <?php foreach($day as $d) : ?>
                     <?php foreach($activity as $ac) : ?>
                     <script>
-                        objectMarker("<?= esc($ac['object_id']); ?>", <?= esc($ac['lat']); ?>, <?= esc($ac['lng']); ?>, true, <?= $loop; ?>);
                     </script>
                     <?php endforeach; ?>
                 <?php endforeach; ?>
             <!-- Direction section -->
             <?= $this->include('web/layouts/direction'); ?>
             </div>
-            
 
         </div>
     </div>

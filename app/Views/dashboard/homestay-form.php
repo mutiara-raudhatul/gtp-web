@@ -109,6 +109,9 @@ $edit = in_array('edit', $uri);
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title text-center"><?= $title; ?></h4>
+                    <?php if($edit) : ?>
+                        <a href="<?= base_url('dashboard/unithomestay/new'); ?>/<?= $data['id']; ?>" class="btn btn-primary float-end"><i class="fa fa-add"></i> Add Unit</a>
+                    <?php endif; ?>
                 </div>
                 <div class="card-body">
                     <form class="form form-vertical" action="<?= ($edit) ? base_url('dashboard/homestay/update') . '/' . $data['id'] : base_url('dashboard/homestay'); ?>" method="post" onsubmit="checkRequired(event)" enctype="multipart/form-data">
@@ -144,9 +147,6 @@ $edit = in_array('edit', $uri);
                             </div>
                             <button type="reset" class="btn btn-light-secondary me-1 mb-1">Reset</button>
                             <button type="submit" class="btn btn-primary me-1 mb-1">Save & Add Facility</button>
-                            <?php if($edit) : ?>
-                                <a href="<?= base_url('dashboard/unithomestay/new'); ?>/<?= $data['id']; ?>" class="btn btn-info"> Add Unit</a>
-                            <?php endif; ?>
                         </div>
                     </form>
                 </div>

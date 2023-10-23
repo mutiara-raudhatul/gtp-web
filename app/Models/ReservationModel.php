@@ -26,10 +26,10 @@ class ReservationModel extends Model
 
     public function get_list_reservation() {
         $query = $this->db->table($this->table)
-            ->select("`reservation.id`, `reservation.user_id`, `users.username`,`reservation.package_id`, `package.name`, `reservation.request_date`, `reservation.check_in`, `reservation.check_out`, `reservation.status`,`reservation.confirmation_date`,`reservation.comment`,`users.username` ")
+            ->select("`reservation.id`, `reservation.user_id`, `users.username`,`reservation.package_id`, `package.name`, `reservation.request_date`, `reservation.check_in`, `reservation.check_out`, `reservation.proof_of_deposit`,`reservation.proof_of_payment`,`reservation.status`,`reservation.confirmation_date`,`reservation.comment`,`users.username` ")
             ->join('package', 'reservation.package_id = package.id')
             ->join('users', 'reservation.user_id = users.id')
-            ->orderBy('reservation.id', 'ASC')
+            ->orderBy('reservation.request_date', 'DESC')
             ->get();
 
         return $query;
@@ -37,10 +37,10 @@ class ReservationModel extends Model
 
     public function get_list_reservation_by_user($username) {
         $query = $this->db->table($this->table)
-            ->select("`reservation.id`, `reservation.user_id`, `users.username`,`reservation.package_id`, `package.name`, `reservation.request_date`, `reservation.check_in`, `reservation.check_out`, `reservation.status`,`reservation.confirmation_date`,`reservation.comment`,`users.username` ")
+            ->select("`reservation.id`, `reservation.user_id`, `users.username`,`reservation.package_id`, `package.name`, `reservation.request_date`, `reservation.check_in`, `reservation.check_out`, `reservation.proof_of_deposit`,`reservation.proof_of_payment`,`reservation.status`,`reservation.confirmation_date`,`reservation.comment`,`users.username` ")
             ->join('package', 'reservation.package_id = package.id')
             ->join('users', 'reservation.user_id = users.id')
-            ->orderBy('reservation.id', 'ASC')
+            ->orderBy('reservation.request_date', 'DESC')
             ->where('users.username', $username)
             ->get();
 

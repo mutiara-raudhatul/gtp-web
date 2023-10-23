@@ -27,18 +27,6 @@ $edit = in_array('edit', $uri);
 
         <!-- Object Detail Information -->
         <div class="col-md-6 col-12">
-            <?php if(!$edit): ?>
-            <form class="form form-vertical" id="customForm" action="<?= base_url('/web/detailreservation/addcustom'); ?>" method="post" onsubmit="checkRequired(event)" enctype="multipart/form-data">
-                <?= csrf_field();  ?>
-                <div>
-                    <div class="col">
-                        <button type="submit" class="btn btn-info float-right"><i class="fa-solid fa-plus me-3"></i>Custom Package</button>
-                    </div>
-                </div>
-                <br>
-            </form>
-            <?php endif; ?>
-
             <form class="form form-vertical" id="reservationForm" action="<?= ($edit) ? base_url('web/reservation/update') . '/' . $detail['id'] : base_url('web/reservation/create'); ?>" method="post" onsubmit="checkRequired(event)" enctype="multipart/form-data">
                 <div class="card">
                     <div class="card-header">

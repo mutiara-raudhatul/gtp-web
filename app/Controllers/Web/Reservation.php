@@ -98,12 +98,12 @@ class Reservation extends ResourcePresenter
         foreach ($contents as $con){
             if($con['days']==null) {
                 $session = session();
-                $session->setFlashdata('warning', 'Anda belum menambahkan aktivitas package.');
+                $session->setFlashdata('warning', 'Belum ada aktivitas package.');
 
                 return redirect()->back();
             } else {
                 $data = [
-                    'title' => 'Reservation of Package Custom',
+                    'title' => 'Reservation of Package',
                     'data' => $contents,
                     'list_unit' => $list_unit,
                 ];

@@ -24,13 +24,13 @@ class GalleryUnitModel extends Model
     protected $skipValidation       = false;
     protected $cleanValidationRules = true;
 
-    public function get_gallery($homestay_id = null, $unit_type = null, $unit_number = null)
+    public function get_gallery($homestay_id)
     {
         $query = $this->db->table($this->table)
             ->select('*')
+            // ->where('unit_number', $unit_number)
             ->where('homestay_id', $homestay_id)
-            ->where('unit_type', $unit_type)
-            ->where('unit_number', $unit_number)
+            // ->where('unit_type', $unit_type)
             ->get();
         return $query;
     }

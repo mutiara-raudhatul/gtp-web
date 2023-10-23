@@ -10,7 +10,7 @@ class PackageModel extends Model
     protected $table = 'package';
     protected $primaryKey = 'id';
     protected $returnType = 'array';
-    protected $allowedFields    = ['id', 'name', 'type_id', 'price', 'contact_person', 'description', 'video_url', 'geom'];
+    protected $allowedFields    = ['id', 'name', 'type_id', 'min_capacity', 'price', 'contact_person', 'description', 'video_url'];
 
     // Dates
     protected $useTimestamps = true;
@@ -26,24 +26,40 @@ class PackageModel extends Model
 
     public function get_list_package()
     {
-        $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
+        // $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
         $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.price,{$this->table}.contact_person,{$this->table}.description,{$this->table}.video_url,{$this->table}.min_capacity";
         $query = $this->db->table($this->table)
-            ->select("{$columns}, {$coords}")
+            ->select("{$columns}")
             ->join('package_type', 'package.type_id = package_type.id')
             // ->join('package_day', 'package.id = package_day.package_id')
             ->select('package_type.type_name')
+            ->orderby('package.id', 'ASC')
             // ->groupby('package.id')
             ->get();
         return $query;
     }
 
-    public function get_list_package_distinct()
+    public function get_list_package_default()
     {
-        $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
+        // $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
         $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.price,{$this->table}.contact_person,{$this->table}.description,{$this->table}.video_url,{$this->table}.min_capacity";
         $query = $this->db->table($this->table)
-            ->select("max(day) as days, {$columns}, {$coords}")
+            ->select("{$columns}")
+            ->join('package_type', 'package.type_id = package_type.id')
+            // ->join('package_day', 'package.id = package_day.package_id')
+            ->select('package_type.type_name')
+            ->where('type_name <>', 'custom')
+            ->orderby('package.id', 'ASC')
+            // ->groupby('package.id')
+            ->get();
+        return $query;
+    }
+    public function get_list_package_distinct()
+    {
+        // $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
+        $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.price,{$this->table}.contact_person,{$this->table}.description,{$this->table}.video_url,{$this->table}.min_capacity";
+        $query = $this->db->table($this->table)
+            ->select("max(day) as days, {$columns}")
             ->join('package_type', 'package.type_id = package_type.id')
             ->join('package_day', 'package.id = package_day.package_id')
             ->select('package_type.type_name, package_day.day')
@@ -54,11 +70,11 @@ class PackageModel extends Model
 
     public function get_package_by_id_custom($id = null)
     {
-        $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
+        // $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
         $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.type_id,{$this->table}.price,{$this->table}.contact_person,{$this->table}.description,{$this->table}.video_url,{$this->table}.min_capacity";
-        $geoJson = "ST_AsGeoJSON({$this->table}.geom) AS geoJson";
+        // $geoJson = "ST_AsGeoJSON({$this->table}.geom) AS geoJson";
         $query = $this->db->table($this->table)
-            ->select("max(day) as days, {$columns}, {$coords}, {$geoJson}, 
+            ->select("max(day) as days, {$columns}, 
             package_type.type_name, package_day.day")
             ->join('package_type', 'package.type_id = package_type.id')
             ->join('package_day', 'package.id = package_day.package_id')
@@ -69,11 +85,11 @@ class PackageModel extends Model
 
     public function get_package_by_id($id = null)
     {
-        $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
+        // $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
         $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.type_id,{$this->table}.price,{$this->table}.contact_person,{$this->table}.description,{$this->table}.video_url,{$this->table}.min_capacity";
-        $geoJson = "ST_AsGeoJSON({$this->table}.geom) AS geoJson";
+        // $geoJson = "ST_AsGeoJSON({$this->table}.geom) AS geoJson";
         $query = $this->db->table($this->table)
-            ->select("{$columns}, {$coords}, {$geoJson}")
+            ->select("{$columns}")
             ->where('package.id', $id)
             ->join('package_type', 'package.type_id = package_type.id')
             ->select('package_type.type_name')
@@ -83,10 +99,10 @@ class PackageModel extends Model
 
     public function get_package_by_name($name = null)
     {
-        $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
+        // $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
         $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.price,{$this->table}.contact_person,{$this->table}.description,{$this->table}.video_url,{$this->table}.min_capacity";
         $query = $this->db->table($this->table)
-            ->select("{$columns}, {$coords}")
+            ->select("{$columns}")
             ->like("{$this->table}.name", $name)
             ->get();
         return $query;
@@ -94,10 +110,10 @@ class PackageModel extends Model
 
     public function get_package_by_type($type = null)
     {
-        $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
+        // $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
         $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.price,{$this->table}.contact_person,{$this->table}.description,{$this->table}.video_url,{$this->table}.min_capacity";
         $query = $this->db->table($this->table)
-            ->select("{$columns}, {$coords}")
+            ->select("{$columns}")
             ->like("{$this->table}.type_id", $type)
             ->get();
         return $query;
@@ -112,15 +128,15 @@ class PackageModel extends Model
     }
     
 
-    public function add_new_package($requestData = null, $geom = null)
+    public function add_new_package($requestData = null)
     {
         $insert = $this->db->table($this->table)
             ->insert($requestData);
-        $update = $this->db->table($this->table)
-            ->set('geom', "ST_GeomFromText('{$geom}')", false)
-            ->where('id', $requestData['id'])
-            ->update();
-        return $insert && $update;
+        // $update = $this->db->table($this->table)
+        //     ->set('geom', "ST_GeomFromText('{$geom}')", false)
+        //     ->where('id', $requestData['id'])
+        //     ->update();
+        return $insert;
     }
 
     public function update_package($id = null, $package = null)
@@ -136,12 +152,12 @@ class PackageModel extends Model
         return $query;
     }
 
-    public function update_geom($id = null, $geom = null)
-    {
-        $query = $this->db->table($this->table)
-            ->set('geom', "ST_GeomFromText('{$geom}')", false)
-            ->where('id', $id)
-            ->update();
-        return $query;
-    }
+    // public function update_geom($id = null, $geom = null)
+    // {
+    //     $query = $this->db->table($this->table)
+    //         ->set('geom', "ST_GeomFromText('{$geom}')", false)
+    //         ->where('id', $id)
+    //         ->update();
+    //     return $query;
+    // }
 }

@@ -4,22 +4,7 @@
 
 <section class="section">
     <div class=" row">
-    <!--map-->
-    <div class="col-md-7 col-12">
-        <div class="card">
-            <div class="card-header">
-                <div class="row align-items-center">
-                    <div class="col-md-auto">
-                        <h5 class="card-title">Google Maps with Location</h5>
-                    </div>
-                    <?= $this->include('web/layouts/map-head'); ?>
-                </div>
-            </div>
-            <?= $this->include('web/layouts/map-body'); ?>
-        </div>
-    </div>
-
-    <div class="col-md-5 col-12">
+    <div class="col-md-12 col-12">
         <div class="row">
             <!-- List Object -->
             <div class="col-12" id="list-rg-col">
@@ -29,16 +14,14 @@
                     </div>
                     <div class="card-body">
                         <div class="table-responsive overflow-auto" id="table-user">
-                            <script>
-                                clearMarker();
-                                clearRadius();
-                                clearRoute();
-                            </script>
                             <table class="table table-hover mb-0 table-lg">
                                 <thead>
                                     <tr>
                                         <th>#</th>
                                         <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Price</th>
+                                        <th>Capacity</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -52,9 +35,12 @@
                                                 </script>
                                                 <td><?= esc($i); ?></td>
                                                 <td><?= esc($item['name']); ?></td>
+                                                <td><?= esc($item['type_name']); ?></td>
+                                                <td><?= 'Rp ' . number_format(esc($item['price']), 0, ',', '.'); ?></td>
+                                                <td><?= esc($item['min_capacity']); ?> orang</td>
                                                 <td>
-                                                    <a data-bs-toggle="tooltip" data-bs-placement="bottom" title="More Info" class="btn icon btn-primary mx-1" onclick="focusObject(`<?= esc($item['id']); ?>`);">
-                                                        <span class="material-symbols-outlined">info</span>
+                                                    <a data-bs-toggle="tooltip" data-bs-placement="bottom" title="More Info" class="btn icon btn-outline-primary mx-1" href="<?=base_url('web/package/').$item['id']; ?>">
+                                                        <i class="fa-solid fa-circle-info"></i>
                                                     </a>
                                                 </td>
                                                 <?php $i++ ?>
@@ -70,15 +56,10 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Nearby section -->
-            <?= $this->include('web/layouts/nearby'); ?>
         </div>
     </div>
     </div>
 
-    <!-- Direction section -->
-    <?= $this->include('web/layouts/direction'); ?>
 </section>
 
 <?= $this->endSection() ?>

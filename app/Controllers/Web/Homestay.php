@@ -4,6 +4,7 @@ namespace App\Controllers\Web;
 
 use App\Models\HomestayModel;
 use App\Models\GalleryHomestayModel;
+use App\Models\GalleryUnitModel;
 use App\Models\UnitHomestayModel;
 use App\Models\FacilityUnitModel;
 use App\Models\FacilityUnitDetailModel;
@@ -17,6 +18,7 @@ class Homestay extends ResourcePresenter
 {
     protected $homestayModel;
     protected $galleryHomestayModel;
+    protected $galleryUnitModel;
     protected $unitHomestayModel;
     protected $facilityUnitModel;
     protected $facilityUnitDetailModel;
@@ -30,6 +32,7 @@ class Homestay extends ResourcePresenter
     {
         $this->homestayModel = new HomestayModel();
         $this->galleryHomestayModel = new GalleryHomestayModel();
+        $this->galleryUnitModel = new GalleryUnitModel();
         $this->unitHomestayModel = new UnitHomestayModel();
         $this->facilityUnitModel = new FacilityUnitModel();
         $this->facilityUnitDetailModel = new FacilityUnitDetailModel();
@@ -81,14 +84,6 @@ class Homestay extends ResourcePresenter
         // $list_unit = $this->unitHomestayModel->get_unit_homestay($id)->getRowArray();
         $list_unit = $this->unitHomestayModel->get_unit_homestay($id)->getResultArray();
 
-        // $unithomes = array();
-        // foreach ($list_unit as $unithome) {
-        //     $unithomes[] = $unithome['unit_number'];
-        //     $unithomes[] = $unithome['homestay_id'];
-        //     $unithomes[] = $unithome['id'];
-        // }
-        // $homestay['unithomes'] = $unithomes;
-
         $facilities = array();
         foreach ($list_unit as $unit) {
             $unit_number=$unit['unit_number'];
@@ -96,8 +91,17 @@ class Homestay extends ResourcePresenter
             $unit_type=$unit['unit_type'];
             $list_facility = $this->facilityUnitDetailModel->get_data_facility_unit_detail($unit_number, $homestay_id, $unit_type)->getResultArray();
             $facilities[]=$list_facility;
+
+            // $list_gallery_unit = $this->galleryUnitModel->get_gallery($unit_number, $homestay_id, $unit_type)->getResultArray();
+            // $galleries_unit = array();
+            // foreach ($list_gallery_unit as $gallery) {
+            //     $galleries_unit[] = $gallery['url'];
+            // }
+            // $list_unit['gallery'] = $galleries_unit;
         }
         $fc = $facilities;
+
+        $list_gallery_unit = $this->galleryUnitModel->get_gallery($id)->getResultArray();
 
         $datareview = array();
         $datarating = array();
@@ -120,6 +124,7 @@ class Homestay extends ResourcePresenter
             'data' => $homestay,
             'facilityhome' => $list_facility_home,
             'unit' => $list_unit,
+            'gallery_unit' => $list_gallery_unit,
             'facility' => $fc,
             'review' => $review,
             'rating' => $rating,

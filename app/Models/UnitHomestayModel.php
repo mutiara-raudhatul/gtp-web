@@ -103,4 +103,19 @@ class UnitHomestayModel extends Model
         // dd($array2);
         return $this->db->table($this->table)->delete($array2);
     }
+
+    public function update_unit_homestay($unit_number= null, $homestay_id= null, $unit_type= null, $data = null)
+    {
+        foreach ($data as $key => $value) {
+            if (empty($value)) {
+                unset($data[$key]);
+            }
+        }
+        $query = $this->db->table($this->table)
+            ->where('unit_number', $unit_number)
+            ->where('homestay_id', $homestay_id)
+            ->where('unit_type', $unit_type)
+            ->update($data);
+        return $query;
+    }
 }

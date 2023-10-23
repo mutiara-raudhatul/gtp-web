@@ -93,6 +93,7 @@ class UnitHomestay extends ResourcePresenter
 
         $unittype = $this->homestayUnitTypeModel->get_list_type()->getResultArray();
 
+        $list_gallery_unit = $this->galleryUnitModel->get_gallery($id)->getResultArray();
 
         $data = [
             'title' => 'Unit Homestay',
@@ -100,6 +101,7 @@ class UnitHomestay extends ResourcePresenter
             'data'=>$homestay,
             'unit' => $list_unit,
             'unit_type' => $unittype,
+            'gallery_unit' => $list_gallery_unit,
             'facility_unit' => $facilityUnit,
             'facility'=> $fc,
         ];
@@ -141,20 +143,20 @@ class UnitHomestay extends ResourcePresenter
         }
         $addUH = $this->unitHomestayModel->add_new_unitHomestay($requestData);
 
-        // if (isset($request['gallery'])) {
-        //     $folders = $request['gallery'];
-        //     $gallery = array();
-        //     foreach ($folders as $folder) {
-        //         $filepath = WRITEPATH . 'uploads/' . $folder;
-        //         $filenames = get_filenames($filepath);
-        //         $fileImg = new File($filepath . '/' . $filenames[0]);
-        //         $fileImg->move(FCPATH . 'media/photos/unithomestay');
-        //         delete_files($filepath);
-        //         rmdir($filepath);
-        //         $gallery[] = $fileImg->getFilename();
-        //     }
-        //     $this->galleryUnitModel->add_new_gallery($unit_number, $homestay_id, $unit_type, $gallery);
-        // }
+        if (isset($request['gallery'])) {
+            $folders = $request['gallery'];
+            $gallery = array();
+            foreach ($folders as $folder) {
+                $filepath = WRITEPATH . 'uploads/' . $folder;
+                $filenames = get_filenames($filepath);
+                $fileImg = new File($filepath . '/' . $filenames[0]);
+                $fileImg->move(FCPATH . 'media/photos/unithomestay');
+                delete_files($filepath);
+                rmdir($filepath);
+                $gallery[] = $fileImg->getFilename();
+            }
+            $this->galleryUnitModel->add_new_gallery($unit_number, $homestay_id, $unit_type, $gallery);
+        }
 
         if ($addUH) {
             return redirect()->back();
@@ -310,27 +312,50 @@ class UnitHomestay extends ResourcePresenter
         return view('dashboard/unit-homestay-form', $data);
     }
 
-    // public function update($id = null)
-    // {
-    //     $request = $this->request->getPost();
-    //     $requestData = [
-    //         'id' => $id,
-    //         'name' => $request['name'],
-    //     ];
-    //     foreach ($requestData as $key => $value) {
-    //         if (empty($value)) {
-    //             unset($requestData[$key]);
-    //         }
-    //     }
+    public function update($id = null)
+    {
+        $request = $this->request->getPost();
+        $requestData = [
+            'nama_unit' => $request['editNama_unit'],
+            'capacity' => $request['editCapacity'],
+            'price' => $request['editPrice'],
+            'description' => $request['editDescription'],
+        ];
+        // dd($requestData);
 
-    //     $updateSP = $this->servicePackageModel->update_servicePackage($id, $requestData);
+        foreach ($requestData as $key => $value) {
+            if (empty($value)) {
+                unset($requestData[$key]);
+            }
+        }
 
-    //     if ($updateSP) {
-    //         return redirect()->to(base_url('dashboard/servicepackage') . '/' . $id);
-    //     } else {
-    //         return redirect()->back()->withInput();
-    //     }
-    // }
+        $unit_number=$request['editnumber'];
+        $homestay_id=$request['editHomestay'];
+        $unit_type=$request['editunit_type'];
+
+        $updateUH = $this->unitHomestayModel->update_unit_homestay($unit_number, $homestay_id, $unit_type, $requestData);
+
+        if (isset($request['gallery'])) {
+            $folders = $request['gallery'];
+            $gallery = array();
+            foreach ($folders as $folder) {
+                $filepath = WRITEPATH . 'uploads/' . $folder;
+                $filenames = get_filenames($filepath);
+                $fileImg = new File($filepath . '/' . $filenames[0]);
+                $fileImg->move(FCPATH . 'media/photos/unithomestay');
+                delete_files($filepath);
+                rmdir($filepath);
+                $gallery[] = $fileImg->getFilename();
+            }
+            $this->galleryUnitModel->add_new_gallery($unit_number, $homestay_id, $unit_type, $gallery);
+        }
+
+        if ($updateUH) {
+            return redirect()->back();
+        } else {
+            return redirect()->back()->withInput();
+        }
+    }
 
 
 

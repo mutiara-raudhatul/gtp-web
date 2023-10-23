@@ -39,7 +39,6 @@ $edit = in_array('edit', $uri);
                         <div class="form-group">
                             <label for="package">Package</label>
                             <select id="package" name="package" class="form-control" required>
-                                <option value="" selected>Select Package</option>
                                 <?php foreach ($data as $item => $keyy) : ?>
                                     <?php if($edit): 
                                         if($detail['package_id']==$keyy['id']): ?>
