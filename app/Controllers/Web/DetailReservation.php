@@ -312,8 +312,9 @@ class DetailReservation extends ResourcePresenter
             }
 
             $data_price=$total;
-            // dd($data_price);
-            $tph = array_sum($data_price);
+            $day=max($getday);
+            $tphom = array_sum($data_price);
+            $tph=$tphom*$day['day'];
             $data_unit_booking=$unit_booking;
 
         } else{
@@ -366,6 +367,7 @@ class DetailReservation extends ResourcePresenter
         $list_unit = $this->unitHomestayModel->get_unit_homestay_all()->getResultArray();
         $booking_unit = $this->detailReservationModel->get_unit_homestay_booking($id)->getResultArray();
 
+        
         if(!empty($booking_unit)){
             $data_unit_booking=array();
             $data_price=array();
@@ -381,8 +383,9 @@ class DetailReservation extends ResourcePresenter
             }
 
             $data_price=$total;
-            // dd($data_price);
-            $tph = array_sum($data_price);
+            $day=max($getday);
+            $tphom = array_sum($data_price);
+            $tph=$tphom*$day['day'];
             $data_unit_booking=$unit_booking;
 
         } else{
@@ -451,8 +454,9 @@ class DetailReservation extends ResourcePresenter
             }
 
             $data_price=$total;
-            // dd($data_price);
-            $tph = array_sum($data_price);
+            $day=max($getday);
+            $tphom = array_sum($data_price);
+            $tph=$tphom*$day['day'];
             $data_unit_booking=$unit_booking;
 
         } else{
@@ -554,8 +558,13 @@ class DetailReservation extends ResourcePresenter
 
                 $data_unit = $this->unitHomestayModel->get_unit_homestay_selected($requestData['unit_number'],$requestData['homestay_id'], $requestData['unit_type'])->getRowArray();
                 $datareservation = $this->reservationModel->get_reservation_by_id($requestData['reservation_id'])->getRowArray();
+                $getday = $this->detailPackageModel->get_day_by_package($datareservation['package_id'])->getResultArray();
 
-                $new_price = $datareservation['total_price']+$data_unit['price'];
+                $day=max($getday);
+                $gday = $day['day'];
+                $tph=$gday*$data_unit['price'];
+
+                $new_price = $datareservation['total_price']+$tph;
                 $new_deposit= $new_price/2;
 
                 $id=$requestData['reservation_id'];
@@ -722,11 +731,13 @@ class DetailReservation extends ResourcePresenter
             
             $data_unit = $this->unitHomestayModel->get_unit_homestay_selected($unit_number, $homestay_id, $unit_type)->getRowArray();
             $datareservation = $this->reservationModel->get_reservation_by_id($reservation_id)->getRowArray();
-            // dd($datareservation);
+            $getday = $this->detailPackageModel->get_day_by_package($datareservation['package_id'])->getResultArray();
 
-            // dd($datareservation['deposit']);
+            $day=max($getday);
+            $gday = $day['day'];
+            $tph=$gday*$data_unit['price'];
 
-            $new_price = $datareservation['total_price']-$data_unit['price'];
+            $new_price = $datareservation['total_price']-$tph;
             $new_deposit= $new_price/2;
 
             $id=$reservation_id;

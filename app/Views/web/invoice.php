@@ -6,7 +6,7 @@
     }
 </style>
 
-<p style="font-size:18pt;text-align:right">INVOICE</p>
+<p style="font-size:18pt;text-align:right">RESERVATION INVOICE</p>
 <span>Kepada Yth.</span><br/>
 <table cellpadding="0" >
     <tr>
@@ -59,6 +59,8 @@
             $qty=ceil($people/$min); 
             $price_package=$data_package['price'];
             $tot_price_package=$qty*$price_package;
+
+
         ?>
         <td style="height: 20px;text-align:center"><?= $qty; ?></td>
         <td style="height: 20px;text-align:right"><?= 'Rp'.number_format(esc($data_package['price']), 0, ',', '.'); ?></td>
@@ -66,35 +68,88 @@
     </tr>
     <tr><td colspan="6"></td></tr>
     <tr style="background-color:#a9a9a9">
-        <th width="35%" style="height: 20px"><strong>Name Homestay</strong></th>
-        <th width="30%" style="height: 20px"><strong>Unit</strong></th>
-        <th width="13%" style="height: 20px"><strong>Capacity</strong></th>
-        <th width="18%" style="height: 20px"><strong>Unit Price</strong></th>
+        <th width="20%" style="height: 20px"><strong>Name Homestay</strong></th>
+        <th width="25%" style="height: 20px"><strong>Unit</strong></th>
+        <th width="11%" style="height: 20px"><strong>Capacity</strong></th>
+        <th width="7%" style="height: 20px"><strong>Days</strong></th>
+        <th width="15%" style="height: 20px"><strong>Unit Price</strong></th>
+        <th width="18%" style="height: 20px"><strong>Total Price</strong></th>
     </tr>
     <?php if (isset($booking)) : ?> 
         <?php foreach ($booking as $dtb) : ?>
+            <?php $gday=max($day);
+                  $tothom = $gday['day']*$dtb['price']; 
+            ?>
             <tr>
                 <td><?= esc($dtb['name']); ?></td>
                 <td><?= esc($dtb['name_type']); ?> <?= esc($dtb['unit_number']); ?> <?= esc($dtb['nama_unit']); ?></td>
                 <td style="height: 20px;text-align:center"><?= esc($dtb['capacity']); ?></td>
+                <td style="height: 20px;text-align:center"><?= esc($gday['day']); ?></td>
                 <td style="height: 20px;text-align:right"><?= 'Rp' . number_format(esc($dtb['price']), 0, ',', '.'); ?></td>
+                <td style="height: 20px;text-align:right"><?= 'Rp' . number_format(esc($tothom), 0, ',', '.'); ?></td>
             </tr>              
         <?php endforeach; ?>
     <?php endif; ?>
     <tr style="border:1px solid #000">
-        <td colspan="3" style="height: 20px"><strong>Grand Total</strong></td>
+        <td colspan="5" style="height: 20px"><strong>Grand Total</strong></td>
         <td style="height: 20px;text-align:right"><strong><?= 'Rp' . number_format(esc($detail['total_price']), 0, ',', '.'); ?></strong></td>
     </tr>
     <tr style="border:1px solid #000">
-        <td colspan="3" style="height: 20px"><strong>Deposit</strong></td>
+        <td colspan="5" style="height: 20px"><strong>Deposit</strong></td>
         <td style="height: 20px;text-align:right"><strong><?= 'Rp' . number_format(esc($detail['deposit']), 0, ',', '.'); ?></strong></td>
     </tr>
 </table>
+<br/> <br/>
+<table>
+    <tr>
+        <th width="12%">Check In</th>
+        <?php $check_in = strtotime($detail['check_in']); ?>
+        <th width="60%">: <?= esc(date('l, j F Y H:i:s', $check_in)); ?></th>
+    </tr>
+    <tr>
+        <th width="12%">Check Out</th>
+        <?php $check_out = strtotime($detail['check_out']); ?>
+        <th width="60%">: <?= esc(date('l, j F Y H:i:s', $check_out)); ?></th>
+    </tr>
+    <br/>
+    <tr>
+        <th width="25%"><b><u>Service Include</u></b></th>
+        <th width="25%"><b><u>Service Exclude</u></b></th>
+    </tr>
+    <tr>
+    <?php if(!empty($serviceinclude)) : ?>
+        <td><?php foreach($serviceinclude as $se) : ?>
+            - <?= esc($se['name']); ?> <br>
+        <?php endforeach; ?></td>
+    <?php endif; ?>
+    <?php if(!empty($serviceexclude)) : ?>
+        <td><?php foreach($serviceexclude as $se) : ?>
+            - <?= esc($se['name']); ?><br>
+        <?php endforeach; ?></td>
+    <?php endif; ?>
+    </tr>
+</table>
+<br/>
+<table>
+    <tr>
+        <th width="98%"><b><u>Activity</u></b></th>
+    </tr>
+    <?php if(!empty($day)) : ?>
+        <?php foreach ($day as $d) : ?>
+        <tr>
+            <td>Day <?= esc($d['day']);?><br>
+            <?php foreach ($activity as $ac) : ?>
+                <?php if($d['day']==$ac['day']): ?>
+                    <?= esc($ac['activity']); ?>. <?= esc($ac['name']);?> : <?= esc($ac['description']);?><br>
+                <?php endif; ?>
+            <?php endforeach; ?></td>
+        </tr>
+        <?php endforeach; ?>
+    <?php endif; ?>
+</table>
 
-<p>Terbilang: Satu Juta Lima Ratus Ribu Rupiah</p>
 <p><u>TRANSFER VIA</u></p>
-<p>BSI: IDR<br/>A/C : 78280389<br/>A/N : Desa Wisata Green Talao Park</p>
-
+<p>BSI: IDR<br/>A/C : 73492379<br/>A/N : Green Talao Park</p>
 
 <table cellpadding="0" >
     <tr>
@@ -110,7 +165,7 @@
     </tr>
     <tr>
         <th width="25%">Full Payment  </th>
-            <?php if (!empty($detail['proof_of_deposit'])) : ?>
+            <?php if (!empty($detail['proof_of_payment'])) : ?>
                 <th width="70%">: Complete on <strong><?= esc(date('l, j F Y H:i:s', $fullpayment_date)); ?></strong></th>
             <?php else : ?>
                 <th width="70%">: <i>Incomplete</i></th>
@@ -118,19 +173,19 @@
     </tr>
 </table>
 
-<p>&nbsp;</p>
 <table cellpadding="4" >
     <tr>
         <td width="50%" style="height: 20px;text-align:center">
             <p>&nbsp;</p>
         </td>
         <td width="50%" style="height: 20px;text-align:center">
-            <p>Malang, 28 Sept 2021</p>
+            <?php $date = date('Y-m-d H:i'); 
+                  $date_now = strtotime($date);?>
+            <p>Padang Pariaman, <?= esc(date('j F Y', $date_now)); ?></p>
             <p>Hormat kami,</p>
             <p></p>
-            <p></p>
-            <p></p>
-            <p>sobatcoding.com</p>
+            <p>Pokdarwis GTP Ulakan</p>
         </td>
     </tr>
 </table>
+

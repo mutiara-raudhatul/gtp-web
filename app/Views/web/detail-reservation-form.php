@@ -197,9 +197,13 @@ $addhome = in_array('addhome', $uri);
                                 <?php endforeach; ?>
                             <?php endif; ?>
                                     <tr>
+                                        <td>Total Day </td>
+                                        <?php $gday=max($day); ?>
+                                        <td>:   <?= esc($gday['day']); ?> days</td>
+                                    </tr>
+                                    <tr>
                                         <td>Total Price Homestay </td>
                                         <td>:   <?= 'Rp' . number_format(esc($price_home), 0, ',', '.'); ?></td>
-
                                     </tr>
                             </tbody>
                         </table>
@@ -266,6 +270,11 @@ $addhome = in_array('addhome', $uri);
                             <div class="col-auto">
                                 <a href="<?= base_url('dashboard/detailreservation/confirm'); ?>/<?= esc($detail['id']); ?>" class="btn btn-primary"><i class="fa-solid fa-envelope me-3"></i>Confirmation</a>
                             </div>
+                        <?php endif; ?>
+                        <?php if (($detail['status'])!="0") : ?>
+                        <div class="col-auto">
+                            <a href="<?= base_url('/web/generatepdf/'); ?>/<?= esc($detail['id']); ?>" class="btn btn-success"><i class="fa-solid fa-download me-3"></i>Download Invoice</a>
+                        </div>
                         <?php endif; ?>
                     </div>
                     <div class="card-body">
