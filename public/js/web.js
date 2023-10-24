@@ -612,7 +612,7 @@ function objectInfoWindow(id){
                     '</div>'
 
                 if (currentUrl.includes(id)) {
-                    infoWindow.setContent(content);
+                    infoWindow.setContent(content + contentButton);
                     infoWindow.open(map, markerArray[hoid])
                 } else {
                     infoWindow.setContent(content + contentButton);

@@ -101,7 +101,7 @@ $routes->group('web', ['namespace' => 'App\Controllers\Web'], function ($routes)
     $routes->presenter('detailreservation', ['filter' => 'login']);
     $routes->resource('detailreservation', ['filter' => 'login']);
 
-    // $routes->get('visitHistory', 'VisitHistory::visitHistory', ['filter' => 'role:user']);
+    $routes->get('generatepdf/(:any)', 'PdfController::generatePDF/$1');
 
     // Profile
     $routes->group('profile', function ($routes) {
@@ -189,19 +189,22 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], function ($routes)
 
     $routes->resource('connection');
     $routes->resource('tracking');
+    $routes->get('attraction/maps', 'Attraction::maps');
+    $routes->get('attraction/detail/(:any)', 'Attraction::detail/$1');
     $routes->resource('attraction');
     $routes->resource('servicepackage');
-    $routes->get('packageday/(:any)', 'PackageDay::getDay/$1');
     $routes->resource('facility');
     $routes->post('facility/findByRadius', 'Facility::findByRadius');
     $routes->post('facility/findByTrack', 'Facility::findByTrack');
-    $routes->get('event/maps', 'Event::maps');
     $routes->resource('event');
+    $routes->get('package/detail/(:any)', 'Package::detail/$1');
     $routes->get('package/type', 'Package::type');
     $routes->resource('package');
+    $routes->get('packageday/(:any)', 'PackageDay::getDay/$1');
     $routes->post('package/findByName', 'Package::findByName');
     $routes->post('package/findByType', 'Package::findByType');
 
+    $routes->get('homestay/detail/(:any)', 'Homestay::detail/$1');
     $routes->get('homestay/maps', 'Homestay::maps');
     $routes->resource('homestay');
     $routes->post('homestay/findByRadius', 'Homestay::findByRadius');

@@ -130,6 +130,14 @@ class AttractionModel extends Model
         
         return $object;
         
-        }
-        
+    }
+    
+    public function get_list_attraction_api() {
+        $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
+        $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.type,{$this->table}.price,{$this->table}.description,{$this->table}.video_url";
+        $query = $this->db->table($this->table)
+            ->select("{$columns}, {$coords}")
+            ->get();
+        return $query;
+    }
 }
