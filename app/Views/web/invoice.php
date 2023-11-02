@@ -6,7 +6,7 @@
     }
 </style>
 
-<p style="font-size:18pt;text-align:right">RESERVATION INVOICE</p>
+<h4 style="font-size:16pt;text-align:right">RESERVATION INVOICE</h4>
 <span>Kepada Yth.</span><br/>
 <table cellpadding="0" >
     <tr>
@@ -39,7 +39,7 @@
             <?php endif; ?>
     </tr>
 </table>
-<p></p>
+<br> <br>
 <table id="tb-item" cellpadding="4" >
     <tr style="background-color:#a9a9a9">
         <th width="35%" style="height: 20px"><strong>Name Package</strong></th>
@@ -107,7 +107,7 @@
         <td style="height: 20px;text-align:right"><strong><?= 'Rp' . number_format(esc($detail['deposit']), 0, ',', '.'); ?></strong></td>
     </tr>
 </table>
-<br/> <br/>
+<br> <br>
 <table>
     <tr>
         <th width="12%">Check In</th>
@@ -118,25 +118,29 @@
         <th width="12%">Check Out</th>
         <th width="60%">: <?= esc(date('l, j F Y H:i:s', strtotime($check_out))); ?></th>
     </tr>
-    <br/>
     <tr>
         <th width="25%"><b><u>Service Include</u></b></th>
         <th width="25%"><b><u>Service Exclude</u></b></th>
     </tr>
     <tr>
-    <?php if(!empty($serviceinclude)) : ?>
-        <td><?php foreach($serviceinclude as $se) : ?>
-            - <?= esc($se['name']); ?> <br>
-        <?php endforeach; ?></td>
-    <?php endif; ?>
-    <?php if(!empty($serviceexclude)) : ?>
-        <td><?php foreach($serviceexclude as $se) : ?>
-            - <?= esc($se['name']); ?><br>
-        <?php endforeach; ?></td>
-    <?php endif; ?>
+        <td>
+            <?php if(!empty($serviceinclude)) : ?>    
+                <?php foreach($serviceinclude as $se) : ?>
+                    - <?= esc($se['name']); ?> <br>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </td>
+        <td>
+            <?php if(!empty($serviceexclude)) : ?>
+                <?php foreach($serviceexclude as $se) : ?>
+                    - <?= esc($se['name']); ?><br>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </td>
     </tr>
 </table>
-<br/>
+<br>
+
 <table>
     <tr>
         <th width="98%"><b><u>Activity</u></b></th>
@@ -145,11 +149,13 @@
         <?php foreach ($day as $d) : ?>
         <tr>
             <td>Day <?= esc($d['day']);?><br>
-            <?php foreach ($activity as $ac) : ?>
-                <?php if($d['day']==$ac['day']): ?>
-                    <?= esc($ac['activity']); ?>. <?= esc($ac['name']);?> : <?= esc($ac['description']);?><br>
-                <?php endif; ?>
-            <?php endforeach; ?></td>
+            <?php if(!empty($activity)) : ?>
+                <?php foreach ($activity as $ac) : ?>
+                    <?php if($d['day']==$ac['day']): ?>
+                        <?= esc($ac['activity']); ?>. <?= esc($ac['name']);?> : <?= esc($ac['description']);?><br>
+                    <?php endif; ?>
+                <?php endforeach; ?></td>
+            <?php endif; ?>
         </tr>
         <?php endforeach; ?>
     <?php endif; ?>

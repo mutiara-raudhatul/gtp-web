@@ -50,6 +50,16 @@ $edit = in_array('edit', $uri);
                                 <?php endforeach; ?>
                             
                             </select>
+                        </div>                        
+                        <div class="row g-4">
+                            <div class="col-md-7">
+                                <label for="min_capacity">Minimal Capacity</label>
+                                <input type="number" id="min_capacity" name="min_capacity" readonly value="<?= ($edit) ? $keyy['min_capacity'] : old('min_capacity'); ?>" class="form-control" min="1" required>
+                            </div>
+                            <div class="col-md-5">
+                                <label for="day">Day Activities</label>
+                                <input type="number" id="day" name="day" readonly value="<?= ($edit) ? $keyy['day'] : old('day'); ?>" class="form-control" min="1" required>
+                            </div>
                         </div>
                         <div class="row g-4">
                             <div class="col-md-7">
@@ -78,6 +88,10 @@ $edit = in_array('edit', $uri);
                         <div class="form-group">
                             <label for="item">Package Order</label>
                             <input type="number" id="item" name="item" class="form-control" min="1" readonly required>
+                        </div>
+                        <div class="form-group mb-2">
+                            <label for="note" class="mb-2">Note</label>
+                            <textarea class="form-control" id="note" name="note" placeholder="Isikan request yang kamu inginkan menjadi catatan reservasi, misalnya menu makanan, aktivitas, dll" required rows="4"><?= ($edit) ? $data['note'] : old('note'); ?></textarea>
                         </div>
                         <div class="form-group">
                             <label for="price">Price Package</label>
@@ -240,6 +254,7 @@ $edit = in_array('edit', $uri);
     
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+
 <script>
         $(document).ready(function () {
             $('#package').change(function () {
@@ -272,23 +287,55 @@ $edit = in_array('edit', $uri);
             const capacity = parseInt(package.data('capacity'));
             const totalPeople = parseInt($('#total_people').val());
             $('#price').val(price);
-            const numberOfPackages = Math.ceil(totalPeople/capacity);
-            $('#item').val(numberOfPackages);
+            $('#min_capacity').val(capacity);
+            const numberOfPackages = Math.floor(totalPeople/capacity);
+            const remainder = totalPeople%capacity; // Hitung sisa hasil bagi
+        
 
-            if (totalPeople > capacity) {
-                const numberOfPackages = Math.ceil(totalPeople/capacity);
-                const totalPrice = price * numberOfPackages;
-                $('#total_price').val(totalPrice);
-                const deposit = totalPrice * 0.5;
-                $('#deposit').val(deposit);
-            } else {
-                $('#total_price').val(price);
-                const deposit = price * 0.5;
-                $('#deposit').val(deposit);
+            if (numberOfPackages!=0) {
+                 if (remainder != 0 && remainder<5) {
+                    const add = 0.5;
+                    const order = numberOfPackages + add; // Tambahkan 0.5 jika sisa kurang dari 5
+                    $('#item').val(order);
+
+                    const totalPrice = price * order;
+                    $('#total_price').val(totalPrice);
+                    const deposit = totalPrice * 0.2;
+                    $('#deposit').val(deposit);
+                } else if (remainder>=5) {
+                    const add = 1;
+                    const order = numberOfPackages + add; // Tambahkan 1 jika sisa lebih dari atau sama dengan 5
+                    $('#item').val(order);
+
+                    const totalPrice = price * order;
+                    $('#total_price').val(totalPrice);
+                    const deposit = totalPrice * 0.2;
+                    $('#deposit').val(deposit);
+                } else if (remainder==0){
+                    const add = 0;
+                    const order = numberOfPackages + add; 
+                    $('#item').val(order);
+
+                    const totalPrice = price * order;
+                    $('#total_price').val(totalPrice);
+                    const deposit = totalPrice * 0.2;
+                    $('#deposit').val(deposit);
+                } 
+            } else { 
+                const add = 1;
+                const order = numberOfPackages + add;
+                $('#item').val(order);
+
+                const totalPrice = price * order;
+                    $('#total_price').val(totalPrice);
+                    const deposit = totalPrice * 0.2;
+                    $('#deposit').val(deposit);
             }
+
 
             // Show or hide the homestay unit selection based on the package day value
             const day = parseInt(package.data('day'));
+            $('#day').val(day);
             if (day > 1) {
                 $('#homestayGroup').show();
             } else {
@@ -308,7 +355,7 @@ $edit = in_array('edit', $uri);
                 const checkOutDate = checkOutDateTime.toISOString().split('T')[0];
                 const checkOutTime = checkOutDateTime.toTimeString().split(' ')[0];
                 $('#check_out').val(checkOutDate);
-                $('#time_check_out').val(checkOutTime);
+                $('#time_check_out').val('12:00:00');
             } else {
                 $('#check_out').val('');
                 $('#time_check_out').val('');

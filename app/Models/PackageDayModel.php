@@ -55,6 +55,17 @@ class PackageDayModel extends Model
         return $query;
     }
 
+    public function get_day_by_package($package_id)
+    {
+        $query = $this->db->table($this->table)
+            ->select("day")
+            ->where('package_id', $package_id) 
+            ->distinct()
+            ->get();
+
+        return $query;
+    }
+    
     public function get_package_day_by_id($package_id)
     {
         $query = $this->db->table($this->table)

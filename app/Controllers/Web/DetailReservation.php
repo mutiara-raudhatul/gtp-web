@@ -288,9 +288,9 @@ class DetailReservation extends ResourcePresenter
         $serviceinclude= $this->detailServicePackageModel->get_service_include_by_id($package_id_reservation)->getResultArray();
         $serviceexclude= $this->detailServicePackageModel->get_service_exclude_by_id($package_id_reservation)->getResultArray();
         $detailPackage = $this->detailPackageModel->get_detailPackage_by_id($package_id_reservation)->getResultArray();
-        $getday = $this->detailPackageModel->get_day_by_package($package_id_reservation)->getResultArray();
+        $getday = $this->packageDayModel->get_day_by_package($package_id_reservation)->getResultArray();
         $combinedData = $this->detailPackageModel->getCombinedData($package_id_reservation);
-
+// dd($getday);
         //data homestay
         $list_unit = $this->unitHomestayModel->get_unit_homestay_all()->getResultArray();
         $booking_unit = $this->detailReservationModel->get_unit_homestay_bookingnya($id)->getResultArray();
@@ -380,7 +380,7 @@ class DetailReservation extends ResourcePresenter
         $serviceinclude= $this->detailServicePackageModel->get_service_include_by_id($package_reservation)->getResultArray();
         $serviceexclude= $this->detailServicePackageModel->get_service_exclude_by_id($package_reservation)->getResultArray();
         $detailPackage = $this->detailPackageModel->get_detailPackage_by_id($package_reservation)->getResultArray();
-        $getday = $this->detailPackageModel->get_day_by_package($package_reservation)->getResultArray();
+        $getday = $this->packageDayModel->get_day_by_package($package_reservation)->getResultArray();
         $combinedData = $this->detailPackageModel->getCombinedData($package_reservation);
         $day=max($getday);
         $daypack=$day['day'];
@@ -479,7 +479,7 @@ class DetailReservation extends ResourcePresenter
         $serviceinclude= $this->detailServicePackageModel->get_service_include_by_id($package_reservation)->getResultArray();
         $serviceexclude= $this->detailServicePackageModel->get_service_exclude_by_id($package_reservation)->getResultArray();
         $detailPackage = $this->detailPackageModel->get_detailPackage_by_id($package_reservation)->getResultArray();
-        $getday = $this->detailPackageModel->get_day_by_package($package_reservation)->getResultArray();
+        $getday = $this->packageDayModel->get_day_by_package($package_reservation)->getResultArray();
         $combinedData = $this->detailPackageModel->getCombinedData($package_reservation);
 
         $day=max($getday);
@@ -488,7 +488,7 @@ class DetailReservation extends ResourcePresenter
 
         //data homestay
         $list_unit = $this->unitHomestayModel->get_unit_homestay_all()->getResultArray();
-        $booking_unit = $this->detailReservationModel->get_unit_homestay_booking($id)->getResultArray();
+        $booking_unit = $this->detailReservationModel->get_unit_homestay_bookingnya($id)->getResultArray();
 
         if(!empty($booking_unit)){
             $data_unit_booking=array();
@@ -699,7 +699,7 @@ class DetailReservation extends ResourcePresenter
 
             $data_unit = $this->unitHomestayModel->get_unit_homestay_selected($requestData['unit_number'],$requestData['homestay_id'], $requestData['unit_type'])->getRowArray();
             $datareservation = $this->reservationModel->get_reservation_by_id($requestData['reservation_id'])->getRowArray();
-            $getday = $this->detailPackageModel->get_day_by_package($datareservation['package_id'])->getResultArray();
+            $getday = $this->packageDayModel->get_day_by_package($datareservation['package_id'])->getResultArray();
 
 
             $day=max($getday);
@@ -872,7 +872,7 @@ class DetailReservation extends ResourcePresenter
             
             $data_unit = $this->unitHomestayModel->get_unit_homestay_selected($unit_number, $homestay_id, $unit_type)->getRowArray();
             $datareservation = $this->reservationModel->get_reservation_by_id($reservation_id)->getRowArray();
-            $getday = $this->detailPackageModel->get_day_by_package($datareservation['package_id'])->getResultArray();
+            $getday = $this->packageDayModel->get_day_by_package($datareservation['package_id'])->getResultArray();
 
 
             $day=max($getday);
@@ -911,6 +911,7 @@ class DetailReservation extends ResourcePresenter
         
         //detail package 
         $package = $this->packageModel->get_package_by_id($package_reservation)->getRowArray();        
+        $getday = $this->packageDayModel->get_day_by_package($package_reservation)->getResultArray();
 
         //data homestay
         $list_unit = $this->unitHomestayModel->get_unit_homestay_all()->getResultArray();
@@ -935,10 +936,25 @@ class DetailReservation extends ResourcePresenter
         }
         $date = date('Y-m-d');
 
+        $check_in = $datareservation['check_in'];
+        $totday=max($getday);
+        $day=$totday['day']-1;
+        // Ubah $check_in menjadi objek DateTime untuk mempermudah perhitungan
+        $check_in_datetime = new DateTime($check_in);
+        if($day=='0'){
+            $check_out = $check_in_datetime->format('Y-m-d') . ' 18:00:00';
+        } else {
+            // Tambahkan jumlah hari
+            $check_in_datetime->modify('+' . $day . ' days');
+            // Atur waktu selalu menjadi 12:00:00
+            $check_out = $check_in_datetime->format('Y-m-d') . ' 12:00:00';
+        }
+
         $data = [
             'title' => 'Review Package and Homestay',
             'data_package' => $package,
             'detail' => $datareservation,
+            'check_out' => $check_out,
             'data_unit'=>$booking_unit,
             'booking'=>$data_unit_booking,
         ];
@@ -969,10 +985,11 @@ class DetailReservation extends ResourcePresenter
         }
     }
 
-    public function savereviewunit($date = null)
+    public function savereviewunit($reservation_id = null)
     {
         $request = $this->request->getPost();
-        $date=$request['date'];
+        // $date=$request['date'];
+        $reservation_id=$request['reservation_id'];
         $unit_number=$request['unit_number'];
         $homestay_id=$request['homestay_id'];
         $unit_type=$request['unit_type'];
@@ -988,7 +1005,7 @@ class DetailReservation extends ResourcePresenter
             }
         }
         
-        $updateDR = $this->detailReservationModel->update_detailreservation($date, $unit_number, $homestay_id, $unit_type, $requestData);
+        $updateDR = $this->detailReservationModel->update_detailreservation($reservation_id, $unit_number, $homestay_id, $unit_type, $requestData);
 
         if ($updateDR) {
             return redirect()->back();

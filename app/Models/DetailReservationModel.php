@@ -90,10 +90,11 @@ class DetailReservationModel extends Model
         return $query;
     }
 
+    
     public function get_unit_homestay_booking_data_reservation($homestay_id=null, $unit_type=null, $unit_number=null,$reservation_id=null)
     {
         $query = $this->db->table($this->table)
-        ->select('detail_reservation.date, detail_reservation.reservation_id, detail_reservation.unit_number, detail_reservation.homestay_id, detail_reservation.unit_type, detail_reservation.review, detail_reservation.rating,
+        ->select('detail_reservation.reservation_id, detail_reservation.unit_number, detail_reservation.homestay_id, detail_reservation.unit_type, detail_reservation.review, detail_reservation.rating,
                 unit_homestay.nama_unit, unit_homestay.description, unit_homestay.price, unit_homestay.capacity,
                 homestay_unit_type.name_type, reservation.status, homestay.name, homestay.address')
         ->join('unit_homestay', 'detail_reservation.homestay_id = unit_homestay.homestay_id', 'detail_reservation.unit_number = unit_homestay.unit_number', 'detail_reservation.unit_type = unit_homestay.unit_type')
@@ -104,6 +105,7 @@ class DetailReservationModel extends Model
         ->where('unit_homestay.unit_type', $unit_type)
         ->where('unit_homestay.homestay_id', $homestay_id)
         ->where('detail_reservation.reservation_id', $reservation_id)
+        ->distinct()
         ->get();
         return $query;
     }
@@ -124,9 +126,9 @@ class DetailReservationModel extends Model
         return $query;
     }
 
-    public function update_detailreservation($date = null, $unit_number = null, $homestay_id = null, $unit_type = null, $data = null) {
+    public function update_detailreservation($reservation_id = null, $unit_number = null, $homestay_id = null, $unit_type = null, $data = null) {
         $query = $this->db->table('detail_reservation')
-            ->update($data, ['date' => $date, 'unit_number' => $unit_number, 'homestay_id' => $homestay_id, 'unit_type' => $unit_type,]);
+            ->update($data, ['reservation_id' => $reservation_id, 'unit_number' => $unit_number, 'homestay_id' => $homestay_id, 'unit_type' => $unit_type,]);
         return $query;
     }
 

@@ -261,8 +261,12 @@ $addhome = in_array('addhome', $uri);
 
                                     <tr>
                                         <td> Status  : 
-                                        <?php if($detail['status']==null): ?>    
+                                            <?php if($detail['status']==null && $detail['confirmation_date']==null && $detail['account_refund']==null): ?>    
                                                 <i class="fa fa-clock btn-sm btn-secondary btn-circle"></i> Waiting</td>
+                                            <?php elseif($detail['status']==null && $detail['confirmation_date']!=null  && $detail['account_refund']==null): ?>    
+                                                <i class="fa fa-cancel btn-sm btn-secondary btn-circle"></i> Cancel</td>
+                                            <?php elseif($detail['status']==null && $detail['confirmation_date']!=null  && $detail['account_refund']!=null): ?>    
+                                                <i class="fa fa-cancel btn-sm btn-secondary btn-circle"></i> Cancel and Refund</td>
                                             <?php elseif($detail['status']==1): ?>    
                                                 <i class="fa fa-check btn-sm btn-success btn-circle"></i> Accepted</td>
                                             <?php elseif($detail['status']==0): ?>    
@@ -337,15 +341,34 @@ $addhome = in_array('addhome', $uri);
 
                                     <td class="col-md-5 col-12">
                                         
-                                        <?php if ($detail['status']=='1'):
-                                            $dateTime = new DateTime('now'); // Waktu sekarang
+                                           <?php $dateTime = new DateTime('now'); // Waktu sekarang
                                             $datenow = $dateTime->format('Y-m-d H:i:s'); ?>
                                             <p class="btn btn-sm btn-primary">Batas pembayaran deposit : <?= esc(date('l, j F Y H:i:s', strtotime($batas_dp)));  ?></p>
                                             <br>
-                                            <?php if($detail['proof_of_deposit']==null && $datenow<$batas_dp): ?>
+                                            <?php if($detail['status']==1 && $detail['proof_of_deposit']==null && $datenow<$batas_dp): ?>
                                                 <p>Belum dibayar</p>
-                                            <?php elseif ($batas_dp < $datenow ): ?>
+                                            <?php elseif ($detail['status']==1 && $detail['proof_of_deposit']==null && $batas_dp < $datenow ): ?>
                                                 <p class="btn btn-danger btn-sm"><i><b>Upps Sorry, the deposit payment time for the reservation has expired</b></i></p>
+                                                <form class="form hidden form-vertical" id="cancelform" action="<?= base_url('web/detailreservation/savecancel/').$detail['id']; ?>" method="post" enctype="multipart/form-data">
+                                                    <div class="form-body">
+                                                        <div class="col-md-5 col-12">
+                                                            <div class="form-group mb-2">
+                                                                <label>
+                                                                <input type="radio" name="status" value="null" required>
+                                                                <i class="fa fa-check"></i> Yes
+                                                                </label>
+                                                            </div>
+                                                            <div col="col-md-5 col-12">
+                                                                <button type="submit" class="btn btn-secondary me-1 mb-1">Cancel Reservation</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                                <script>
+                                                    window.onload = function() {
+                                                        document.querySelector('#cancelform').submit();
+                                                    };
+                                                </script>    
                                             <?php else: ?>
                                                 <div class="col-md-5 col-12">
                                                     <div class="form-group">
@@ -396,8 +419,7 @@ $addhome = in_array('addhome', $uri);
                                                         </div>
                                                     </div>
                                                 </div>
-                                            <?php endif; 
-                                        endif; ?>
+                                            <?php endif; ?>
                                     </td>
 
                                     <!-- upload proof payment -->

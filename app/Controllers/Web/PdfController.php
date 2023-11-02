@@ -135,7 +135,7 @@ class PdfController extends ResourcePresenter
         $serviceinclude= $this->detailServicePackageModel->get_service_include_by_id($package_id_reservation)->getResultArray();
         $serviceexclude= $this->detailServicePackageModel->get_service_exclude_by_id($package_id_reservation)->getResultArray();
         $detailPackage = $this->detailPackageModel->get_detailPackage_by_id($package_id_reservation)->getResultArray();
-        $getday = $this->detailPackageModel->get_day_by_package($package_id_reservation)->getResultArray();
+        $getday = $this->packageDayModel->get_day_by_package($package_id_reservation)->getResultArray();
         $combinedData = $this->detailPackageModel->getCombinedData($package_id_reservation);
 
         $day=max($getday);
