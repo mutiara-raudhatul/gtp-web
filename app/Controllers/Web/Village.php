@@ -25,6 +25,21 @@ class Village extends ResourcePresenter
         $this->villageModel = new VillageModel();
     }
 
+//     public function digitasi()
+//     {
+//         $contents = $this->villageModel->get_all_data()->getResult();
+
+//         $data = [
+//             'title' => 'Digitasi Wilayah',
+//             'digitasiwilayah'=>$contents,
+//             'id'=> $id
+//         ];
+// dd($data);
+//         return view('web/layouts/map-body-4', $data);
+//         // dd($contents);
+
+//     }
+
     public function index()
     {
         // $contents = $this->packageModel->get_list_package()->getResultArray();

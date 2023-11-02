@@ -46,7 +46,6 @@
                                         <th>Package Name</th>
                                         <th>Request Date</th>
                                         <th>Check In</th>
-                                        <th>Check Out</th>
                                         <th>Status</th>
                                         <th>Action</th>
                                         <th>Review</th>
@@ -61,19 +60,24 @@
                                                 <td><?= esc($item['name']);?></td>
                                                 <td><?= date('d F Y, H:i:s', strtotime($item['request_date'])); ?></td>
                                                 <td><?= date('d F Y, H:i:s', strtotime($item['check_in'])); ?></td>
-                                                <td><?= date('d F Y, H:i:s', strtotime($item['check_out'])); ?></td>
                                                 <td>
-                                                    <?php $date = date('Y-m-d H:i');
-                                                           if($item['status']==null): ?>    
+                                                    <?php $date = date('Y-m-d H:i');?>
+                                                    <?php if($item['status']==null && $item['confirmation_date']==null && $item['account_refund']==null ): ?>    
                                                         <a href="#" class="btn-sm btn-secondary float-center"><i class="fa-solid fa-clock"></i></a>
                                                         <i>Menunggu konfirmasi</i>
+                                                    <?php elseif($item['status']==null && $item['confirmation_date']!=null && $item['account_refund']==null ): ?>    
+                                                        <a href="#" class="btn-sm btn-secondary float-center"><i class="fa-solid fa-cancel"></i></a>
+                                                        <i>Cancel</i>
+                                                    <?php elseif($item['status']==null && $item['confirmation_date']!=null && $item['account_refund']!=null ): ?>    
+                                                        <a href="#" class="btn-sm btn-secondary float-center"><i class="fa-solid fa-cancel"></i></a>
+                                                        <i>Cancel & refund</i>
                                                     <?php elseif($item['status']==1): ?>    
                                                         <a href="#" class="btn-sm btn-success float-center"><i class="fa-solid fa-check"></i></a>
                                                         <?php if($item['proof_of_deposit']==null) :?>
                                                             <i>Silakan bayar deposit</i>
                                                         <?php elseif($item['proof_of_payment']==null): ?>
                                                             <i>Sisa pembayaran belum</i>
-                                                        <?php elseif($item['proof_of_payment']!=null && $item['check_out']<$date ):  ?>
+                                                        <?php elseif($item['proof_of_payment']!=null ):  ?>
                                                             <?php if($item['review']==null): ?>
                                                                 <i>Belum direview</i>
                                                             <?php else: ?>

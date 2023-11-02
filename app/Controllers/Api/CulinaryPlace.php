@@ -3,6 +3,7 @@
 namespace App\Controllers\Api;
 
 use App\Models\CulinaryPlaceModel;
+use App\Models\GalleryCulinaryPlaceModel;
 use CodeIgniter\API\ResponseTrait;
 use CodeIgniter\RESTful\ResourceController;
 
@@ -11,10 +12,12 @@ class CulinaryPlace extends ResourceController
     use ResponseTrait;
 
     protected $culinaryPlaceModel;
+    protected $galleryCulinaryPlaceModel;
 
     public function __construct()
     {
         $this->culinaryPlaceModel = new CulinaryPlaceModel();
+        $this->galleryCulinaryPlaceModel = new GalleryCulinaryPlaceModel();
     }
 
     /**
@@ -67,5 +70,20 @@ class CulinaryPlace extends ResourceController
             ]
         ];
         return $this->respond($response);
+    }
+
+    public function delete($id = null)
+    {
+        $deleteGCP = $this->galleryCulinaryPlaceModel->delete_gallery($id);
+        $deleteCP = $this->culinaryPlaceModel->delete(['id' => $id]);
+        if ($deleteCP) {
+            $response = [
+                'status' => 200,
+                'message' => [
+                    "Success delete Culinary"
+                ]
+            ];
+            return $this->respondDeleted($response);
+        }
     }
 }

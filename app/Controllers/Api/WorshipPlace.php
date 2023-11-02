@@ -3,6 +3,7 @@
 namespace App\Controllers\Api;
 
 use App\Models\WorshipPlaceModel;
+use App\Models\GalleryWorshipPlaceModel;
 use CodeIgniter\API\ResponseTrait;
 use CodeIgniter\RESTful\ResourceController;
 
@@ -11,10 +12,12 @@ class WorshipPlace extends ResourceController
     use ResponseTrait;
 
     protected $worshipPlaceModel;
+    protected $galleryWorshipPlaceModel;
 
     public function __construct()
     {
         $this->worshipPlaceModel = new WorshipPlaceModel();
+        $this->galleryWorshipPlaceModel = new GalleryWorshipPlaceModel();
     }
 
     /**
@@ -67,5 +70,20 @@ class WorshipPlace extends ResourceController
             ]
         ];
         return $this->respond($response);
+    }
+
+    public function delete($id = null)
+    {
+        $deleteGWP = $this->galleryWorshipPlaceModel->delete_gallery($id);
+        $deleteWP = $this->worshipPlaceModel->delete(['id' => $id]);
+        if ($deleteWP) {
+            $response = [
+                'status' => 200,
+                'message' => [
+                    "Success delete worship"
+                ]
+            ];
+            return $this->respondDeleted($response);
+        }
     }
 }

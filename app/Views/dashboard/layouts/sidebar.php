@@ -81,20 +81,25 @@ $uri3 = $uri[3] ?? '';
                         </li>
                     <?php endif; ?>
 
-                    <?php if (in_groups(['admin'])) : ?>
-                        <li class="sidebar-item <?= ($uri1 == 'package') ? 'active' : '' ?>">
-                            <a href="<?= base_url('dashboard/package'); ?>" class="sidebar-link">
+                    <?php if (in_groups(['admin'])) :
+                        ?>
+                        <li class="sidebar-item has-sub">
+                            <a href="" class="sidebar-link">
                                 <i class="fa-solid fa-square-poll-horizontal"></i><span>Manage Package</span>
                             </a>
+                            <ul class="submenu ">
+                                <!-- List Package -->
+                                <li class="submenu-item <?= ($uri1 == 'package') ? 'active' : '' ?>" id="pa-list">
+                                    <a href="<?= base_url('dashboard/package');?>"><i class="fa-solid fa-square-poll-horizontal"></i> Data Package</a>
+                                </li>
+                                <!-- List Service Package -->
+                                <li class="submenu-item <?= ($uri1 == 'servicepackage') ? 'active' : '' ?>" id="pa-list">
+                                    <a href="<?= base_url('dashboard/servicepackage');?>"><i class="fa-solid fa-puzzle-piece"></i> Service Package</a>
+                                </li>
+                            </ul>
                         </li>
-                    <?php endif; ?>
-                    <?php if (in_groups(['admin'])) : ?>
-                        <li class="sidebar-item <?= ($uri1 == 'servicepackage') ? 'active' : '' ?>">
-                            <a href="<?= base_url('dashboard/servicepackage'); ?>" class="sidebar-link">
-                                <i class="fa-solid fa-puzzle-piece"></i><span>Manage Service Package</span>
-                            </a>
-                        </li>
-                    <?php endif; ?>
+                        <?php endif;
+                    ?>
 
                     <?php if (in_groups(['admin'])) : ?>
                         <li class="sidebar-item <?= ($uri1 == 'homestay') ? 'active' : '' ?>">
@@ -104,18 +109,6 @@ $uri3 = $uri[3] ?? '';
                         </li>
                     <?php endif; ?>
 
-                    <?php if (in_groups(['admin'])) :
-                    ?>
-                        <li class="sidebar-item <?= ($uri1 == 'facility') ? 'active' : ''
-                                                ?>">
-                            <a href="<?= base_url('dashboard/facility');
-                                        ?>" class="sidebar-link">
-                                <i class="fa-solid fa-map-pin"></i><span>Manage Facility</span>
-                            </a>
-                        </li>
-                        <?php endif;
-                    ?>
-
                     <?php if (in_groups(['admin'])) : ?>
                         <li class="sidebar-item <?= ($uri1 == 'reservation') ? 'active' : '' ?>">
                             <a href="<?= base_url('dashboard/managereservation'); ?>" class="sidebar-link">
@@ -124,6 +117,36 @@ $uri3 = $uri[3] ?? '';
                         </li>
                     <?php endif; ?>
                     
+                    <?php if (in_groups(['admin'])) :
+                        ?>
+                        <li class="sidebar-item has-sub">
+                            <a href="" class="sidebar-link">
+                                <i class="fa-solid fa-square-poll-horizontal"></i><span>Manage Object</span>
+                            </a>
+                            <ul class="submenu">
+                                <!-- Facility -->
+                                <li class="submenu-item <?= ($uri1 == 'facility') ? 'active' : '' ?>" id="pa-list">
+                                    <a href="<?= base_url('dashboard/facility');?>"><i class="fa-solid fa-map-pin"></i> Facility</a>
+                                </li>
+
+                                <!-- Culinary Place -->
+                                <li class="submenu-item <?= ($uri1 == 'culinaryplace') ? 'active' : '' ?>" id="pa-list">
+                                    <a href="<?= base_url('dashboard/culinaryplace');?>"><i class="fa-solid fa-utensils"></i> Culinary Place</a>
+                                </li>
+
+                                <!-- Worship Place -->
+                                <li class="submenu-item <?= ($uri1 == 'worshipplace') ? 'active' : '' ?>" id="pa-list">
+                                    <a href="<?= base_url('dashboard/worshipplace');?>"><i class="fa-solid fa-mosque"></i> Worship Place</a>
+                                </li>
+
+                                <!-- Souvenir Place -->
+                                <li class="submenu-item <?= ($uri1 == 'souvenirplace') ? 'active' : '' ?>" id="pa-list">
+                                    <a href="<?= base_url('dashboard/souvenirplace');?>"><i class="fa-solid fa-cart-shopping"></i> Souvenir Place</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <?php endif;
+                    ?>
                 </ul>
             </div>
 

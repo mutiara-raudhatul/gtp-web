@@ -10,7 +10,7 @@ class DetailReservationModel extends Model
     protected $table = 'detail_reservation';
     // protected $primaryKey = 'id';
     protected $returnType = 'array';
-    protected $allowedFields = ['data','package_id','unit_type','unit_number','reservation_id','comment','rating'];
+    protected $allowedFields = ['data','package_id','unit_type','unit_number','reservation_id','review','rating'];
 
     // Dates
     protected $useTimestamps = true;
@@ -38,6 +38,7 @@ class DetailReservationModel extends Model
             ->where('unit_number', $requestData['unit_number'])
             ->where('homestay_id', $requestData['homestay_id'])
             ->where('unit_type', $requestData['unit_type'])
+            ->where('status', $requestData['status'])
             ->get()
             ->getRow();
     }
@@ -47,6 +48,16 @@ class DetailReservationModel extends Model
         $query = $this->db->table($this->table)
             ->select('*')
             ->where('reservation_id', $reservation_id)
+            ->get();
+        return $query;
+    }
+
+    public function get_unit_homestay_bookingnya($reservation_id =  null)
+    {
+        $query = $this->db->table($this->table)
+            ->select('unit_number, homestay_id, unit_type, reservation_id')
+            ->where('reservation_id', $reservation_id)
+            ->distinct()
             ->get();
         return $query;
     }
@@ -119,6 +130,19 @@ class DetailReservationModel extends Model
         return $query;
     }
 
+    public function update_cancel($id = null, $data = null) {
+        $lastStatus = $this->db->table($this->table)->select('status')->like('status', '0', 'after')->orderBy('status', 'ASC')->get()->getLastRow('array');
+        $count = (int)substr($lastStatus['status'], 2);
+        $status = sprintf('0%02d', $count + 1);
+
+        $data['status'] = $status; // Mengatur kolom 'status' menjadi 0
+
+        $query = $this->db->table('detail_reservation')
+                        ->set($data)
+                        ->where('reservation_id', $id)
+                        ->update();
+        return $query;
+    }
     
     public function getReview($unit_number = null, $homestay_id = null, $unit_type = null)
     {

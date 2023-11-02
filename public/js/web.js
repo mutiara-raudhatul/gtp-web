@@ -50,12 +50,12 @@ let customStyled = [
 const formatter = new Intl.NumberFormat('id-ID', {
     style: 'currency',
     currency: 'IDR',
-});
-
+});      
 function setBaseUrl(url) {
     baseUrl = url;
 }
 
+// Initialize and add the map
 // Initialize and add the map
 function initMap(lat = -0.7102134517843606, lng = 100.19420485758688) {
     directionsService = new google.maps.DirectionsService();
@@ -73,6 +73,48 @@ function initMap(lat = -0.7102134517843606, lng = 100.19420485758688) {
     digitVillage();
 }
 
+function initMap5(lat = -0.461119, lng = 102.205517) {
+    directionsService = new google.maps.DirectionsService();
+    const center = new google.maps.LatLng(lat, lng);
+    map = new google.maps.Map(document.getElementById("googlemaps"), {
+        zoom: 6,
+        center: center,
+        mapTypeId: 'roadmap',
+    });
+    var rendererOptions = {
+        map: map
+    }
+    map.set('styles', customStyled);
+    directionsRenderer = new google.maps.DirectionsRenderer(rendererOptions);
+
+    for (let n = 1; n < 3; n++){
+        const idneg = n; 
+        digitNeg(idneg);
+    }
+
+    for (let p = 1; p < 3; p++){
+        const idprov = p; 
+        digitProv(idprov);
+    }
+
+    for (let p = 4; p < 11; p++){
+        const idprov = p; 
+        digitProv(idprov);
+    }
+
+    for (let i = 1; i < 20; i++){
+        const idkabkota = i;
+        digitKabKota(idkabkota);
+    }
+    for (let k = 1; k < 23; k++){
+        const idkec = k; 
+        digitKec(idkec);
+    }
+
+    digitNagari1();
+    digitVillage1();
+}
+
 // Display tourism village digitizing
 function digitVillage() {
     const digitasi = new google.maps.Data();
@@ -87,10 +129,34 @@ function digitVillage() {
             const data = response.data;
             digitasi.addGeoJson(data);
             digitasi.setStyle({
-                fillColor:'#00b300',
-                strokeWeight:0.5,
+                fillColor:'#03C988',
+                strokeWeight:1,
                 strokeColor:'#ffffff',
-                fillOpacity: 0.1,
+                fillOpacity: 0.2,
+                clickable: false
+            });
+            digitasi.setMap(map);
+        }
+    });
+}
+
+function digitVillage1() {
+    const digitasi = new google.maps.Data();
+    $.ajax({
+        url: baseUrl + '/api/village',
+        type: 'POST',
+        data: {
+            digitasi: 'GTP01'
+        },
+        dataType: 'json',
+        success: function (response) {
+            const data = response.data;
+            digitasi.addGeoJson(data);
+            digitasi.setStyle({
+                fillColor:'#03C988',
+                strokeWeight:3,
+                strokeColor:'#ffffff',
+                fillOpacity: 2,
                 clickable: false
             });
             digitasi.setMap(map);
@@ -121,12 +187,15 @@ function initMap4(lat = -0.7005628110637381, lng = 100.19529523662331) {
     }
     map.set('styles', customStyled);
     directionsRenderer = new google.maps.DirectionsRenderer(rendererOptions);
+
     digitNagari();
 }
 
 // Display nagari digitizing
 function digitNagari() {
     const digitasi = new google.maps.Data();
+    const infoWindow = new google.maps.InfoWindow();
+
     $.ajax({
         url: baseUrl + '/api/village',
         type: 'POST',
@@ -138,13 +207,231 @@ function digitNagari() {
             const data = response.data;
             digitasi.addGeoJson(data);
             digitasi.setStyle({
-                fillColor:'#00b300',
-                strokeWeight:0.5,
-                strokeColor:'#ffffff',
-                fillOpacity: 0.1,
-                clickable: false
+                fillColor: '#FFC436',
+                strokeWeight:1,
+                strokeColor: '#ffffff',
+                fillOpacity: 0.5,
+                clickable: true // Set clickable to true to enable click event
             });
             digitasi.setMap(map);
+
+            // Event listener for click
+            digitasi.addListener('click', function(event) {
+                const nagariName = event.feature.getProperty('name');
+
+                // Set label for the clicked feature using InfoWindow
+                infoWindow.setContent('Nagari '+nagariName);
+                infoWindow.setPosition(event.latLng);
+                infoWindow.open(map);
+            });
+        }
+    });
+}
+
+function digitNagari1() {
+    const digitasi = new google.maps.Data();
+    const infoWindow = new google.maps.InfoWindow();
+
+    $.ajax({
+        url: baseUrl + '/api/village',
+        type: 'POST',
+        data: {
+            digitasi: 'V0001'
+        },
+        dataType: 'json',
+        success: function (response) {
+            const data = response.data;
+            digitasi.addGeoJson(data);
+            digitasi.setStyle({
+                fillColor: '#FFC436',
+                strokeWeight:3,
+                strokeColor: '#ffffff',
+                fillOpacity: 2,
+                clickable: true // Set clickable to true to enable click event
+            });
+            digitasi.setMap(map);
+
+            // Event listener for click
+            digitasi.addListener('click', function(event) {
+                const nagariName = event.feature.getProperty('name');
+
+                // Set label for the clicked feature using InfoWindow
+                infoWindow.setContent('Nagari '+nagariName);
+                infoWindow.setPosition(event.latLng);
+                infoWindow.open(map);
+            });
+        }
+    });
+}
+
+function digitNeg(idneg) {
+    const digitasi = new google.maps.Data();
+    const infoWindow = new google.maps.InfoWindow();
+
+    if (idneg < 3) {
+        digitasiValue = 'N0' + idneg;
+    }
+    $.ajax({
+        url: baseUrl + 'media/map/'+digitasiValue+'.geojson', // Ubah sesuai dengan path file Anda
+        type: 'GET',
+        dataType: 'json',
+        success: function (response) {
+            const data = response; // Jika file .geojson diakses langsung melalui URL
+
+            digitasi.addGeoJson(data);
+            digitasi.setStyle({
+                fillColor: '#793FDF',
+                strokeWeight: 0.5,
+                strokeColor: '#ffffff',
+                fillOpacity: 0.5,
+                clickable: true // Set clickable to true to enable click event
+            });
+            digitasi.setMap(map);
+
+            // Event listener for click
+            digitasi.addListener('click', function(event) {
+                const Name = event.feature.getProperty('name');
+                console.log(Name);
+
+                // Set label for the clicked feature using InfoWindow
+                infoWindow.setContent('Negara '+Name);
+                infoWindow.setPosition(event.latLng);
+                infoWindow.open(map);
+            });
+        },
+        error: function (error) {
+            console.error("Error fetching GeoJSON file: " + error);
+        }
+    });
+}
+
+function digitProv(idprov) {
+    const digitasi = new google.maps.Data();
+    const infoWindow = new google.maps.InfoWindow();
+
+    if (idprov < 10) {
+        digitasiValue = 'P0' + idprov;
+    } else if(idprov >= 10) {
+        digitasiValue = 'P' + idprov;
+    }
+    $.ajax({
+        url: baseUrl + 'media/map/'+digitasiValue+'.geojson', // Ubah sesuai dengan path file Anda
+        type: 'GET',
+        dataType: 'json',
+        success: function (response) {
+            const data = response; // Jika file .geojson diakses langsung melalui URL
+
+            digitasi.addGeoJson(data);
+            digitasi.setStyle({
+                fillColor: '#35A29F',
+                strokeWeight: 0.5,
+                strokeColor: '#ffffff',
+                fillOpacity: 0.5,
+                clickable: true // Set clickable to true to enable click event
+            });
+            digitasi.setMap(map);
+
+            // Event listener for click
+            digitasi.addListener('click', function(event) {
+                const Name = event.feature.getProperty('name');
+                console.log(Name);
+
+                // Set label for the clicked feature using InfoWindow
+                infoWindow.setContent('PROVINSI '+Name);
+                infoWindow.setPosition(event.latLng);
+                infoWindow.open(map);
+            });
+        },
+        error: function (error) {
+            console.error("Error fetching GeoJSON file: " + error);
+        }
+    });
+}
+
+
+//KAB-KOTA
+function digitKabKota(idkabkota) {
+    const digitasi = new google.maps.Data();
+    const infoWindow = new google.maps.InfoWindow();
+
+    if (idkabkota < 10) {
+        digitasiValue = 'K0' + idkabkota;
+    } else if(idkabkota >= 10) {
+        digitasiValue = 'K' + idkabkota;
+    }
+    $.ajax({
+        url: baseUrl + '/api/village',
+        type: 'POST',
+        data: {
+            digitasi: digitasiValue
+        },
+        dataType: 'json',
+        success: function (response) {
+            const data = response.data;
+            digitasi.addGeoJson(data);
+            digitasi.setStyle({
+                fillColor: '#F875AA',
+                strokeWeight: 0.5,
+                strokeColor: '#ffffff',
+                fillOpacity: 0.5,
+                clickable: true // Set clickable to true to enable click event
+            });
+            digitasi.setMap(map);
+
+            // Event listener for click
+            digitasi.addListener('click', function(event) {
+                const kabkotaName = event.feature.getProperty('name');
+                console.log(kabkotaName);
+
+                // Set label for the clicked feature using InfoWindow
+                infoWindow.setContent(kabkotaName+', Sumatera Barat');
+                infoWindow.setPosition(event.latLng);
+                infoWindow.open(map);
+            });
+        }
+    });
+}
+
+
+//Kecamatan
+function digitKec(idkec) {
+    const digitasi = new google.maps.Data();
+    const infoWindow = new google.maps.InfoWindow();
+
+    if (idkec < 10) {
+        digitasiValuec = 'C0' + idkec;
+    } else if(idkec >= 10) {
+        digitasiValuec = 'C' + idkec;
+    }
+
+    $.ajax({
+        url: baseUrl + '/api/village',
+        type: 'POST',
+        data: {
+            digitasi: digitasiValuec
+        },
+        dataType: 'json',
+        success: function (response) {
+            const data = response.data;
+            digitasi.addGeoJson(data);
+            digitasi.setStyle({
+                fillColor: '#F0FF42',
+                strokeWeight: 0.4,
+                strokeColor: '#ffffff',
+                fillOpacity: 0.4,
+                clickable: true // Set clickable to true to enable click event
+            });
+            digitasi.setMap(map);
+
+            // Event listener for click
+            digitasi.addListener('click', function(event) {
+                const kecName = event.feature.getProperty('name');
+
+                // Set label for the clicked feature using InfoWindow
+                infoWindow.setContent('Kecamatan '+kecName+', Padang Pariaman');
+                infoWindow.setPosition(event.latLng);
+                infoWindow.open(map);
+            });
         }
     });
 }
@@ -1576,6 +1863,30 @@ function getLegend() {
             name: 'Worship Place',
             icon: baseUrl + '/media/icon/worship.png',
         },
+        ng :{
+            name: 'Negara',
+            icon: baseUrl + '/media/icon/negara.png',
+        },
+        pr :{
+            name: 'Provinsi',
+            icon: baseUrl + '/media/icon/provinsi.png',
+        },
+        kk :{
+            name: 'Kabupaten/Kota',
+            icon: baseUrl + '/media/icon/kabkota.png',
+        },
+        kc :{
+            name: 'Kecamatan',
+            icon: baseUrl + '/media/icon/kecamatan.png',
+        },
+        na :{
+            name: 'Nagari',
+            icon: baseUrl + '/media/icon/nagari.png',
+        },
+        dw :{
+            name: 'Desa Wisata',
+            icon: baseUrl + '/media/icon/desawisata.png',
+        },
     }
 
     // const title = '<p class="fw-bold fs-6">Legend</p>';
@@ -1930,6 +2241,15 @@ function deleteObject(id = null, name = null, user = false) {
     } else if (id.substring(0,2) === 'FC') {
         content = 'Facility';
         apiUri = 'facility/'
+    } else if (id.substring(0,2) === 'CP') {
+        content = 'Culinary Place';
+        apiUri = 'culinaryPlace/'
+    } else if (id.substring(0,2) === 'WP') {
+        content = 'Worship Place';
+        apiUri = 'worshipPlace/'
+    } else if (id.substring(0,2) === 'SP') {
+        content = 'Souvenir Place';
+        apiUri = 'souvenirPlace/'
     } else if (id.substring(0,1) === 'S') {
         content = 'Service Package';
         apiUri = 'servicepackage/'

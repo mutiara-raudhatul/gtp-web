@@ -49,13 +49,15 @@ $addhome = in_array('addhome', $uri);
                                         </tr>
                                         <tr>
                                             <td class="fw-bold">Check Out</td>
-                                            <?php $check_out = strtotime($detail['check_out']); ?>
-                                            <td><?= esc(date('l, j F Y H:i:s', $check_out)); ?></td>
+                                            <td><?= esc(date('l, j F Y H:i:s', strtotime($check_out))); ?></td>
                                         </tr>
                                         <tr>
+                                        <td class="fw-bold">Min Capacity</td>
+                                            <td><?= esc($data_package['min_capacity']); ?> orang</td>
+                                        </tr>
                                         <td class="fw-bold">Total People</td>
                                             <td><?= esc($detail['total_people']); ?> orang</td>
-                                         </tr>
+                                        </tr>
                                         <tr>
                                             <td class="fw-bold">Price</td>
                                             <td><?= 'Rp ' . number_format(esc($data_package['price']), 0, ',', '.'); ?></td>
@@ -63,8 +65,19 @@ $addhome = in_array('addhome', $uri);
                                         <tr>
                                             <td class="fw-bold">Total Price Package</td>
                                             <?php 
-                                                $jumlah_package = ceil($detail['total_people']/$data_package['min_capacity']);
-                                                $total_price_package = $jumlah_package*$data_package['price'];
+                                                $jumlah_package = floor($detail['total_people']/$data_package['min_capacity']);
+                                                $tambahan =$detail['total_people']%$data_package['min_capacity'];
+
+                                                if($tambahan!=0){
+                                                    if ($tambahan <5){
+                                                        $order= $jumlah_package+0.5;
+                                                    } else {
+                                                        $order= $jumlah_package+1;
+                                                    }
+                                                } else {
+                                                    $order= $jumlah_package;
+                                                }
+                                                $total_price_package = $order*$data_package['price'];
                                             ?>
                                             <td><?= 'Rp ' . number_format(esc($total_price_package), 0, ',', '.'); ?></td>
                                         </tr>
@@ -116,6 +129,7 @@ $addhome = in_array('addhome', $uri);
                 </div>
         </div>
 
+        <?php if($dayhome>0): ?>
             <div class="col-md-6 col-12" >
                 <div class="card">
                     <div class="card-header">
@@ -220,7 +234,7 @@ $addhome = in_array('addhome', $uri);
                 </div>
 
             </div>
-
+        <?php endif;  ?>
 
             <!-- payment -->
             <div class="col-md-12 col-12" >
@@ -256,7 +270,7 @@ $addhome = in_array('addhome', $uri);
                                             <?php endif; ?>                                      
                                     </tr>
                                     <tr>
-                                        <?php if($detail['status']==null): ?> 
+                                        <?php if($detail['status']==null && $detail['confirmation_date']==null): ?> 
                                             <td> Confirmation Reservation: </td>
                                     </tr>
                                     <tr>
@@ -275,8 +289,8 @@ $addhome = in_array('addhome', $uri);
                                                             </label>
                                                         </div>
                                                         <div class="form-group mb-2">
-                                                            <label for="comment" class="mb-2">Comment</label>
-                                                            <input type="text" id="comment" class="form-control" name="comment" value="<?= ($edit) ? $detail['comment'] : old('comment'); ?>" required autocomplete="off">
+                                                            <label for="feedback" class="mb-2">Feedback</label>
+                                                            <textarea class="form-control" id="feedback" name="feedback" placeholder="Isikan tanggapan terhadap reservasi" required rows="4"><?= ($edit) ? $data['feedback'] : old('feedback'); ?></textarea>
                                                         </div>
                                                         <div col="col-md-5 col-12">
                                                             <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
@@ -295,8 +309,8 @@ $addhome = in_array('addhome', $uri);
                                     </tr>
                                     <tr>
                                         <?php if($detail['status']=='1' || $detail['status']=='0'): ?> 
-                                            <td> Comment :
-                                                 <?= esc($detail['comment']); ?></td> 
+                                            <td> Feedback :
+                                                 <?= esc($detail['feedback']); ?></td> 
                                         <?php endif; ?>   
                                     </tr>
                                     <tr><td><br></td></tr>
@@ -322,30 +336,23 @@ $addhome = in_array('addhome', $uri);
                                     <!-- upload proof payment -->
 
                                     <td class="col-md-5 col-12">
+                                        
                                         <?php if ($detail['status']=='1'):
-                                            if($detail['proof_of_deposit']==null): ?>
-                                            <form class="form form-vertical" action="<?= base_url('web/reservation/uploaddeposit/').$detail['id']; ?>" method="post" onsubmit="checkRequired(event)" enctype="multipart/form-data">
-                                                <div class="form-body">
-                                                <div class="col-md-5 col-12">
-                                                        <div class="form-group mb-4">
-                                                                <label for="proof_of_deposit" class="form-label">Proof of Deposit</label>
-                                                                <input class="form-control" accept="image/*" type="file" name="proof_of_deposit" id="proof_of_deposit" required>
-                                                        </div>
-                                                        </div>
-                                                        <div col="col-md-5 col-12">
-                                                            <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
-                                                            <button type="reset" class="btn btn-light-secondary me-1 mb-1">Reset</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </form>
+                                            $dateTime = new DateTime('now'); // Waktu sekarang
+                                            $datenow = $dateTime->format('Y-m-d H:i:s'); ?>
+                                            <p class="btn btn-sm btn-primary">Batas pembayaran deposit : <?= esc(date('l, j F Y H:i:s', strtotime($batas_dp)));  ?></p>
+                                            <br>
+                                            <?php if($detail['proof_of_deposit']==null && $datenow<$batas_dp): ?>
+                                                <p>Belum dibayar</p>
+                                            <?php elseif ($batas_dp < $datenow ): ?>
+                                                <p class="btn btn-danger btn-sm"><i><b>Upps Sorry, the deposit payment time for the reservation has expired</b></i></p>
                                             <?php else: ?>
                                                 <div class="col-md-5 col-12">
                                                     <div class="form-group">
                                                         <div class="text-md-start mb-3" id="deposit-container">
-                                                                <div class="row gallery" data-bs-toggle="modal" data-bs-target="#galleryModal">
-                                                                        <img class="w-100 active" src="<?= base_url('media/photos/deposit/'); ?><?= $detail['proof_of_deposit'] ?>" data-bs-target="#Gallerycarousel" />
-                                                                </div>
+                                                            <div class="row gallery" data-bs-toggle="modal" data-bs-target="#galleryModal">
+                                                                    <img class="w-100 active" src="<?= base_url('media/photos/deposit/'); ?><?= $detail['proof_of_deposit'] ?>" data-bs-target="#Gallerycarousel" />
+                                                            </div>
                                                             <!-- modal deposit-->
                                                             <div class="modal fade" id="galleryModal" tabindex="-1" role="dialog" aria-labelledby="galleryModalTitle" aria-hidden="true">
                                                                 <div class="modal-dialog modal-dialog-centered modal-dialog-centered" role="document">

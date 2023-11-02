@@ -10,7 +10,7 @@ class ReservationModel extends Model
     protected $table = 'reservation';
     protected $primaryKey = 'id';
     protected $returnType = 'array';
-    protected $allowedFields    = ['id', 'user_id', 'request_date','check_in', 'check_out', 'total_people', 'deposite', 'total_price', 'status', 'comment', 'rating'];
+    protected $allowedFields    = ['id', 'user_id', 'request_date','check_in', 'total_people', 'deposite', 'total_price', 'status', 'note', 'feedback', 'rating'];
 
     // Dates
     protected $useTimestamps = true;
@@ -26,10 +26,56 @@ class ReservationModel extends Model
 
     public function get_list_reservation() {
         $query = $this->db->table($this->table)
-            ->select("`reservation.id`, `reservation.user_id`, `users.username`,`reservation.package_id`, `package.name`, `reservation.request_date`, `reservation.check_in`, `reservation.check_out`, `reservation.proof_of_deposit`,`reservation.proof_of_payment`,`reservation.status`,`reservation.confirmation_date`,`reservation.review`,`reservation.rating`,`reservation.comment`,`users.username` ")
+            ->select("`reservation.id`, `reservation.user_id`, `users.username`,`reservation.package_id`, `package.name`, `reservation.request_date`, `reservation.check_in`, `reservation.proof_of_deposit`,`reservation.proof_of_payment`,`reservation.status`,`reservation.confirmation_date`,`reservation.review`,`reservation.rating`,`reservation.note`,`reservation.feedback`,`reservation.account_refund`,`reservation.proof_refund`,`users.username` ")
             ->join('package', 'reservation.package_id = package.id')
             ->join('users', 'reservation.user_id = users.id')
             ->orderBy('reservation.request_date', 'DESC')
+            ->get();
+        return $query;
+    }
+
+    public function get_list_reservation_report() {
+        $query = $this->db->table($this->table)
+            ->select("`reservation.id`, `reservation.user_id`, `users.username`,`reservation.package_id`, `package.name`, `reservation.request_date`, `reservation.check_in`, `reservation.deposit`,`reservation.total_price`,`reservation.proof_of_deposit`,`reservation.proof_of_payment`,`reservation.status`,`reservation.confirmation_date`,`reservation.review`,`reservation.rating`,`reservation.note`,`reservation.feedback`,`reservation.account_refund`,`reservation.proof_refund`,`users.username` ")
+            ->join('package', 'reservation.package_id = package.id')
+            ->join('users', 'reservation.user_id = users.id')
+            ->orderBy('reservation.request_date', 'DESC')
+            ->where('reservation.total_price <>', '0')
+            ->where('reservation.status', '1')
+            ->get();
+
+        return $query;
+    }
+
+    public function sum_done_deposit() {
+        $query = $this->db->table($this->table)
+            ->selectSUM('deposit', 'deposit')
+            ->where('proof_of_deposit <>', null)
+            ->where('proof_refund', null)
+            ->where('proof_of_payment', null)
+            ->where('total_price <>', '0')
+            ->where('status', '1')
+            ->get();
+        return $query;
+    }
+
+    public function sum_done_refund() {
+        $query = $this->db->table($this->table)
+            ->selectSUM('deposit', 'refund')
+            ->where('proof_of_deposit <>', null)
+            ->where('proof_refund <>', null)
+            ->where('total_price <>', '0')
+            ->where('status', '1')
+            ->get();
+        return $query;
+    }
+
+    public function sum_done_total() {
+        $query = $this->db->table($this->table)
+            ->selectSUM('total_price', 'total_price')
+            ->where('proof_of_payment <>', null)
+            ->where('total_price <>', '0')
+            ->where('status', '1')
             ->get();
 
         return $query;
@@ -37,7 +83,7 @@ class ReservationModel extends Model
 
     public function get_list_reservation_by_user($username) {
         $query = $this->db->table($this->table)
-            ->select("`reservation.id`, `reservation.user_id`, `users.username`,`reservation.package_id`, `package.name`, `reservation.request_date`, `reservation.check_in`, `reservation.check_out`, `reservation.proof_of_deposit`,`reservation.proof_of_payment`,`reservation.status`,`reservation.confirmation_date`,`reservation.review`,`reservation.rating`,`reservation.comment`,`users.username` ")
+            ->select("`reservation.id`, `reservation.user_id`, `users.username`,`reservation.package_id`, `package.name`, `reservation.request_date`, `reservation.check_in`, `reservation.proof_of_deposit`,`reservation.proof_of_payment`,`reservation.status`,`reservation.confirmation_date`,`reservation.review`,`reservation.rating`,`reservation.note`,`reservation.feedback`,`reservation.account_refund`,`reservation.proof_refund`,`users.username` ")
             ->join('package', 'reservation.package_id = package.id')
             ->join('users', 'reservation.user_id = users.id')
             ->orderBy('reservation.request_date', 'DESC')
@@ -50,7 +96,7 @@ class ReservationModel extends Model
     public function get_reservation_by_id($id = null)
     {
         $query = $this->db->table($this->table)
-            ->select("`reservation.id`, `reservation.user_id`, `reservation.package_id`,`package.name`, `reservation.request_date`, `reservation.check_in`, `reservation.check_out`, `reservation.status`, `reservation.total_price`, `reservation.total_people`, `reservation.deposit`, `reservation.proof_of_deposit`, `reservation.deposit_date`,`reservation.proof_of_payment`,`reservation.payment_date`,`reservation.confirmation_date`,`reservation.comment`,`reservation.review`,`reservation.rating`,`users.username` ")
+            ->select("`reservation.id`, `reservation.user_id`, `reservation.package_id`,`package.name`, `reservation.request_date`, `reservation.check_in`, `reservation.status`, `reservation.total_price`, `reservation.total_people`, `reservation.deposit`, `reservation.proof_of_deposit`, `reservation.deposit_date`,`reservation.proof_of_payment`,`reservation.payment_date`,`reservation.confirmation_date`,`reservation.note`, `reservation.feedback`,`reservation.account_refund`,`reservation.proof_refund`,`reservation.review`,`reservation.rating`,`users.username` ")
             ->join('package', 'reservation.package_id = package.id')
             ->join('users', 'reservation.user_id = users.id')
             ->where('reservation.id', $id)
@@ -83,7 +129,7 @@ class ReservationModel extends Model
     public function get_reservation_package_by_id($id = null)
     {
         $query = $this->db->table($this->table)
-            ->select("`reservation.id`, `reservation.user_id`, `reservation.package_id`,`package.name`, `reservation.request_date`, `reservation.check_in`, `reservation.check_out`, `reservation.status`, `reservation.total_price`, `reservation.total_people`, `reservation.deposit`, `reservation.proof_of_deposit`, `reservation.deposit_date`,`reservation.proof_of_payment`,`reservation.payment_date`,`reservation.confirmation_date`,`reservation.comment`,`users.username` ")
+            ->select("`reservation.id`, `reservation.user_id`, `reservation.package_id`,`package.name`, `reservation.request_date`, `reservation.check_in`, `reservation.status`, `reservation.total_price`, `reservation.total_people`, `reservation.deposit`, `reservation.proof_of_deposit`, `reservation.deposit_date`,`reservation.proof_of_payment`,`reservation.payment_date`,`reservation.confirmation_date`,`reservation.note`, `reservation.feedback`, `reservation.account_refund`,`reservation.proof_refund`,`users.username` ")
             ->join('package', 'reservation.package_id = package.id')
             ->join('users', 'reservation.user_id = users.id')
             ->where('reservation.id', $id)
@@ -95,10 +141,10 @@ class ReservationModel extends Model
     {
         $lastId = $this->db->table($this->table)->select('id')->orderBy('id', 'ASC')->get()->getLastRow('array');
         if(empty($lastId)){
-            $id='R0000001';
+            $id='R0001';
         }else{
         $count = (int)substr($lastId['id'], 3);
-        $id = sprintf('R%07d', $count + 1);
+        $id = sprintf('R%04d', $count + 1);
         }
         return $id;
     }
@@ -113,6 +159,17 @@ class ReservationModel extends Model
     public function update_reservation($id = null, $data = null) {
         $query = $this->db->table('reservation')
             ->update($data, ['id' => $id]);
+        return $query;
+    }
+
+    public function update_cancel($id = null, $data = null) {
+        $data['status'] = null; // Mengatur kolom 'status' menjadi NULL
+
+        $query = $this->db->table('reservation')
+                        ->set($data)
+                        ->where('id', $id)
+                        ->update();
+    
         return $query;
     }
 

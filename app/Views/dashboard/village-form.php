@@ -60,7 +60,6 @@ $edit = in_array('edit', $uri);
                             <?php endif; ?>
                         </div>
                     </form>
-
                     <br/>
                 </div>
             </div>

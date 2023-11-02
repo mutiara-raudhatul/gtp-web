@@ -44,16 +44,63 @@ class CulinaryPlaceModel extends Model
         return $query;
     }
 
+    public function get_new_id()
+    {
+        $lastId = $this->db->table($this->table)->select('id')->orderBy('id', 'ASC')->get()->getLastRow('array');
+        if(empty($lastId)){
+            $id='CP001';
+        }else{
+        $count = (int)substr($lastId['id'], 3);
+        $id = sprintf('CP%03d', $count + 1);
+        }
+        return $id;
+    }
+
+    public function add_new_cp($culinaryplace = null, $geom = null)
+    {
+        $insert = $this->db->table($this->table)
+            ->insert($culinaryplace);
+        $update = $this->db->table($this->table)
+            ->set('geom', "ST_GeomFromText('{$geom}')", false)
+            ->where('id', $culinaryplace['id'])
+            ->update();
+        return $insert && $update;
+    }
+
+    public function update_cp($id = null, $culinaryplace = null)
+    {
+        foreach ($culinaryplace as $key => $value) {
+            if (empty($value)) {
+                unset($culinaryplace[$key]);
+            }
+        }
+        $query = $this->db->table($this->table)
+            ->where('id', $id)
+            ->update($culinaryplace);
+        return $query;
+    }
+
+    public function update_geom($id = null, $geom = null)
+    {
+        $query = $this->db->table($this->table)
+            ->set('geom', "ST_GeomFromText('{$geom}')", false)
+            ->where('id', $id)
+            ->update();
+        return $query;
+    }
+
     public function get_cp_by_id($id = null)
     {
         $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
         $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.address,{$this->table}.contact_person,{$this->table}.open,{$this->table}.close,{$this->table}.capacity,{$this->table}.description,{$this->table}.status";
+        $geoJson = "ST_AsGeoJSON({$this->table}.geom) AS geoJson";
         $query = $this->db->table($this->table)
-            ->select("{$columns}, {$coords}")
+            ->select("{$columns}, {$coords}, {$geoJson}")
             ->where('id', $id)
             ->get();
         return $query;
     }
+
 
     public function get_cp_by_radius($data = null)
     {

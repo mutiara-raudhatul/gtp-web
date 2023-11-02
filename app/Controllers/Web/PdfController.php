@@ -7,6 +7,7 @@ use CodeIgniter\Controller;
 use App\Libraries\MY_TCPDF AS TCPDF;
 use CodeIgniter\RESTful\ResourcePresenter;
 use CodeIgniter\Files\File;
+use DateTime;
 
 use App\Models\DetailReservationModel;
 use App\Models\ReservationModel;
@@ -137,9 +138,13 @@ class PdfController extends ResourcePresenter
         $getday = $this->detailPackageModel->get_day_by_package($package_id_reservation)->getResultArray();
         $combinedData = $this->detailPackageModel->getCombinedData($package_id_reservation);
 
+        $day=max($getday);
+        $daypack=$day['day'];
+        $dayhome=$day['day']-1;
+        
         //data homestay
         $list_unit = $this->unitHomestayModel->get_unit_homestay_all()->getResultArray();
-        $booking_unit = $this->detailReservationModel->get_unit_homestay_booking($id)->getResultArray();
+        $booking_unit = $this->detailReservationModel->get_unit_homestay_bookingnya($id)->getResultArray();
         // $unit_booking= $this->detailReservationModel->get_unit_homestay_dtbooking($id)->getResultArray();
 
         // dd($booking_unit);
@@ -159,12 +164,31 @@ class PdfController extends ResourcePresenter
 
             $data_price=$total;
             // dd($data_price);
-            $tph = array_sum($data_price);
+
+            $tphom = array_sum($data_price);
+            $tph=$tphom*$dayhome;
+            // $tph = array_sum($data_price);
             $data_unit_booking=$unit_booking;
 
         } else{
             $data_unit_booking=[];
             $tph = '0';
+        }
+
+        // $check_in = "2023-10-29 11:51:00";
+        $check_in = $datareservation['check_in'];
+        $totday=max($getday);
+        $day=$totday['day']-1;
+        // Ubah $check_in menjadi objek DateTime 
+        $check_in_datetime = new DateTime($check_in);
+
+        if($day=='0'){
+            $check_out = $check_in_datetime->format('Y-m-d') . ' 18:00:00';
+        } else {
+            // Tambahkan jumlah hari
+            $check_in_datetime->modify('+' . $day . ' days');
+            // Atur waktu selalu menjadi 12:00:00
+            $check_out = $check_in_datetime->format('Y-m-d') . ' 12:00:00';
         }
 
         if (empty($datareservation)) {
@@ -178,13 +202,16 @@ class PdfController extends ResourcePresenter
             'serviceinclude' => $serviceinclude,
             'serviceexclude' => $serviceexclude,
             'day'=> $getday,
+            'daypack'=> $daypack,
             'activity' => $combinedData,
             'detail' => $datareservation,
 
             //data homestay
             'data' => $contents,
             'list_unit' => $list_unit,
-            'date'=>$date,
+            'date'=>$date,            
+            'dayhome'=> $dayhome,
+            'check_out'=>$check_out,
             'data_unit'=>$booking_unit,
             'booking'=>$data_unit_booking,
             'price_home'=>$tph

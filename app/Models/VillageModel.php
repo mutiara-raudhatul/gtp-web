@@ -32,6 +32,16 @@ class VillageModel extends Model
         return $query;
     }
 
+    public function get_wilayah($id)
+    {
+        $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
+        $query = $this->db->table($this->table)
+            ->select("id, name, {$coords}")
+            ->where('id', $id)
+            ->get();
+        return $query;
+    }
+
     public function get_geoJson($id = null)
     {
         $geoJson = "ST_AsGeoJSON({$this->table}.geom) AS geoJson";
@@ -52,7 +62,6 @@ class VillageModel extends Model
 
     public function add_new_village($requestData = null, $geom = null)
     {
-
         $insert = $this->db->table($this->table)
             ->insert($requestData);
         $update = $this->db->table($this->table)

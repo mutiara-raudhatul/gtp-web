@@ -96,7 +96,7 @@ class Facility extends ResourceController
             ]
         ];
 
-        dd($findByRadius);
+        // dd($findByRadius);
         return $this->respond($response);
     }
 

@@ -40,6 +40,12 @@ $uri3 = $uri[3] ?? '';
                         </a>
                     </li>
 
+
+                    <li class="sidebar-item <?= ($uri1 == 'tracking') ? 'active' : '' ?>">
+                        <a href="<?= base_url('/web/tracking'); ?>" class="sidebar-link">
+                            <i class="fa-solid fa-bridge-water me-3"></i>Tracking Mangrove
+                        </a>
+                    </li>
                     <!-- <li class="sidebar-item <? //= ($uri1 == 'tracking') ? 'active' : '' 
                                                     ?> has-sub"> -->
                     <li class="sidebar-item has-sub">
@@ -48,9 +54,6 @@ $uri3 = $uri[3] ?? '';
                         </a>
 
                         <ul class="submenu <?= ($uri1 == 'tracking' || $uri1 == 'talao') ? 'active' : '' ?>">
-                            <li class="submenu-item <?= ($uri1 == 'tracking') ? 'active' : '' ?>" id="at-list">
-                                <a href="<?= base_url('/web/tracking'); ?>"><i class="fa-solid fa-bridge-water me-3"></i>Tracking Mangrove</a>
-                            </li>
                             <li class="submenu-item <?= ($uri1 == 'talao') ? 'active' : '' ?>" id="at-list">
                                 <a href="<?= base_url('/web/talao'); ?>"><i class="fa-solid fa-water me-3"></i>Water Attractions</a>
                             </li>

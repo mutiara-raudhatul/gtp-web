@@ -5,6 +5,7 @@ namespace App\Controllers\Web;
 use App\Models\WorshipPlaceModel;
 use App\Models\GalleryWorshipPlaceModel;
 use CodeIgniter\RESTful\ResourcePresenter;
+use CodeIgniter\Files\File;
 
 class WorshipPlace extends ResourcePresenter
 {
@@ -27,6 +28,18 @@ class WorshipPlace extends ResourcePresenter
     public function index()
     {
     }
+
+    public function new()
+    {
+        $worshipplace = $this->worshipPlaceModel->get_list_wp()->getResultArray();
+
+        $data = [
+            'title' => 'New Worship Place',
+            'worshipplace' => $worshipplace
+        ];
+        return view('dashboard/worship-form', $data);
+    }
+
 
     /**
      * Present a view to present a wpecific resource object
@@ -60,5 +73,120 @@ class WorshipPlace extends ResourcePresenter
             return view('dashboard/detail_worship_place', $data);
         }
         return view('web/detail_worship_place', $data);
+    }
+
+    public function create()
+    {
+        $request = $this->request->getPost();
+
+        $id = $this->worshipPlaceModel->get_new_id();
+
+        $requestData = [
+            'id' => $id,
+            'name' => $request['name'],
+            'address' => $request['address'],
+            'capacity' => $request['capacity'],
+            'description' => $request['description'],
+            'status' => $request['status']
+        ];
+        foreach ($requestData as $key => $value) {
+            if (empty($value)) {
+                unset($requestData[$key]);
+            }
+        }
+
+        $geom = $request['multipolygon'];
+        $geojson = $request['geo-json'];
+
+        $addWP = $this->worshipPlaceModel->add_new_wp($requestData, $geom);
+
+        if (isset($request['gallery'])) {
+            $folders = $request['gallery'];
+            $gallery = array();
+            foreach ($folders as $folder) {
+                $filepath = WRITEPATH . 'uploads/' . $folder;
+                $filenames = get_filenames($filepath);
+                $fileImg = new File($filepath . '/' . $filenames[0]);
+                $fileImg->move(FCPATH . 'media/photos/worship_place');
+                delete_files($filepath);
+                rmdir($filepath);
+                $gallery[] = $fileImg->getFilename();
+            }
+            $this->galleryWorshipPlaceModel->add_new_gallery($id, $gallery);
+        }
+
+        if ($addWP) {
+            return redirect()->to(base_url('dashboard/worshipplace'));
+        } else {
+            return redirect()->back()->withInput();
+        }
+    }
+
+    public function edit($id = null)
+    {
+        $wp = $this->worshipPlaceModel->get_wp_by_id($id)->getRowArray();
+        if (empty($wp)) {
+            return redirect()->to('dashboard/worshipplace');
+        }
+
+        $list_gallery = $this->galleryWorshipPlaceModel->get_gallery($id)->getResultArray();
+        $galleries = array();
+        foreach ($list_gallery as $gallery) {
+            $galleries[] = $gallery['url'];
+        }
+        $wp['gallery'] = $galleries;
+
+        $data = [
+            'title' => 'Edit Worship Place ',
+            'data' => $wp
+        ];
+        return view('dashboard/worship-form', $data);
+    }
+
+    public function update($id = null)
+    {
+        $request = $this->request->getPost();
+        $requestData = [
+            'id' => $id,
+            'name' => $request['name'],
+            'address' => $request['address'],
+            'capacity' => $request['capacity'],
+            'description' => $request['description'],
+            'status' => $request['status']
+        ];
+        foreach ($requestData as $key => $value) {
+            if (empty($value)) {
+                unset($requestData[$key]);
+            }
+        }
+
+        $geom = $request['multipolygon'];
+        // $geojson = $request['geo-json'];
+
+        $updatewp = $this->worshipPlaceModel->update_wp($id, $requestData);
+        $updateGeom = $this->worshipPlaceModel->update_geom($id, $geom);
+
+        if (isset($request['gallery'])) {
+            $folders = $request['gallery'];
+            $gallery = array();
+            foreach ($folders as $folder) {
+                $filepath = WRITEPATH . 'uploads/' . $folder;
+                $filenames = get_filenames($filepath);
+                $fileImg = new File($filepath . '/' . $filenames[0]);
+                $fileImg->move(FCPATH . 'media/photos/worship_place');
+                delete_files($filepath);
+                rmdir($filepath);
+                $gallery[] = $fileImg->getFilename();
+            }
+            $this->galleryWorshipPlaceModel->update_gallery($id, $gallery);
+        } else {
+            $this->galleryWorshipPlaceModel->delete_gallery($id);
+        }
+
+        if ($updatewp) {
+            return redirect()->to(base_url('dashboard/worshipplace') . '/' . $id);
+        } else {
+            return redirect()->back()->withInput();
+        }
     }
 }

@@ -297,7 +297,7 @@ $edit = in_array('edit', $uri);
                             </div>                        
                         </div>
                         <?php if($edit) : ?>
-                            <a href="<?= base_url('dashboard/packageday/'); ?>/<?= $data['id']; ?>" class="btn btn-secondary"><i class="fa fa-plus"></i> Add Activity Package</a>
+                            <a href="<?= base_url('dashboard/packageday/'); ?>/<?= $data['id']; ?>" class="btn btn-secondary"><i class="fa fa-plus"></i> Manage Activity Package</a>
                         <?php endif; ?>
                     </div>
                 </div>

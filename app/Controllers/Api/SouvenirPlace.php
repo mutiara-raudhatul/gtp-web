@@ -3,6 +3,7 @@
 namespace App\Controllers\Api;
 
 use App\Models\SouvenirPlaceModel;
+use App\Models\GallerySouvenirPlaceModel;
 use CodeIgniter\API\ResponseTrait;
 use CodeIgniter\RESTful\ResourceController;
 
@@ -10,11 +11,12 @@ class SouvenirPlace extends ResourceController
 {
     use ResponseTrait;
 
-    protected $souvenirPlaceModel;
+    protected $gallerySouvenirPlaceModel;
 
     public function __construct()
     {
         $this->souvenirPlaceModel = new SouvenirPlaceModel();
+        $this->gallerySouvenirPlaceModel = new GallerySouvenirPlaceModel();
     }
 
     /**
@@ -67,5 +69,20 @@ class SouvenirPlace extends ResourceController
             ]
         ];
         return $this->respond($response);
+    }
+
+    public function delete($id = null)
+    {
+        $deleteGSP = $this->gallerySouvenirPlaceModel->delete_gallery($id);
+        $deleteSP = $this->souvenirPlaceModel->delete(['id' => $id]);
+        if ($deleteSP) {
+            $response = [
+                'status' => 200,
+                'message' => [
+                    "Success delete souvenir place"
+                ]
+            ];
+            return $this->respondDeleted($response);
+        }
     }
 }

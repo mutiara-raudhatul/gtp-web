@@ -8,6 +8,9 @@ use App\Models\AttractionModel;
 use App\Models\EventModel;
 use App\Models\PackageModel;
 use App\Models\FacilityModel;
+use App\Models\CulinaryPlaceModel;
+use App\Models\WorshipPlaceModel;
+use App\Models\SouvenirPlaceModel;
 use App\Models\ServicePackageModel;
 use App\Models\HomestayModel;
 use App\Controllers\BaseController;
@@ -20,6 +23,9 @@ class Dashboard extends BaseController
     protected $eventModel;
     protected $packageModel;
     protected $facilityModel;
+    protected $culinaryPlaceModel;
+    protected $souvenirPlaceModel;
+    protected $worshipPlaceModel;
     protected $servicePackageModel;
     protected $homestayModel;
 
@@ -31,6 +37,9 @@ class Dashboard extends BaseController
         $this->eventModel = new EventModel();
         $this->packageModel = new PackageModel();
         $this->facilityModel = new FacilityModel();
+        $this->culinaryPlaceModel = new CulinaryPlaceModel();
+        $this->souvenirPlaceModel = new SouvenirPlaceModel();
+        $this->worshipPlaceModel = new WorshipPlaceModel();
         $this->servicePackageModel = new ServicePackageModel();
         $this->homestayModel = new HomestayModel();
 
@@ -105,6 +114,43 @@ class Dashboard extends BaseController
         $data = [
             'title' => 'Manage Facility',
             'manage' => 'Facility',
+            'data' => $contents,
+        ];
+        return view('dashboard/manage-page', $data);
+    }
+    
+    
+    public function culinaryplace()
+    {
+        $contents = $this->culinaryPlaceModel->get_list_cp()->getResultArray();
+
+        $data = [
+            'title' => 'Manage Culinary Place',
+            'manage' => 'Culinary Place',
+            'data' => $contents,
+        ];
+        return view('dashboard/manage-page', $data);
+    }
+
+    public function souvenirplace()
+    {
+        $contents = $this->souvenirPlaceModel->get_list_sp()->getResultArray();
+
+        $data = [
+            'title' => 'Manage Souvenir Place',
+            'manage' => 'Souvenir Place',
+            'data' => $contents,
+        ];
+        return view('dashboard/manage-page', $data);
+    }
+
+    public function worshipplace()
+    {
+        $contents = $this->worshipPlaceModel->get_list_wp()->getResultArray();
+
+        $data = [
+            'title' => 'Manage Worship Place',
+            'manage' => 'Worship Place',
             'data' => $contents,
         ];
         return view('dashboard/manage-page', $data);

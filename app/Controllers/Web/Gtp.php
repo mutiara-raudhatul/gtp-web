@@ -3,6 +3,7 @@
 namespace App\Controllers\Web;
 
 use App\Models\GtpModel;
+use App\Models\ProvinsiModel;
 use App\Models\GalleryGtpModel;
 use CodeIgniter\RESTful\ResourcePresenter;
 use CodeIgniter\Files\File;
@@ -10,6 +11,7 @@ use CodeIgniter\Files\File;
 class Gtp extends ResourcePresenter
 {
     protected $gtpModel;
+    protected $provinsiModel;
 
     /**
      * Instance of the main Request object.
@@ -23,6 +25,7 @@ class Gtp extends ResourcePresenter
     public function __construct()
     {
         $this->gtpModel = new GtpModel();
+        $this->provinsiModel = new ProvinsiModel();
         $this->galleryGtpModel = new GalleryGtpModel();
     }
 
@@ -48,7 +51,7 @@ class Gtp extends ResourcePresenter
             'title' => 'Home',
             'data' => $contents
         ];
-
+// dd($data);
         return view('web/info_home', $data);
     }
 

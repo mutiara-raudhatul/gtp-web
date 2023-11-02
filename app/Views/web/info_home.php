@@ -15,7 +15,7 @@
                         <?= $this->include('web/layouts/map-head'); ?>
                     </div>
                 </div>
-                <?= $this->include('web/layouts/map-body'); ?>
+                <?= $this->include('web/layouts/map-body-5'); ?>
             </div>
         </div>
 

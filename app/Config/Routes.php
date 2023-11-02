@@ -98,6 +98,8 @@ $routes->group('web', ['namespace' => 'App\Controllers\Web'], function ($routes)
     $routes->get('detailreservation/review/(:any)', 'DetailReservation::review/$1');//--------
     $routes->post('detailreservation/savereview/(:any)', 'DetailReservation::savereview/$1');//--------
     $routes->post('detailreservation/savereviewunit/(:any)', 'DetailReservation::savereviewunit/$1');//--------
+    $routes->post('detailreservation/savecancel/(:any)', 'DetailReservation::savecancel/$1');//--------
+    $routes->post('detailreservation/saverefund/(:any)', 'DetailReservation::saverefund/$1');//--------
     $routes->presenter('detailreservation', ['filter' => 'login']);
     $routes->resource('detailreservation', ['filter' => 'login']);
 
@@ -121,6 +123,9 @@ $routes->group('dashboard', ['namespace' => 'App\Controllers\Web', 'filter' => '
     $routes->get('event', 'Dashboard::event');
     $routes->get('package', 'Dashboard::package');
     $routes->get('facility', 'Dashboard::facility');
+    $routes->get('souvenirplace', 'Dashboard::souvenirplace');
+    $routes->get('worshipplace', 'Dashboard::worshipplace');
+    $routes->get('culinaryplace', 'Dashboard::culinaryplace');
     $routes->get('servicepackage', 'Dashboard::servicepackage');
     $routes->get('packageday/(:segment)', 'Packageday::newday/$1');
     $routes->post('packageday/createday/(:segment)', 'Packageday::createday/$1');
@@ -153,6 +158,9 @@ $routes->group('dashboard', ['namespace' => 'App\Controllers\Web', 'filter' => '
     $routes->presenter('event');
     $routes->presenter('package');
     $routes->presenter('facility');
+    $routes->presenter('culinaryplace');
+    $routes->presenter('worshipplace');
+    $routes->presenter('souvenirplace');
     $routes->presenter('packageday');
     $routes->presenter('servicepackage');
     $routes->resource('servicepackage');
@@ -163,13 +171,16 @@ $routes->group('dashboard', ['namespace' => 'App\Controllers\Web', 'filter' => '
     $routes->post('unithomestay/createunit/(:segment)', 'UnitHomestay::createunit/$1');//--------
     $routes->post('unithomestay/createfacility/(:segment)', 'UnitHomestay::createfacility/$1');//--------
     $routes->post('unithomestay/createfacilityunit/(:segment)', 'UnitHomestay::createfacilityunit/$1');//--------
-
+    
+    $routes->get('reservation/report', 'Reservation::report');//--------
     $routes->presenter('reservation');
     $routes->resource('reservation');
     $routes->presenter('managereservation');
     $routes->get('detailreservation/confirm/(:any)', 'DetailReservation::confirm/$1');//--------
     $routes->post('detailreservation/saveconfirm/(:any)', 'DetailReservation::saveconfirm/$1');//--------
-
+    $routes->post('reservation/uploadrefund/(:any)', 'Reservation::uploadrefund/$1');//--------
+    $routes->presenter('detailreservation', ['filter' => 'login']);
+    $routes->resource('detailreservation', ['filter' => 'login']);
 });
 
 // Upload files
@@ -186,6 +197,7 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], function ($routes)
     $routes->resource('gtp');
 
     $routes->post('village', 'Village::getData');
+    $routes->post('villages', 'Village::getDataKK');
 
     $routes->resource('connection');
     $routes->resource('tracking');
@@ -209,10 +221,13 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], function ($routes)
     $routes->resource('homestay');
     $routes->post('homestay/findByRadius', 'Homestay::findByRadius');
     $routes->resource('culinaryPlace');
+    $routes->presenter('culinaryplace');
     $routes->post('culinaryPlace/findByRadius', 'CulinaryPlace::findByRadius');
     $routes->resource('souvenirPlace');
+    $routes->presenter('souvenirplace');
     $routes->post('souvenirPlace/findByRadius', 'SouvenirPlace::findByRadius');
     $routes->resource('worshipPlace');
+    $routes->presenter('worshipplace');
     $routes->post('worshipPlace/findByRadius', 'WorshipPlace::findByRadius');
 });
 

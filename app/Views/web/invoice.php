@@ -56,15 +56,24 @@
         <?php 
             $min=$data_package['min_capacity'];
             $people=$detail['total_people'];
-            $qty=ceil($people/$min); 
-            $price_package=$data_package['price'];
-            $tot_price_package=$qty*$price_package;
 
+            $jumlah_package = floor($people/$min);
+            $tambahan =$people%$min;
 
+            if($tambahan!=0){
+                if ($tambahan <5){
+                    $order= $jumlah_package+0.5;
+                } else {
+                    $order= $jumlah_package+1;
+                }
+            } else {
+                $order= $jumlah_package;
+            }
+            $total_price_package = $order*$data_package['price'];
         ?>
-        <td style="height: 20px;text-align:center"><?= $qty; ?></td>
+        <td style="height: 20px;text-align:center"><?= $order; ?></td>
         <td style="height: 20px;text-align:right"><?= 'Rp'.number_format(esc($data_package['price']), 0, ',', '.'); ?></td>
-        <td style="height: 20px;text-align:right"><?= 'Rp'.number_format(esc($tot_price_package), 0, ',', '.'); ?></td>
+        <td style="height: 20px;text-align:right"><?= 'Rp'.number_format(esc($total_price_package), 0, ',', '.'); ?></td>
     </tr>
     <tr><td colspan="6"></td></tr>
     <tr style="background-color:#a9a9a9">
@@ -77,14 +86,13 @@
     </tr>
     <?php if (isset($booking)) : ?> 
         <?php foreach ($booking as $dtb) : ?>
-            <?php $gday=max($day);
-                  $tothom = $gday['day']*$dtb['price']; 
+            <?php $tothom = $dayhome*$dtb['price']; 
             ?>
             <tr>
                 <td><?= esc($dtb['name']); ?></td>
                 <td><?= esc($dtb['name_type']); ?> <?= esc($dtb['unit_number']); ?> <?= esc($dtb['nama_unit']); ?></td>
                 <td style="height: 20px;text-align:center"><?= esc($dtb['capacity']); ?></td>
-                <td style="height: 20px;text-align:center"><?= esc($gday['day']); ?></td>
+                <td style="height: 20px;text-align:center"><?= esc($dayhome); ?></td>
                 <td style="height: 20px;text-align:right"><?= 'Rp' . number_format(esc($dtb['price']), 0, ',', '.'); ?></td>
                 <td style="height: 20px;text-align:right"><?= 'Rp' . number_format(esc($tothom), 0, ',', '.'); ?></td>
             </tr>              
@@ -108,8 +116,7 @@
     </tr>
     <tr>
         <th width="12%">Check Out</th>
-        <?php $check_out = strtotime($detail['check_out']); ?>
-        <th width="60%">: <?= esc(date('l, j F Y H:i:s', $check_out)); ?></th>
+        <th width="60%">: <?= esc(date('l, j F Y H:i:s', strtotime($check_out))); ?></th>
     </tr>
     <br/>
     <tr>
@@ -170,6 +177,20 @@
             <?php else : ?>
                 <th width="70%">: <i>Incomplete</i></th>
             <?php endif; ?>
+    </tr>
+    <tr>
+        <th width="25%">Status  </th>
+            <?php if($detail['status']==null && $detail['confirmation_date']==null && $detail['account_refund']==null): ?>    
+                <th width="70%">: Waiting</th>
+            <?php elseif($detail['status']==null && $detail['confirmation_date']!=null  && $detail['account_refund']==null): ?>    
+                <th width="70%">: Cancel</th>
+            <?php elseif($detail['status']==null && $detail['confirmation_date']!=null  && $detail['account_refund']!=null): ?>    
+                <th width="70%">: Cancel and Refund</th>
+            <?php elseif($detail['status']==1): ?>    
+                <th width="70%">: Accepted</th>
+            <?php elseif($detail['status']==0): ?>    
+                <th width="70%">: Rejected</th>
+            <?php endif; ?>                                      
     </tr>
 </table>
 

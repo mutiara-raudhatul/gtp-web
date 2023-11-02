@@ -6,9 +6,11 @@ use App\Models\ReservationModel;
 use App\Models\DetailReservationModel ;
 use App\Models\UnitHomestayModel;
 use App\Models\PackageModel;
+use App\Models\DetailPackageModel;
 use App\Models\PackageDayModel;
 use CodeIgniter\RESTful\ResourcePresenter;
 use CodeIgniter\Files\File;
+use DateTime;
 
 class Reservation extends ResourcePresenter
 {
@@ -16,6 +18,7 @@ class Reservation extends ResourcePresenter
     protected $detailReservationModel ;
     protected $unitHomestayModel;
     protected $packageModel;
+    protected $detailPackageModel;
     protected $packageDayModel;
 
 
@@ -32,6 +35,7 @@ class Reservation extends ResourcePresenter
     {
         $this->reservationModel = new ReservationModel();
         $this->detailReservationModel = new DetailReservationModel ();
+        $this->detailPackageModel = new DetailPackageModel ();
         $this->unitHomestayModel = new UnitHomestayModel();
         $this->packageModel = new PackageModel();
         $this->packageDayModel = new PackageDayModel();
@@ -46,13 +50,32 @@ class Reservation extends ResourcePresenter
     public function index()
     {
         $user=user()->username;
-        $contents = $this->reservationModel->get_list_reservation_by_user($user)->getResultArray();
+        $datareservation = $this->reservationModel->get_list_reservation_by_user($user)->getResultArray();
+
         $data = [
             'title' => 'Reservation',
-            'data' => $contents,
+            'data' => $datareservation
         ];
-
         return view('web/reservation', $data);
+    }
+
+    public function report()
+    {
+        $datareservation_report = $this->reservationModel->get_list_reservation_report()->getResultArray();
+        $deposit = $this->reservationModel->sum_done_deposit()->getRowArray();
+        $total_price = $this->reservationModel->sum_done_total()->getRowArray();
+        $dtrefund = $this->reservationModel->sum_done_refund()->getRowArray();
+        $refund = $dtrefund['refund']/2;
+
+        $data = [
+            'title' => 'Report Reservation',
+            'data' => $datareservation_report,
+            'deposit' => $deposit['deposit'],
+            'total_price' => $total_price['total_price'],
+            'refund' => $refund
+        ];
+        // dd($data);
+        return view('dashboard/reservation-report', $data);
     }
 
     public function show($id = null)
@@ -185,11 +208,12 @@ dd($contents);
             'request_date' => $date,
             'total_people' => $request['total_people'],
             'check_in' => $request['check_in'].' '.$request['time_check_in'],
-            'check_out' => $request['check_out'].' '.$request['time_check_out'],
+            // 'check_out' => $request['check_out'].' '.$request['time_check_out'],
             'total_price' => $request['total_price'],
-            'deposit' => $request['deposit']
+            'deposit' => $request['deposit'],
+            'note' => $request['note']
         ];
-// dd($requestData);
+        // dd($requestData);
         foreach ($requestData as $key => $value) {
             if (empty($value)) {
                 unset($requestData[$key]);
@@ -229,27 +253,27 @@ dd($contents);
         return view('web/reservation-form', $data);
     }
 
-    public function update($id = null)
-    {
-        $request = $this->request->getPost();
-        $requestData = [
-            'id' => $id,
-            'name' => $request['name'],
-        ];
-        foreach ($requestData as $key => $value) {
-            if (empty($value)) {
-                unset($requestData[$key]);
-            }
-        }
+    // public function update($id = null)
+    // {
+    //     $request = $this->request->getPost();
+    //     $requestData = [
+    //         'id' => $id,
+    //         'name' => $request['name'],
+    //     ];
+    //     foreach ($requestData as $key => $value) {
+    //         if (empty($value)) {
+    //             unset($requestData[$key]);
+    //         }
+    //     }
 
-        $updateSP = $this->servicePackageModel->update_servicePackage($id, $requestData);
+    //     $updateSP = $this->servicePackageModel->update_servicePackage($id, $requestData);
 
-        if ($updateSP) {
-            return redirect()->to(base_url('dashboard/servicepackage') . '/' . $id);
-        } else {
-            return redirect()->back()->withInput();
-        }
-    }
+    //     if ($updateSP) {
+    //         return redirect()->to(base_url('dashboard/servicepackage') . '/' . $id);
+    //     } else {
+    //         return redirect()->back()->withInput();
+    //     }
+    // }
 
 
     public function uploaddeposit($id = null)
@@ -430,6 +454,85 @@ dd($contents);
         return $this->respond($response, 400);
     }
 
+    public function uploadrefund($id = null)
+    {
+        $request = $this->request->getPost();
+
+        $img = $this->request->getFile('proof_refund');
+
+        if (empty($_FILES['proof_refund']['name'])) {
+            $query = $this->reservationModel->upload_deposit($id, $requestData);
+            if ($query) {
+                $response = [
+                    'status' => 200,
+                    'message' => [
+                        "Success upload refund"
+                    ]
+                ];
+                return redirect()->back();
+            }
+            $response = [
+                'status' => 400,
+                'message' => [
+                    "Fail upload refund"
+                ]
+            ];
+            return $this->respond($response, 400);
+        } else {
+
+            $validationRule = [
+                'proof_refund' => [
+                    'label' => 'proof_refund File',
+                    'rules' => 'uploaded[proof_refund]'
+                        . '|is_image[proof_refund]'
+                        . '|mime_in[proof_refund,image/jpg,image/jpeg,image/gif,image/png,image/webp]'
+                ],
+            ];
+            if (!$this->validate($validationRule) && !empty($_FILES['proof_refund']['name'])) {
+                $response = [
+                    'status' => 400,
+                    'message' => [
+                        "Fail upload refund "
+                    ]
+                ];
+                return $this->respond($response, 400);
+            }
+    
+            if ($img->isValid() && !$img->hasMoved()) {
+                $filepath = WRITEPATH . 'uploads/' . $img->store();
+                $user_image = new File($filepath);
+                $user_image->move(FCPATH . 'media/photos/refund');
+                $requestData['proof_refund'] = $user_image->getFilename();
+        
+                $query = $this->reservationModel->upload_deposit($id, $requestData);
+                if ($query) {
+                    $response = [
+                        'status' => 200,
+                        'message' => [
+                            "Success upload proof refund image"
+                        ]
+                    ];
+                    return redirect()->back();
+                    
+                }
+                $response = [
+                    'status' => 400,
+                    'message' => [
+                        "Fail upload refund"
+                    ]
+                ];
+                return $this->respond($response, 400);
+        
+            }
+        }
+        $response = [
+            'status' => 400,
+            'message' => [
+                "Fail upload refund."
+            ]
+        ];
+        return $this->respond($response, 400);
+    }
 
     public function delete($id=null, $package_id=null, $user_id=null)
     {
