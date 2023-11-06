@@ -111,8 +111,13 @@ function initMap5(lat = -0.461119, lng = 102.205517) {
         digitKec(idkec);
     }
 
-    digitNagari1();
+    for (let d = 1; d < 9; d++){
+        const iddesa = d; 
+        digitNagari1(iddesa);
+    }
+
     digitVillage1();
+
 }
 
 // Display tourism village digitizing
@@ -163,6 +168,7 @@ function digitVillage1() {
         }
     });
 }
+
 
 function initMap2() {
     initMap();
@@ -228,15 +234,18 @@ function digitNagari() {
     });
 }
 
-function digitNagari1() {
+function digitNagari1(iddesa) {
     const digitasi = new google.maps.Data();
     const infoWindow = new google.maps.InfoWindow();
 
+    if (iddesa < 9) {
+        digitasiValue = 'V0' + iddesa;
+    }
     $.ajax({
         url: baseUrl + '/api/village',
         type: 'POST',
         data: {
-            digitasi: 'V0001'
+            digitasi: digitasiValue
         },
         dataType: 'json',
         success: function (response) {
@@ -244,7 +253,7 @@ function digitNagari1() {
             digitasi.addGeoJson(data);
             digitasi.setStyle({
                 fillColor: '#FFC436',
-                strokeWeight:3,
+                strokeWeight:2,
                 strokeColor: '#ffffff',
                 fillOpacity: 2,
                 clickable: true // Set clickable to true to enable click event
@@ -729,6 +738,18 @@ function objectMarker(id, lat, lng, anim = true) {
         infoWindow.open(map, marker);
     });
     markerArray[id] = marker;
+
+
+}
+
+function zoomToGTPMarkers() {
+    for (const id in markerArray) {
+        if (id.substring(0, 3) === 'GTP') {
+            const marker = markerArray[id];
+            map.setCenter(marker.getPosition()); // Center the map position
+            map.setZoom(16); // Set the zoom level 
+        }
+    }
 }
 
 // Display info window for loaded object
@@ -1369,6 +1390,15 @@ function objectMarkerExplore(id, lat, lng, status, anim = true) {
         infoWindow.open(map, marker);
     });
     markerArray[id] = marker;
+
+}
+
+
+function zoomToMarker(marker) {
+    if (marker) {
+        map.setZoom(15); // Set the zoom level to a higher value (you can adjust this)
+        map.setCenter(marker.getPosition()); // Center the map to the marker's position
+    }
 }
 
 // Search Result Object Around
@@ -2035,6 +2065,7 @@ function showMap(id = null) {
 // Set map to coordinate put by user
 function findCoords(object) {
     clearMarker();
+    // mapMarkers.forEach(marker => marker.setMap(null));
     google.maps.event.clearListeners(map, 'click');
 
     const lat = Number(document.getElementById('latitude').value);
@@ -2046,6 +2077,23 @@ function findCoords(object) {
 
     let pos = new google.maps.LatLng(lat, lng);
     map.panTo(pos);
+
+    // Creating a marker and placing it on the map
+    const marker = new google.maps.Marker({
+        position: pos,
+        map: map,
+        title: 'Selected Location'
+    });
+
+    // You can also add an info window to the marker if needed
+    const infoWindow = new google.maps.InfoWindow({
+        content: 'Latitude: ' + lat + '<br>Longitude: ' + lng
+    });
+
+    // Event listener to display info window when the marker is clicked
+    marker.addListener('click', function () {
+        infoWindow.open(map, marker);
+    });
 }
 
 // Unselect shape on drawing map

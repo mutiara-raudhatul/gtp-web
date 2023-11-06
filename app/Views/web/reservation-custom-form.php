@@ -25,6 +25,49 @@ $edit = in_array('edit', $uri);
             currentUrl = '<?= current_url(); ?>';
         </script>
 
+<div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Reservation Guide</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <b>Reservasi Paket Wisata yang disediakan</b>
+                        <li>Wisatawan memilih paket wisata yang ada pada form inputan (detail informasi paket dapat dilihat pada halaman paket wisata)</li>
+                        <li>Wisatawan mengisi form reservasi paket wisata dan/ atau homestay yang diinginkan</li>
+                    <br>
+                    <b>Reservasi Paket Wisata yang dikustom</b>
+                        <li>Wisatawan dapat memilih tombol 'custom package' untuk membuat paket yang diinginkan</li>
+                        <li>Wisatawan diminta mengisikan kegiatan apa saja, lokasi, dan layanan yang ada pada aktivitas tersebut</li>
+                        <li>Wisatawan melakukan reservasi dengan mengisi form reservasi paket wisata</li>
+                        <li>Jika wisatawan ingin memesan homestay dapat mengisi form reservasi homestay</li>
+                    <br>
+                    <b>Reservasi Homestay</b>
+                        <li>Jika wisatawan hanya ingin melakukan reservasi homestay tanpa paket wisata, maka dapat mengisi form 'custom reservasi' </li>
+                        <li>Wisatawan mengisi hari kegiatan dengan memilih objek aktivitas homestay yang diinginkan</li>
+                        <li>Lalu dapat mengisi form reservasi yang disediakan</li>
+                    <br>
+                    <b>Pemesanan Paket</b>
+                        <li>Jumlah pemesanan minimal harus memenuhi minimal kapasitas</li>
+                        <li>Jika kurang dari jumlah orang minimal maka harga dihitung 1 paket</li>
+                        <li>Jika lebih dari jumlah minimal 1 paket, maka jika tambahan <5 membayar ditambah setengah harga paket, jika >=5 membayar ditambah 1 harga paket, begitu untuk kelipatan minimal kapasitas</li>
+                    <br>
+                    <b>Pembayaran Reservasi</b>
+                        <li>Wisatawan dapat memilih tanggal dan waktu check in pelaksanaan paket wisata</li>
+                        <li>Jika mereservasi homestay, check in dan check out homestay tetap terhitung pada 12.00 siang </li>
+                        <li>Reservasi paket wisata dapat diajukan dan selanjutnya mohon menunggu konfirmasi admin</li>
+                        <li>Jika admin menyetujui, pembayaran deposit adalah 20% dari harga total reservasi dan dibayarkan maksimal pada H-2 waktu kunjungan</li>
+                        <li>Pembatalan reservasi dapat dilakukan maksimal H-3 pelaksanaan kunjungan, untuk kondisi ini deposit yang telah dibayarkan akan dikembalikan</li>
+                        <li><i><b>Jika pembatalan dilakukan setelah H-3 kunjungan maka deposit tidak dikembalikan</i></b></li>
+                        <li>Pembayaran sisa dari deposit dapat dibayarkan pada hari kunjungan wisata</li>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+                </div>
+            </div>
+        </div>
         <!-- Object Detail Information -->
         <div class="col-md-6 col-12">
 
@@ -35,6 +78,13 @@ $edit = in_array('edit', $uri);
                     </div>
 
                     <div class="card-body">
+                        <div col=col-auto>
+                            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#infoModal" data-bs-whatever="@getbootstrap"><i class="fa fa-info"></i><i>Read this guide</i></button>
+                            <br>
+                            <input type="checkbox" id="readCheckbox" name="readCheckbox" required>
+                            <label for="readCheckbox"><i>I have read this guide</i></label>
+                            <br> <br>
+                        </div>
                         <?= csrf_field();  ?>
                         <div class="form-group">
                             <label for="package">Package</label>

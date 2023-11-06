@@ -9,6 +9,7 @@ use CodeIgniter\RESTful\ResourcePresenter;
 use CodeIgniter\Files\File;
 use DateTime;
 
+use App\Models\BackupDetailReservationModel;
 use App\Models\DetailReservationModel;
 use App\Models\ReservationModel;
 use App\Models\UnitHomestayModel;
@@ -30,6 +31,7 @@ class PdfController extends ResourcePresenter
 {
     // protected $gtpModel;
 
+    protected $backupDetailReservationModel;
     protected $detailReservationModel;
     protected $reservationModel;
     protected $unitHomestayModel;
@@ -60,6 +62,7 @@ class PdfController extends ResourcePresenter
         // $this->gtpModel = new GtpModel();
         // $this->galleryGtpModel = new GalleryGtpModel();
 
+        $this->backupDetailReservationModel = new BackupDetailReservationModel();
         $this->detailReservationModel = new DetailReservationModel();
         $this->reservationModel = new ReservationModel();
         $this->unitHomestayModel = new UnitHomestayModel();
@@ -144,7 +147,12 @@ class PdfController extends ResourcePresenter
         
         //data homestay
         $list_unit = $this->unitHomestayModel->get_unit_homestay_all()->getResultArray();
-        $booking_unit = $this->detailReservationModel->get_unit_homestay_bookingnya($id)->getResultArray();
+        if($datareservation['cancel']=='0'){
+            $booking_unit = $this->detailReservationModel->get_unit_homestay_bookingnya($id)->getResultArray();
+        } else if ($datareservation['cancel']=='1'){
+            $booking_unit = $this->backupDetailReservationModel->get_unit_homestay_bookingnya($id)->getResultArray();
+        }
+        
         // $unit_booking= $this->detailReservationModel->get_unit_homestay_dtbooking($id)->getResultArray();
 
         // dd($booking_unit);
@@ -157,8 +165,14 @@ class PdfController extends ResourcePresenter
                 $unit_number=$booking['unit_number'];
                 $reservation_id=$booking['reservation_id'];
 
-                $unit_booking[] = $this->detailReservationModel->get_unit_homestay_booking_data($homestay_id,$unit_type,$unit_number,$id)->getRowArray();
-                $total_price_homestay = $this->detailReservationModel->get_price_homestay_booking($homestay_id,$unit_type,$unit_number,$id)->getRow();
+                if($datareservation['cancel']=='0'){
+                    $unit_booking[] = $this->detailReservationModel->get_unit_homestay_booking_data($homestay_id,$unit_type,$unit_number,$id)->getRowArray();
+                    $total_price_homestay = $this->detailReservationModel->get_price_homestay_booking($homestay_id,$unit_type,$unit_number,$id)->getRow();
+                } else if ($datareservation['cancel']=='1'){
+                    $unit_booking[] = $this->backupDetailReservationModel->get_unit_homestay_booking_data($homestay_id,$unit_type,$unit_number,$id)->getRowArray();
+                    $total_price_homestay = $this->backupDetailReservationModel->get_price_homestay_booking($homestay_id,$unit_type,$unit_number,$id)->getRow();
+                }
+                
                 $total []= $total_price_homestay->price;
             }
 

@@ -77,8 +77,8 @@ $edit = in_array('edit', $uri);
                                                 <div class="row g-4">
                                                     <div class="col-md-12">
                                                         <label for="id_service">Service </label>
-                                                        <select class="form-select" name="id_service">
-                                                                <option selected disabled>Select the service</option>
+                                                        <select class="form-select" name="id_service" required>
+                                                                <option value="">Select the service</option>
                                                                 <?php foreach ($servicelist as $item):?>
                                                                     <option value="<?= esc($item['id']); ?>"><?= esc($item['name']); ?></option>                                                                
                                                                 <?php endforeach; ?>
@@ -88,11 +88,11 @@ $edit = in_array('edit', $uri);
                                                 <div class="row g-4">
                                                     <div class="col-md-12">
                                                     <label>
-                                                        <input type="radio" name="status_service" value="1">
+                                                        <input required type="radio" name="status_service" value="1">
                                                         Service
                                                     </label>
                                                     <label>
-                                                        <input type="radio" name="status_service" value="0">
+                                                        <input required type="radio" name="status_service" value="0">
                                                         Non-service
                                                     </label>
                                                     </div>

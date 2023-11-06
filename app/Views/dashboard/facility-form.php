@@ -37,7 +37,7 @@ $edit = in_array('edit', $uri);
                             <div class="form-group mb-4">
                                 <label for="geo-json" class="mb-2">GeoJSON</label>
                                 <input type="text" id="geo-json" class="form-control" name="geo-json" placeholder="GeoJSON" readonly="readonly" required value='<?= ($edit) ? $data['geoJson'] : ''; ?>'>
-                                <input type="text" class="form-control" id="multipolygon" name="multipolygon" placeholder="">
+                                <input type="hidden" class="form-control" id="multipolygon" name="multipolygon" placeholder="">
                             </div>
                             <div class="form-group mb-4">
                                 <label for="name" class="mb-2">Facility Name</label>

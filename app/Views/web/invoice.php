@@ -45,8 +45,8 @@
         <th width="35%" style="height: 20px"><strong>Name Package</strong></th>
         <th width="12%" style="height: 20px"><strong>Capacity</strong></th>
         <th width="10%" style="height: 20px"><strong>Total People</strong></th>
-        <th width="8%" style="height: 20px;text-align:center"><strong>Qty</strong></th>
-        <th width="13%" style="height: 20px"><strong>Package Price</strong></th>
+        <th width="7%" style="height: 20px;text-align:center"><strong>Qty</strong></th>
+        <th width="14%" style="height: 20px"><strong>Package Price</strong></th>
         <th width="18%" style="height: 20px"><strong>Total Price</strong></th>
     </tr>
     <tr>
@@ -187,17 +187,23 @@
     <tr>
         <th width="25%">Status  </th>
             <?php if($detail['status']==null && $detail['confirmation_date']==null && $detail['account_refund']==null): ?>    
-                <th width="70%">: Waiting</th>
-            <?php elseif($detail['status']==null && $detail['confirmation_date']!=null  && $detail['account_refund']==null): ?>    
-                <th width="70%">: Cancel</th>
-            <?php elseif($detail['status']==null && $detail['confirmation_date']!=null  && $detail['account_refund']!=null): ?>    
-                <th width="70%">: Cancel and Refund</th>
+                <th width="20%" style="background-color:#F0EDD4">: Waiting</th>
             <?php elseif($detail['status']==1): ?>    
-                <th width="70%">: Accepted</th>
+                <th width="20%" style="background-color:#A6FF96">: Accepted</th>
             <?php elseif($detail['status']==0): ?>    
-                <th width="70%">: Rejected</th>
-            <?php endif; ?>                                      
+                <th width="20%" style="background-color:#FFC6AC">: Rejected</th>
+            <?php endif; ?>      
     </tr>
+        <?php if($detail['cancel']=='1'): ?>    
+    <tr>
+        <th width="25%">  </th>
+            <?php if($detail['account_refund']==null): ?>    
+                <th width="20%" style="background-color:yellow"> Cancel</th>
+            <?php elseif($detail['account_refund']!=null): ?>    
+                <th width="20%" style="background-color:yellow"> Cancel and Refund</th>
+            <?php endif; ?> 
+    </tr>
+        <?php endif; ?>  
 </table>
 
 <table cellpadding="4" >

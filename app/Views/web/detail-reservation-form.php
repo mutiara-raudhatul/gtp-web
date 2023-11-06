@@ -231,6 +231,7 @@ $addhome = in_array('addhome', $uri);
                                             <div class="btn-group" role="group" aria-label="Basic example">
                                                 <form action="<?= base_url('web/detailreservation/deleteunit/').$dtb['homestay_id']; ?>" method="post" class="d-inline">
                                                     <?= csrf_field(); ?>
+                                                    <input type="hidden" name="date" value="<?= esc($dtb['date']); ?>">
                                                     <input type="hidden" name="homestay_id" value="<?= esc($dtb['homestay_id']); ?>">
                                                     <input type="hidden" name="unit_type" value="<?= esc($dtb['unit_type']); ?>">
                                                     <input type="hidden" name="unit_number" value="<?= esc($dtb['unit_number']); ?>">
@@ -349,11 +350,11 @@ $addhome = in_array('addhome', $uri);
                                         <td> Status  : 
                                             <?php if($detail['status']==null && $detail['confirmation_date']==null && $detail['account_refund']==null): ?>    
                                                 <i class="fa fa-clock btn-sm btn-secondary btn-circle"></i> Waiting</td>
-                                            <?php elseif($detail['status']==null && $detail['confirmation_date']!=null  && $detail['account_refund']==null): ?>    
+                                            <?php elseif($detail['status']==1 && $detail['cancel']==1  && $detail['account_refund']==null): ?>    
                                                 <i class="fa fa-cancel btn-sm btn-secondary btn-circle"></i> Cancel</td>
-                                            <?php elseif($detail['status']==null && $detail['confirmation_date']!=null  && $detail['account_refund']!=null): ?>    
+                                            <?php elseif($detail['status']==1 && $detail['cancel']==1  && $detail['account_refund']!=null): ?>    
                                                 <i class="fa fa-cancel btn-sm btn-secondary btn-circle"></i> Cancel and Refund</td>
-                                            <?php elseif($detail['status']==1): ?>    
+                                            <?php elseif($detail['status']==1 && $detail['cancel']!=1): ?>    
                                                 <i class="fa fa-check btn-sm btn-success btn-circle"></i> Accepted</td>
                                             <?php elseif($detail['status']==0): ?>    
                                                 <i class="fa fa-times btn-sm btn-danger btn-circle"></i> Rejected</td>
@@ -378,7 +379,7 @@ $addhome = in_array('addhome', $uri);
                                     </tr>
                                     <tr>
                                         <td>
-                                        <?php if($detail['status']=='1'): ?> 
+                                        <?php if($detail['status']=='1' && $detail['cancel']=='0'): ?> 
                                             <p> Pembayaran melalui 
                                                 <ul>
                                                     <li>Bank Syariah Mandiri (BSI) - Kode 451</li>
@@ -410,7 +411,7 @@ $addhome = in_array('addhome', $uri);
                                 <tr>
                                     <!-- upload proof deposit -->
                                     <td class="col-md-5 col-12">
-                                    <?php if ($detail['proof_of_deposit']!=null): ?>
+                                        <?php if ($detail['proof_of_deposit']!=null): ?>
                                             <div class="col-md-5 col-12">
                                                 <div class="form-group">
                                                     <div class="text-md-start mb-3" id="deposit-container">
@@ -467,7 +468,7 @@ $addhome = in_array('addhome', $uri);
                                             $dateTime = new DateTime('now'); // Waktu sekarang
                                             $datenow = $dateTime->format('Y-m-d H:i:s'); 
                                         ?>
-                                        <?php if($detail['status']=='1' && $detail['proof_of_deposit']==null && $datenow<$batas_dp): ?>
+                                        <?php if($detail['status']=='1' && $detail['proof_of_deposit']==null && $detail['cancel']!=1 && $datenow<$batas_dp): ?>
                                             <p class="btn btn-sm btn-primary">Batas pembayaran deposit : <?= esc(date('l, j F Y H:i:s', strtotime($batas_dp)));  ?></p>
                                             <br>
                                             <u><b>Countdown</b></u>
@@ -483,15 +484,16 @@ $addhome = in_array('addhome', $uri);
                                                     var remainingSeconds = targetDate - currentDate;
 
                                                     if (remainingSeconds <= 0 && document.hasFocus()) {
+                                                    // if (remainingSeconds <= 0) {
                                                         document.getElementById('countdown').innerHTML = "Sorry, the deposit payment time for the reservation has expired";
                                                         clearInterval(countdownInterval);
                                                         
-                                                        // Lakukan reload halaman setelah countdown habis
+                                                              // Lakukan reload halaman setelah countdown habis
                                                         setTimeout(function() {
                                                             location.reload();
                                                         }, 9000); // Reload halaman setelah 3 detik
                                                         
-                                                        // Lakukan submit form otomatis
+                                                             // Lakukan submit form otomatis
                                                         document.querySelector('#cancelform').submit();
                                                     } else {
                                                         var days = Math.floor(remainingSeconds / (24 * 60 * 60));
@@ -529,7 +531,7 @@ $addhome = in_array('addhome', $uri);
                                                     <div class="col-md-5 col-12">
                                                         <div class="form-group mb-2">
                                                             <label>
-                                                            <input type="radio" name="status" value="null" required>
+                                                            <input type="radio" name="cancel" value="1" required>
                                                             <i class="fa fa-check"></i> Yes
                                                             </label>
                                                         </div>
@@ -539,7 +541,7 @@ $addhome = in_array('addhome', $uri);
                                                     </div>
                                                 </div>
                                             </form>
-                                        <?php elseif ($detail['status']==1 && $detail['proof_of_deposit']==null && $batas_dp < $datenow ): ?>
+                                        <?php elseif ($detail['status']==1 && $detail['proof_of_deposit']==null && $detail['cancel']!=1 && $datenow>$batas_dp ): ?>
                                             <p class="btn btn-danger btn-sm"><i><b>Upps Sorry, the deposit payment time for the reservation has expired</b></i></p>
                                             <br>
                                             <p class="btn btn-secondary btn-sm"><i><b>Do you want to cancel? Cancel reservation can be made maximal H-3 check_in</b></i></p>
@@ -548,7 +550,7 @@ $addhome = in_array('addhome', $uri);
                                                     <div class="col-md-5 col-12">
                                                         <div class="form-group mb-2">
                                                             <label>
-                                                            <input type="radio" name="status" value="null" required>
+                                                            <input type="radio" name="cancel" value="1" required>
                                                             <i class="fa fa-check"></i> Yes
                                                             </label>
                                                         </div>
@@ -568,25 +570,23 @@ $addhome = in_array('addhome', $uri);
 
                                     <!-- upload proof payment -->
                                     <td class="col-md-5 col-12">
-                                        <?php if ($detail['status']=='1'):
-                                            if($detail['proof_of_deposit']!=null): 
-                                                if($detail['proof_of_payment']==null): ?>                                        
-                                                    <form class="form form-vertical" action="<?= base_url('web/reservation/uploadfullpayment/').$detail['id']; ?>" method="post" onsubmit="checkRequired(event)" enctype="multipart/form-data">
-                                                        <div class="form-body">
-                                                        <div class="col-md-5 col-12">
-                                                                    <div class="form-group mb-4">
-                                                                        <label for="proof_of_payment" class="form-label">  Proof of Full Payment</label>
-                                                                        <input class="form-control" accept="image/*" type="file" name="proof_of_payment" id="proof_of_payment">
-                                                                    </div>
-                                                                </div>
-                                                                <div col="col-md-5 col-12">
-                                                                    <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
-                                                                    <button type="reset" class="btn btn-light-secondary me-1 mb-1">Reset</button>
-                                                                </div>
+                                        <?php if ($detail['status']=='1' && $detail['proof_of_deposit']!=null && $detail['cancel']!=1 && $detail['proof_of_payment']==null): ?>                                        
+                                            <form class="form form-vertical" action="<?= base_url('web/reservation/uploadfullpayment/').$detail['id']; ?>" method="post" onsubmit="checkRequired(event)" enctype="multipart/form-data">
+                                                <div class="form-body">
+                                                <div class="col-md-5 col-12">
+                                                            <div class="form-group mb-4">
+                                                                <label for="proof_of_payment" class="form-label">  Proof of Full Payment</label>
+                                                                <input class="form-control" accept="image/*" type="file" name="proof_of_payment" id="proof_of_payment">
                                                             </div>
                                                         </div>
-                                                    </form>
-                                        <?php else: ?>
+                                                        <div col="col-md-5 col-12">
+                                                            <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
+                                                            <button type="reset" class="btn btn-light-secondary me-1 mb-1">Reset</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        <?php elseif ($detail['status']=='1' && $detail['proof_of_deposit']!=null && $detail['cancel']!=1 && $detail['proof_of_payment']!=null): ?>                                        
                                             <div class="col-md-5 col-12">
                                                 <div class="form-group">
                                                     <div class="text-md-start mb-3" id="deposit-container">
@@ -635,26 +635,22 @@ $addhome = in_array('addhome', $uri);
                                                         </div>
                                                     </div>
                                                 </div>
-                                                
                                             </div>
-                                        <?php 
-                                            endif;
-                                            endif;
-                                            endif; ?>
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
 
                                 <tr>
                                     <td>
                                         <!-- upload proof refund -->
-                                        <?php if ($detail['status']==1 && $detail['proof_of_deposit']!=null && $batas_dp > $datenow ): ?>
+                                        <?php if ($detail['status']==1 && $detail['proof_of_deposit']!=null && $detail['cancel']!=1 && $batas_dp > $datenow ): ?>
                                             <p class="btn btn-secondary btn-sm"><i><b>Do you want to cancel reservation? Deposit will be returned only 50% of the deposit you sent. </b></i></p>
                                             <form class="form form-vertical" action="<?= base_url('web/detailreservation/saverefund/').$detail['id']; ?>" method="post" enctype="multipart/form-data">
                                                 <div class="form-body">
                                                     <div class="col-md-5 col-12">
                                                         <div class="form-group mb-2">
                                                             <label>
-                                                            <input type="radio" name="status" value="null" required>
+                                                            <input type="radio" name="cancel" value="1" required>
                                                             <i class="fa fa-check"></i> Yes
                                                             </label>
                                                         </div>
@@ -670,11 +666,11 @@ $addhome = in_array('addhome', $uri);
                                             </form>
                                         <?php endif; ?>
 
-                                        <?php if($detail['account_refund']!=null): ?>
+                                        <?php if($detail['cancel']=='1' && $detail['proof_of_deposit']!=null): ?>
                                             <b>Account refund</b>
                                             <p><?= esc($detail['account_refund']); ?></p>
                                             <?php if($detail['proof_refund']==null): ?>
-                                                <p><i>Refund belum dikirim</i></p>
+                                                
                                                 <?php if (in_groups(['admin'])) : ?>
                                                     <form class="form form-vertical" action="<?= base_url('dashboard/reservation/uploadrefund/').$detail['id']; ?>" method="post" onsubmit="checkRequired(event)" enctype="multipart/form-data">
                                                         <div class="form-body">
@@ -691,6 +687,8 @@ $addhome = in_array('addhome', $uri);
                                                             </div>
                                                         </div>
                                                     </form>
+                                                <?php else: ?>
+                                                    <p><i>Refund belum dikirim</i></p>
                                                 <?php endif; ?>
                                             <?php endif; ?>
                                         <?php endif; ?>

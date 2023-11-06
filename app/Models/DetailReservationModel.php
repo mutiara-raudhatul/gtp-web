@@ -38,7 +38,6 @@ class DetailReservationModel extends Model
             ->where('unit_number', $requestData['unit_number'])
             ->where('homestay_id', $requestData['homestay_id'])
             ->where('unit_type', $requestData['unit_type'])
-            ->where('status', $requestData['status'])
             ->get()
             ->getRow();
     }
@@ -55,7 +54,7 @@ class DetailReservationModel extends Model
     public function get_unit_homestay_bookingnya($reservation_id =  null)
     {
         $query = $this->db->table($this->table)
-            ->select('unit_number, homestay_id, unit_type, reservation_id')
+            ->select('date, unit_number, homestay_id, unit_type, reservation_id')
             ->where('reservation_id', $reservation_id)
             ->distinct()
             ->get();
@@ -133,16 +132,21 @@ class DetailReservationModel extends Model
     }
 
     public function update_cancel($id = null, $data = null) {
-        $lastStatus = $this->db->table($this->table)->select('status')->like('status', '0', 'after')->orderBy('status', 'ASC')->get()->getLastRow('array');
-        $count = (int)substr($lastStatus['status'], 2);
-        $status = sprintf('0%02d', $count + 1);
+        // $lastStatus = $this->db->table($this->table)->select('status')->like('status', '0', 'after')->orderBy('status', 'ASC')->get()->getLastRow('array');
+        
+        // if(empty($lastStatus)){
+        //     $status='001';
+        // }else{
+        // $count = (int)substr($lastStatus['status'], 2);
+        // $status = sprintf('0%02d', $count + 1);
+        // }
+        
+        // $data['status'] = $status; // Mengatur kolom 'status' menjadi 0
 
-        $data['status'] = $status; // Mengatur kolom 'status' menjadi 0
-
-        $query = $this->db->table('detail_reservation')
-                        ->set($data)
-                        ->where('reservation_id', $id)
-                        ->update();
+        // $query = $this->db->table('detail_reservation')
+        //                 ->set($data)
+        //                 ->where('reservation_id', $id)
+        //                 ->update();
         return $query;
     }
     

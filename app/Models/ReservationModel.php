@@ -96,7 +96,7 @@ class ReservationModel extends Model
     public function get_reservation_by_id($id = null)
     {
         $query = $this->db->table($this->table)
-            ->select("`reservation.id`, `reservation.user_id`, `reservation.package_id`,`package.name`, `reservation.request_date`, `reservation.check_in`, `reservation.status`, `reservation.total_price`, `reservation.total_people`, `reservation.deposit`, `reservation.proof_of_deposit`, `reservation.deposit_date`,`reservation.proof_of_payment`,`reservation.payment_date`,`reservation.confirmation_date`,`reservation.note`, `reservation.feedback`,`reservation.account_refund`,`reservation.proof_refund`,`reservation.review`,`reservation.rating`,`users.username` ")
+            ->select("`reservation.id`, `reservation.user_id`, `reservation.package_id`,`package.name`, `reservation.request_date`, `reservation.check_in`, `reservation.status`, `reservation.total_price`, `reservation.total_people`, `reservation.deposit`, `reservation.proof_of_deposit`, `reservation.deposit_date`,`reservation.proof_of_payment`,`reservation.payment_date`,`reservation.confirmation_date`,`reservation.note`, `reservation.feedback`,`reservation.cancel`,`reservation.account_refund`,`reservation.proof_refund`,`reservation.review`,`reservation.rating`,`users.username` ")
             ->join('package', 'reservation.package_id = package.id')
             ->join('users', 'reservation.user_id = users.id')
             ->where('reservation.id', $id)
@@ -163,7 +163,6 @@ class ReservationModel extends Model
     }
 
     public function update_cancel($id = null, $data = null) {
-        $data['status'] = null; // Mengatur kolom 'status' menjadi NULL
 
         $query = $this->db->table('reservation')
                         ->set($data)

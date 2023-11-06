@@ -37,7 +37,7 @@ class GalleryFacilityModel extends Model
     {
         $lastId = $this->db->table($this->table)->select('id')->orderBy('id', 'ASC')->get()->getLastRow('array');
         $count = (int)substr($lastId['id'], 2);
-        $id = sprintf('FC%03d', $count + 1);
+        $id = sprintf('GF%03d', $count + 1);
         return $id;
     }
 

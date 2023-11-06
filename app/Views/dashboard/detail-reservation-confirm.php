@@ -94,6 +94,13 @@ $addhome = in_array('addhome', $uri);
                         </div>
                         <div class="row">
                             <div class="col">
+                                <p class="fw-bold">Reservation Note </p>
+                                <p><?= esc($detail['note']);?></p>
+                                
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
                                 <p class="fw-bold">Service Include <br>
                                 <?php foreach ($serviceinclude as $ls) : ?>
                                     <li><?= esc($ls['name']);?></li>
@@ -263,11 +270,11 @@ $addhome = in_array('addhome', $uri);
                                         <td> Status  : 
                                             <?php if($detail['status']==null && $detail['confirmation_date']==null && $detail['account_refund']==null): ?>    
                                                 <i class="fa fa-clock btn-sm btn-secondary btn-circle"></i> Waiting</td>
-                                            <?php elseif($detail['status']==null && $detail['confirmation_date']!=null  && $detail['account_refund']==null): ?>    
+                                            <?php elseif($detail['status']==1 && $detail['cancel']==1  && $detail['account_refund']==null): ?>    
                                                 <i class="fa fa-cancel btn-sm btn-secondary btn-circle"></i> Cancel</td>
-                                            <?php elseif($detail['status']==null && $detail['confirmation_date']!=null  && $detail['account_refund']!=null): ?>    
+                                            <?php elseif($detail['status']==1 && $detail['cancel']==1  && $detail['account_refund']!=null): ?>    
                                                 <i class="fa fa-cancel btn-sm btn-secondary btn-circle"></i> Cancel and Refund</td>
-                                            <?php elseif($detail['status']==1): ?>    
+                                            <?php elseif($detail['status']==1 && $detail['cancel']!=1): ?>    
                                                 <i class="fa fa-check btn-sm btn-success btn-circle"></i> Accepted</td>
                                             <?php elseif($detail['status']==0): ?>    
                                                 <i class="fa fa-times btn-sm btn-danger btn-circle"></i> Rejected</td>
@@ -337,94 +344,168 @@ $addhome = in_array('addhome', $uri);
                             <table class="col-12">
                                 <tbody>
                                 <tr>
-                                    <!-- upload proof payment -->
-
+                                    <!-- upload proof deposit -->
                                     <td class="col-md-5 col-12">
-                                        
-                                           <?php $dateTime = new DateTime('now'); // Waktu sekarang
-                                            $datenow = $dateTime->format('Y-m-d H:i:s'); ?>
-                                            <p class="btn btn-sm btn-primary">Batas pembayaran deposit : <?= esc(date('l, j F Y H:i:s', strtotime($batas_dp)));  ?></p>
-                                            <br>
-                                            <?php if($detail['status']==1 && $detail['proof_of_deposit']==null && $datenow<$batas_dp): ?>
-                                                <p>Belum dibayar</p>
-                                            <?php elseif ($detail['status']==1 && $detail['proof_of_deposit']==null && $batas_dp < $datenow ): ?>
-                                                <p class="btn btn-danger btn-sm"><i><b>Upps Sorry, the deposit payment time for the reservation has expired</b></i></p>
-                                                <form class="form hidden form-vertical" id="cancelform" action="<?= base_url('web/detailreservation/savecancel/').$detail['id']; ?>" method="post" enctype="multipart/form-data">
-                                                    <div class="form-body">
-                                                        <div class="col-md-5 col-12">
-                                                            <div class="form-group mb-2">
-                                                                <label>
-                                                                <input type="radio" name="status" value="null" required>
-                                                                <i class="fa fa-check"></i> Yes
-                                                                </label>
-                                                            </div>
-                                                            <div col="col-md-5 col-12">
-                                                                <button type="submit" class="btn btn-secondary me-1 mb-1">Cancel Reservation</button>
-                                                            </div>
+                                        <?php if ($detail['proof_of_deposit']!=null): ?>
+                                            <div class="col-md-5 col-12">
+                                                <div class="form-group">
+                                                    <div class="text-md-start mb-3" id="deposit-container">
+                                                        <div class="row gallery" data-bs-toggle="modal" data-bs-target="#galleryModal">
+                                                                <b>Proof of Deposit</b>
+                                                                <img class="w-100 active" src="<?= base_url('media/photos/deposit/'); ?><?= $detail['proof_of_deposit'] ?>" data-bs-target="#Gallerycarousel" />
                                                         </div>
-                                                    </div>
-                                                </form>
-                                                <script>
-                                                    window.onload = function() {
-                                                        document.querySelector('#cancelform').submit();
-                                                    };
-                                                </script>    
-                                            <?php else: ?>
-                                                <div class="col-md-5 col-12">
-                                                    <div class="form-group">
-                                                        <div class="text-md-start mb-3" id="deposit-container">
-                                                            <div class="row gallery" data-bs-toggle="modal" data-bs-target="#galleryModal">
-                                                                    <img class="w-100 active" src="<?= base_url('media/photos/deposit/'); ?><?= $detail['proof_of_deposit'] ?>" data-bs-target="#Gallerycarousel" />
-                                                            </div>
-                                                            <!-- modal deposit-->
-                                                            <div class="modal fade" id="galleryModal" tabindex="-1" role="dialog" aria-labelledby="galleryModalTitle" aria-hidden="true">
-                                                                <div class="modal-dialog modal-dialog-centered modal-dialog-centered" role="document">
-                                                                    <div class="modal-content">
-                                                                        <div class="modal-header">
-                                                                            <h5 class="modal-title" id="galleryModalTitle">
-                                                                                Proof of Deposit
-                                                                            </h5>
-                                                                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                                                                <i data-feather="x"></i>
-                                                                            </button>
-                                                                        </div>
-                                                                        <div class="modal-body">
-                                                                            <div id="Gallerycarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
-                                                                                <div class="carousel-indicators">
-                                                                                        <button type="button" data-bs-target="#Gallerycarousel" data-bs-slide-to="<?= esc($i=1); ?>" class="<?= ($i == 0) ? 'active' : ''; ?>"></button>
-                                                                                </div>
-                                                                                <div class="carousel-inner">
-                                                                                    <?php $i = 0; ?>
-                                                                                        <div class="carousel-item<?= ($i == 0) ? ' active' : ''; ?>">
-                                                                                            <img class="d-block w-100" src="<?= base_url('media/photos/deposit/'); ?><?= $detail['proof_of_deposit'] ?>">
-                                                                                        </div>
-                                                                                </div>
-                                                                                <a class="carousel-control-prev" href="#Gallerycarousel" role="button" type="button" data-bs-slide="prev">
-                                                                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                                                                </a>
-                                                                                <a class="carousel-control-next" href="#Gallerycarousel" role="button" data-bs-slide="next">
-                                                                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                                                                </a>
+                                                        <!-- modal deposit-->
+                                                        <div class="modal fade" id="galleryModal" tabindex="-1" role="dialog" aria-labelledby="galleryModalTitle" aria-hidden="true">
+                                                            <div class="modal-dialog modal-dialog-centered modal-dialog-centered" role="document">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title" id="galleryModalTitle">
+                                                                            Proof of Deposit
+                                                                        </h5>
+                                                                        
+                                                                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                                                            <i data-feather="x"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <div id="Gallerycarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+                                                                            <div class="carousel-indicators">
+                                                                                    <button type="button" data-bs-target="#Gallerycarousel" data-bs-slide-to="<?= esc($i=1); ?>" class="<?= ($i == 0) ? 'active' : ''; ?>"></button>
                                                                             </div>
+                                                                            <div class="carousel-inner">
+                                                                                <?php $i = 0; ?>
+                                                                                    <div class="carousel-item<?= ($i == 0) ? ' active' : ''; ?>">
+                                                                                        <img class="d-block w-100" src="<?= base_url('media/photos/deposit/'); ?><?= $detail['proof_of_deposit'] ?>">
+                                                                                    </div>
+                                                                            </div>
+                                                                            <a class="carousel-control-prev" href="#Gallerycarousel" role="button" type="button" data-bs-slide="prev">
+                                                                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                                            </a>
+                                                                            <a class="carousel-control-next" href="#Gallerycarousel" role="button" data-bs-slide="next">
+                                                                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                                            </a>
                                                                         </div>
+                                                                    </div>
 
-                                                                        <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                                                                Close
-                                                                            </button>
-                                                                        </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                                            Close
+                                                                        </button>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            <?php endif; ?>
+                                            </div>
+                                        <?php endif; ?>
+                                        <?php 
+                                            $dateTime = new DateTime('now'); // Waktu sekarang
+                                            $datenow = $dateTime->format('Y-m-d H:i:s'); 
+                                        ?>
+                                        <?php if($detail['status']=='1' && $detail['proof_of_deposit']==null && $detail['cancel']!=1 && $datenow<$batas_dp): ?>
+                                            <p class="btn btn-sm btn-primary">Batas pembayaran deposit : <?= esc(date('l, j F Y H:i:s', strtotime($batas_dp)));  ?></p>
+                                            <br>
+                                            <u><b>Countdown</b></u>
+                                            <br><i>Upload bukti pembayaran sebelum batas waktu, jika batas waktu habis, maka reservasi otomatis di cancel</i>
+                                            <h5 id="countdown"></h5>
+                                            <script>
+                                                // Set tanggal target countdown (dalam timestamp UNIX)
+                                                var targetDate = <?php echo strtotime($batas_dp); ?>;
+
+                                                // Fungsi untuk memperbarui countdown setiap detik
+                                                function updateCountdown() {
+                                                    var currentDate = Math.floor(Date.now() / 1000);
+                                                    var remainingSeconds = targetDate - currentDate;
+
+                                                    if (remainingSeconds <= 0 && document.hasFocus()) {
+                                                    // if (remainingSeconds <= 0) {
+                                                        document.getElementById('countdown').innerHTML = "Sorry, the deposit payment time for the reservation has expired";
+                                                        clearInterval(countdownInterval);
+                                                        
+                                                              // Lakukan reload halaman setelah countdown habis
+                                                        setTimeout(function() {
+                                                            location.reload();
+                                                        }, 9000); // Reload halaman setelah 3 detik
+                                                        
+                                                             // Lakukan submit form otomatis
+                                                        document.querySelector('#cancelform').submit();
+                                                    } else {
+                                                        var days = Math.floor(remainingSeconds / (24 * 60 * 60));
+                                                        var hours = Math.floor((remainingSeconds % (24 * 60 * 60)) / (60 * 60));
+                                                        var minutes = Math.floor((remainingSeconds % (60 * 60)) / 60);
+                                                        var seconds = remainingSeconds % 60;
+
+                                                        document.getElementById('countdown').innerHTML = days + " hari " + hours + " jam " + minutes + " menit " + seconds + " detik";
+                                                    }
+                                                }
+
+                                                var countdownInterval = setInterval(updateCountdown, 1000);
+                                            </script>
+                                            
+                                            <form class="form form-vertical" action="<?= base_url('web/reservation/uploaddeposit/').$detail['id']; ?>" method="post" onsubmit="checkRequired(event)" enctype="multipart/form-data">
+                                                <div class="form-body">
+                                                <div class="col-md-5 col-12">
+                                                        <div class="form-group mb-4">
+                                                                <label for="proof_of_deposit" class="form-label">Proof of Deposit</label>
+                                                                <input class="form-control" accept="image/*" type="file" name="proof_of_deposit" id="proof_of_deposit" required>
+                                                        </div>
+                                                        </div>
+                                                        <div col="col-md-5 col-12">
+                                                            <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
+                                                            <button type="reset" class="btn btn-light-secondary me-1 mb-1">Reset</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+
+                                            <br>
+                                            <p class="btn btn-secondary btn-sm"><i><b>Do you want to cancel? Cancel reservation can be made maximal H-3 check_in</b></i></p>
+                                            <form class="form form-vertical" id="cancelform" action="<?= base_url('web/detailreservation/savecancel/').$detail['id']; ?>" method="post" enctype="multipart/form-data">
+                                                <div class="form-body">
+                                                    <div class="col-md-5 col-12">
+                                                        <div class="form-group mb-2">
+                                                            <label>
+                                                            <input type="radio" name="cancel" value="1" required>
+                                                            <i class="fa fa-check"></i> Yes
+                                                            </label>
+                                                        </div>
+                                                        <div col="col-md-5 col-12">
+                                                            <button type="submit" class="btn btn-secondary me-1 mb-1">Cancel Reservation</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        <?php elseif ($detail['status']==1 && $detail['proof_of_deposit']==null && $detail['cancel']!=1 && $datenow>$batas_dp ): ?>
+                                            <p class="btn btn-danger btn-sm"><i><b>Upps Sorry, the deposit payment time for the reservation has expired</b></i></p>
+                                            <br>
+                                            <p class="btn btn-secondary btn-sm"><i><b>Do you want to cancel? Cancel reservation can be made maximal H-3 check_in</b></i></p>
+                                            <form class="form hidden form-vertical" id="cancelform" action="<?= base_url('web/detailreservation/savecancel/').$detail['id']; ?>" method="post" enctype="multipart/form-data">
+                                                <div class="form-body">
+                                                    <div class="col-md-5 col-12">
+                                                        <div class="form-group mb-2">
+                                                            <label>
+                                                            <input type="radio" name="cancel" value="1" required>
+                                                            <i class="fa fa-check"></i> Yes
+                                                            </label>
+                                                        </div>
+                                                        <div col="col-md-5 col-12">
+                                                            <button type="submit" class="btn btn-secondary me-1 mb-1">Cancel Reservation</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                            <script>
+                                                window.onload = function() {
+                                                    document.querySelector('#cancelform').submit();
+                                                };
+                                            </script>
+                                        <?php endif; ?>
                                     </td>
 
                                     <!-- upload proof payment -->
                                     <td class="col-md-5 col-12">
-                                        <?php if ($detail['status']=='1'):
+                                        <?php if ($detail['status']=='1' && $detail['cancel']!='1'):
                                             if($detail['proof_of_deposit']!=null): 
                                                 if($detail['proof_of_payment']==null): ?>                                        
                                                     <form class="form form-vertical" action="<?= base_url('web/reservation/uploadfullpayment/').$detail['id']; ?>" method="post" onsubmit="checkRequired(event)" enctype="multipart/form-data">

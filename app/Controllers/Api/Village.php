@@ -47,7 +47,6 @@ class Village extends BaseController
                 $digiProperty = $this->kabkotaModel->get_wilayah($digitasiValue)->getRowArray();
                 $geoJson = json_decode($this->kabkotaModel->get_geoJson($digitasi)->getRowArray()['geoJson']);
             } 
-        
         }
 
         for($k=1; $k<23; $k++){
@@ -63,25 +62,19 @@ class Village extends BaseController
             } 
         }
 
-        // for($p=1; $p<3; $p++){
-        //     if ($p < 3) {
-        //         $valueP= 'P0'.$p;
-        //     } elseif ($i > 9) {
-        //         $valueKec= 'P'.$k;
-        //     }
-
-        //     if ($digitasi == $valueP) {
-        //         $digiProperty = $this->provinsiModel->get_wilayah($valueP)->getRowArray();
-        //         $geoJson = json_decode($this->provinsiModel->get_geoJson($valueP)->getRowArray()['geoJson']);
-        //     } 
-        // }
+        for($d=1; $d<9; $d++){
+            if ($d < 9) {
+                $valueDesa= 'V0'.$d;
+            } 
+            if ($digitasi == $valueDesa) {
+                $digiProperty = $this->villageModel->get_wilayah($valueDesa)->getRowArray();
+                $geoJson = json_decode($this->villageModel->get_geoJson($valueDesa)->getRowArray()['geoJson']);
+            } 
+        }
 
         if ($digitasi == 'GTP01') {
             $digiProperty = $this->gtpModel->get_desa_wisata()->getRowArray();
             $geoJson = json_decode($this->gtpModel->get_geoJson($digitasi)->getRowArray()['geoJson']);
-        } elseif ($digitasi == 'V0001') {
-            $digiProperty = $this->villageModel->get_ulakan()->getRowArray();
-            $geoJson = json_decode($this->villageModel->get_geoJson($digitasi)->getRowArray()['geoJson']);
         } elseif ($digitasi == 'A0001') {
             $digiProperty = $this->attractionModel->get_tracking()->getRowArray();
             $geoJson = json_decode($this->attractionModel->get_geoJson($digitasi)->getRowArray()['geoJson']);

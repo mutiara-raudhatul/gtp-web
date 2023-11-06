@@ -8,4 +8,13 @@
     <a data-bs-toggle="tooltip" data-bs-placement="bottom" title="Toggle Legend" class="btn icon btn-primary mx-1" id="legend-map" onclick="viewLegend();">
         <span class="material-symbols-outlined">visibility</span>
     </a>
+    <?php 
+    $currentURL = $_SERVER['REQUEST_URI'];
+    if ($currentURL === '/web') {
+        // Jika URL adalah '/web', tampilkan tombol
+        echo '<a data-bs-toggle="tooltip" data-bs-placement="bottom" title="Go to Object" class="btn icon btn-primary mx-1" id="go-to" onclick="zoomToGTPMarkers()">
+            Go to object
+        </a>';
+    }
+    ?>
 </div>
