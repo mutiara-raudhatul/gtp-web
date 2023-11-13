@@ -67,7 +67,6 @@ class CulinaryPlace extends ResourcePresenter
             'data' => $cp,
             'folder' => 'culinary_place'
         ];
-
         if (url_is('*dashboard*')) {
             return view('dashboard/detail_culinary_place', $data);
         }
@@ -89,7 +88,6 @@ class CulinaryPlace extends ResourcePresenter
             'close' => $request['close'],
             'capacity' => $request['capacity'],
             'description' => $request['description'],
-            'status' => $request['status']
         ];
         foreach ($requestData as $key => $value) {
             if (empty($value)) {
@@ -142,6 +140,8 @@ class CulinaryPlace extends ResourcePresenter
             'title' => 'Edit Culinary Place ',
             'data' => $cp
         ];
+
+        // dd($data);
         return view('dashboard/culinary-form', $data);
     }
 
@@ -157,7 +157,6 @@ class CulinaryPlace extends ResourcePresenter
             'close' => $request['close'],
             'capacity' => $request['capacity'],
             'description' => $request['description'],
-            'status' => $request['status']
         ];
         foreach ($requestData as $key => $value) {
             if (empty($value)) {

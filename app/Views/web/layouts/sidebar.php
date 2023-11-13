@@ -40,22 +40,35 @@ $uri3 = $uri[3] ?? '';
                         </a>
                     </li>
 
-
-                    <li class="sidebar-item <?= ($uri1 == 'tracking') ? 'active' : '' ?>">
-                        <a href="<?= base_url('/web/tracking'); ?>" class="sidebar-link">
-                            <i class="fa-solid fa-bridge-water me-3"></i>Tracking Mangrove
-                        </a>
-                    </li>
-                    <!-- <li class="sidebar-item <? //= ($uri1 == 'tracking') ? 'active' : '' 
-                                                    ?> has-sub"> -->
-                    <li class="sidebar-item has-sub">
+                    <li class="sidebar-item has-sub <?= ($uri1 == 'tracking' || $uri1 == 'estuaria') ? 'active' : '' ?>">
                         <a href="" class="sidebar-link">
-                            <i class="fa-solid fa-star"></i><span>Attraction</span>
+                            <i class="fa-solid fa-star"></i><span>Unique Attraction</span>
                         </a>
 
-                        <ul class="submenu <?= ($uri1 == 'tracking' || $uri1 == 'talao') ? 'active' : '' ?>">
+                        <ul class="submenu <?= ($uri1 == 'tracking' || $uri1 == 'estuaria') ? 'active' : '' ?>">
+                            <li class="submenu-item <?= ($uri1 == 'estuaria') ? 'active' : '' ?>" id="at-list">
+                                <a href="<?= base_url('/web/estuaria'); ?>" class="sidebar-link">
+                                    <i class="fa-solid fa-ship me-3"></i><span>Estuary </span>
+                                </a>
+                            </li>
+                            <li class="submenu-item<?= ($uri1 == 'tracking') ? 'active' : '' ?>" id="at-list">
+                                <a href="<?= base_url('/web/tracking'); ?>" class="sidebar-link">
+                                    <i class="fa-solid fa-bridge-water me-3"></i><span>Tracking Mangrove</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="sidebar-item has-sub <?= ($uri1 == 'talao') ? 'active' : '' ?>">
+                        <a href="" class="sidebar-link">
+                            <i class="fa-solid fa-universal-access"></i><span>Ordinary Attraction</span>
+                        </a>
+
+                        <ul class="submenu <?= ($uri1 == 'talao') ? 'active' : '' ?>">
                             <li class="submenu-item <?= ($uri1 == 'talao') ? 'active' : '' ?>" id="at-list">
-                                <a href="<?= base_url('/web/talao'); ?>"><i class="fa-solid fa-water me-3"></i>Water Attractions</a>
+                                <a href="<?= base_url('/web/talao'); ?>">
+                                    <i class="fa-solid fa-water me-3"></i>Water Attractions
+                                </a>
                             </li>
                         </ul>
                     </li>
@@ -82,17 +95,10 @@ $uri3 = $uri[3] ?? '';
                     </li>
 
                     <!-- Package -->
-                    <li class="sidebar-item <?= ($uri1 == 'package') ? 'active' : '' ?> has-sub">
-                        <a href="" class="sidebar-link">
-                            <i class="fa-solid fa-square-poll-horizontal"></i><span>Package</span>
+                    <li class="sidebar-item <?= ($uri1 == 'package') ? 'active' : '' ?>">
+                        <a href="<?= base_url('/web/package'); ?>" class="sidebar-link">
+                            <i class="fa-solid fa-square-poll-horizontal"></i><span>Tourism Package<span>
                         </a>
-
-                        <ul class="submenu <?= ($uri1 == 'package') ? 'active' : '' ?>">
-                            <!-- List Package -->
-                            <li class="submenu-item" id="pa-list">
-                                <a href="<?= base_url('/web/package'); ?>"><i class="fa-solid fa-list me-3"></i>List Package</a>
-                            </li>
-                        </ul>
                     </li>
 
                     <li class="sidebar-item <?= ($uri1 == 'homestay') ? 'active' : '' ?>">
@@ -100,12 +106,13 @@ $uri3 = $uri[3] ?? '';
                             <i class="fa-solid fa-bed"></i><span>Homestay</span>
                         </a>
                     </li>
-
-                    <li class="sidebar-item <?= ($uri1 == 'reservation') || ($uri1 == 'detailreservation') ? 'active' : '' ?>">
-                        <a href="<?= base_url('/web/reservation'); ?>" class="sidebar-link">
-                            <i class="fa-solid fa-calendar"></i><span>Reservation</span>
-                        </a>
-                    </li>
+                    <?php if (logged_in() && !in_groups(['admin'])) : ?>
+                        <li class="sidebar-item <?= ($uri1 == 'reservation') || ($uri1 == 'detailreservation') ? 'active' : '' ?>">
+                            <a href="<?= base_url('/web/reservation'); ?>" class="sidebar-link">
+                                <i class="fa-solid fa-calendar"></i><span>Reservation</span>
+                            </a>
+                        </li>
+                    <?php endif; ?>
 
                     <li class="sidebar-item <?= ($uri1 == 'ulakan') ? 'active' : '' ?>">
                         <a href="<?= base_url('/web/ulakan'); ?>" class="sidebar-link">

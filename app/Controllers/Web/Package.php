@@ -57,11 +57,29 @@ class Package extends ResourcePresenter
     public function index()
     {
         $contents = $this->packageModel->get_list_package_default()->getResultArray();
+        
+        // $i=0;
+        foreach ($contents as &$package) {
+            $id = $package['id'];
+            $gallery = $this->galleryPackageModel->get_gallery($id)->getRowArray();
+        
+            // Assuming you want to associate the gallery with each package
+            if(!empty($gallery)){
+                foreach($gallery as $item){
+                    $package['gallery'] = $item;
+                }
+            }else{
+                $package['gallery'] = 'default.jpg';
+            }
+        }
+        $idnew = $this->packageModel->get_new_id();
+
         $data = [
             'title' => 'Package',
             'data' => $contents,
+            'idnew' =>$idnew
         ];
-
+// dd($data);
         return view('web/list_package', $data);
     }
 
@@ -88,18 +106,9 @@ class Package extends ResourcePresenter
         
         $serviceinclude= $this->detailServicePackageModel->get_service_include_by_id($id)->getResultArray();
         $serviceexclude= $this->detailServicePackageModel->get_service_exclude_by_id($id)->getResultArray();
-
         $detailPackage = $this->detailPackageModel->get_detailPackage_by_id($id)->getResultArray();
-        
         $getday = $this->packageDayModel->get_list_package_day($id)->getResultArray();
-
-        // foreach ($getday as $day){
-        //     $getactivityday = $this->detailPackageModel->get_activity_day($id, $day)->getResultArray();
-        // }
-
         $combinedData = $this->detailPackageModel->getCombinedData($id);
-        $routeData = $this->detailPackageModel->getRouteData();
-
         $review = $this->reservationModel->getReview($id)->getResultArray();
         $rating = $this->reservationModel->getRating($id)->getRowArray();
 
@@ -110,13 +119,11 @@ class Package extends ResourcePresenter
             'serviceexclude' => $serviceexclude,
             'day'=> $getday,
             'activity' => $combinedData,
-            'route' => $routeData,
             'review'=>$review,
             'rating'=>$rating,
             'folder' => 'package'
         ];
 
-// dd($data);
         if (url_is('*dashboard*')) {
             return view('dashboard/detail_package', $data);
         }
@@ -172,10 +179,6 @@ class Package extends ResourcePresenter
                 unset($requestData[$key]);
             }
         }
-
-        // $geom = $request['multipolygon'];
-        // $geojson = $request['geo-json'];
-
         if (isset($request['video'])) {
             $folder = $request['video'];
             $filepath = WRITEPATH . 'uploads/' . $folder;
@@ -188,14 +191,6 @@ class Package extends ResourcePresenter
         }
         
         $addPA = $this->packageModel->add_new_package($requestData);
-
-        // $detailService=$request['service'];
-
-        // $requestDetailService = [
-        //     'service' => $request['service']
-        // ];
-
-        // $addDS = $this->detailServicePackageModel->add_new_detail_service($id, $requestDetailService);
 
         if (isset($request['gallery'])) {
             $folders = $request['gallery'];
@@ -212,23 +207,7 @@ class Package extends ResourcePresenter
             $this->galleryPackageModel->add_new_gallery($id, $gallery);
         }
         
-        // if (isset($request['sevice'])) {
-        //     foreach ($folders as $folder) {
-        //         $filepath = WRITEPATH . 'uploads/' . $folder;
-        //         $filenames = get_filenames($filepath);
-        //         $fileImg = new File($filepath . '/' . $filenames[0]);
-        //         $fileImg->move(FCPATH . 'media/photos/package');
-        //         delete_files($filepath);
-        //         rmdir($filepath);
-        //         $gallery[] = $fileImg->getFilename();
-        //     }
-        //     $this->galleryPackageModel->add_new_gallery($id, $gallery);
-        // }
-
         if ($addPA) {
-            // $this->load->view('new_form');
-            // return view('web/new_form');
-
             return redirect()->to(base_url('dashboard/package/edit') . '/' . $id);
         } else {
             return redirect()->back()->withInput();
@@ -343,6 +322,144 @@ class Package extends ResourcePresenter
             return redirect()->to(base_url('dashboard/package') . '/' . $id);
         } else {
             return redirect()->back()->withInput();
+        }
+    }
+
+    public function updatecustom($id = null)
+    {
+        $request = $this->request->getPost();
+        $requestData = [
+            'id' => $id,
+            'name' => $request['name'],
+            'type_id' => $request['type'],
+            'min_capacity' => $request['min_capacity'],
+            'price' => $request['price'],
+            'description' => $request['description'],
+            'contact_person' => $request['contact_person']
+        ];
+        foreach ($requestData as $key => $value) {
+            if (empty($value)) {
+                unset($requestData[$key]);
+            }
+        }
+
+        // $geom = $request['multipolygon'];
+        // $geojson = $request['geo-json'];
+
+        if (isset($request['video'])) {
+            $folder = $request['video'];
+            $filepath = WRITEPATH . 'uploads/' . $folder;
+            $filenames = get_filenames($filepath);
+            $vidFile = new File($filepath . '/' . $filenames[0]);
+            $vidFile->move(FCPATH . 'media/videos');
+            delete_files($filepath);
+            rmdir($filepath);
+            $requestData['video_url'] = $vidFile->getFilename();
+        } else {
+            $requestData['video_url'] = null;
+        }
+        $updatePA = $this->packageModel->update_package($id, $requestData);
+        // $updateGeom = $this->packageModel->update_geom($id, $geom);
+
+        if (isset($request['gallery'])) {
+            $folders = $request['gallery'];
+            $gallery = array();
+            foreach ($folders as $folder) {
+                $filepath = WRITEPATH . 'uploads/' . $folder;
+                $filenames = get_filenames($filepath);
+                $fileImg = new File($filepath . '/' . $filenames[0]);
+                $fileImg->move(FCPATH . 'media/photos/package');
+                delete_files($filepath);
+                rmdir($filepath);
+                $gallery[] = $fileImg->getFilename();
+            }
+            $this->galleryPackageModel->update_gallery($id, $gallery);
+        } else {
+            $this->galleryPackageModel->delete_gallery($id);
+        }
+
+        
+        $dataRC = $this->reservationModel->get_package_reservation_by_idp($id)->getRowArray();
+// dd($dataRC);
+        $capacity=$request['min_capacity'];
+        $price=$request['price'];
+        $totalPeople=$dataRC['total_people'];
+        $idr=$dataRC['id'];
+
+        $numberOfPackages = floor($totalPeople / $capacity);
+        $remainder = $totalPeople % $capacity; // Hitung sisa hasil bagi
+        $batas = ceil($capacity / 2);
+        
+        if ($numberOfPackages != 0) {
+            if ($remainder != 0 && $remainder < $batas) {
+                $add = 0.5;
+                $order = $numberOfPackages + $add; // Tambahkan 0.5 jika sisa kurang dari 5
+                $totalPrice = $price * $order;
+                $deposit = $totalPrice * 0.2;
+
+            } else if ($remainder >= $batas) {
+                $add = 1;
+                $order = $numberOfPackages + $add; // Tambahkan 1 jika sisa lebih dari atau sama dengan 5
+                $totalPrice = $price * $order;
+                $deposit = $totalPrice * 0.2;
+            } else if ($remainder == 0) {
+                $add = 0;
+                $order = $numberOfPackages + $add;
+                $totalPrice = $price * $order;
+                $deposit = $totalPrice * 0.2;
+            }
+        } else {
+            $add = 1;
+            $order = $numberOfPackages + $add;
+            $totalPrice = $price * $order;
+            $deposit = $totalPrice * 0.2;
+        }
+
+        $requestData1 = [
+            'total_price' => $totalPrice, 
+            'deposit' => $deposit 
+        ];
+        
+        // dd($requestData1);
+        $updateRA = $this->reservationModel->update_reservation($idr, $requestData1);
+
+        if ($updatePA && $updateRA) {
+            return redirect()->to(base_url('dashboard/detailreservation/confirm/') . '/' . $idr);
+        } else {
+            return redirect()->back()->withInput();
+        }
+    }
+
+    public function delete($id=null)
+    {
+        $request = $this->request->getPost();
+
+        $id=$request['id'];
+        $name=$request['name'];
+
+        $array1 = array('package_id' => $id);
+        $deleteDP= $this->detailPackageModel->where($array1)->delete();
+        $deletePD= $this->packageDayModel->where($array1)->delete();
+
+        $array = array('id' => $id, 'name' => $name);
+        $package = $this->packageModel->where($array)->find();
+        $deleteP= $this->packageModel->where($array)->delete();
+
+        if ($deleteP) {
+            session()->setFlashdata('success', 'Package "'.$name.'" yang di custom berhasil dibatalkan.');
+
+            return redirect()->to(base_url('web/package'));
+
+            // return view('dashboard/detail-package-form', $data, $package, $packageDay, $detailPackage);
+
+        } else {
+            $response = [
+                'status' => 404,
+                'message' => [
+                    "Package not found"
+                ]
+            ];
+            return $this->failNotFound($response);
         }
     }
 }

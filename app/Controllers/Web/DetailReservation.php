@@ -81,15 +81,16 @@ class DetailReservation extends ResourcePresenter
         $id = $this->packageModel->get_new_id();
 
         $date = date('Y-m-d H:i');
-
+        $user = user()->username;
         $requestData = [
             'id' => $id,
-            'name' => 'Custom by User at '.$date,
+            'name' => 'Custom by '.$user.' at '.$date,
             'type_id' => 'T0000',
-            'min_capacity' => '10',
+            'min_capacity' => null,
             'price' => null,
             'description' => 'Paket wisata ini adalah kustomisasi dari user',
             'contact_person' => null,
+            'custom'=>'1'
         ];
 
         foreach ($requestData as $key => $value) {
@@ -387,7 +388,7 @@ class DetailReservation extends ResourcePresenter
         $contents = $this->packageModel->get_list_package_distinct()->getResultArray();
         $datareservation = $this->reservationModel->get_reservation_by_id($id)->getRowArray();
         $package_reservation= $datareservation['package_id'];
-        
+
         //detail package 
         $package = $this->packageModel->get_package_by_id($package_reservation)->getRowArray();        
         $serviceinclude= $this->detailServicePackageModel->get_service_include_by_id($package_reservation)->getResultArray();
@@ -453,16 +454,32 @@ class DetailReservation extends ResourcePresenter
             // Atur waktu selalu menjadi 12:00:00
             $check_out = $check_in_datetime->format('Y-m-d') . ' 12:00:00';
         }
-        // dd($booking_unit);
+
         if (empty($datareservation)) {
             return redirect()->to('web/detailreservation');
         }
         $date = date('Y-m-d');
-        $batas_dp_dt = $check_in_datetime->modify('-' . '3'. ' days');
-        $batas_dp = $batas_dp_dt->format('Y-m-d H:i:s');
 
-        $batas_cancel_dt = $check_in_datetime->modify('-' . '2'. ' days');
-        $batas_cancel = $batas_cancel_dt->format('Y-m-d H:i:s');
+        $requestDate = $datareservation['request_date'];
+        $request_date_datetime = new DateTime($requestDate);
+
+        $timeDifference = $check_in_datetime->diff($request_date_datetime);
+        $days = $timeDifference->d;
+
+        if($days>=3){
+            $batas_dp_dt = $check_in_datetime->modify('-' . '3'. ' days');
+            $batas_dp = $batas_dp_dt->format('Y-m-d H:i:s');
+    
+            $batas_cancel_dt = $check_in_datetime->modify('-' . '3'. ' days');
+            $batas_cancel = $batas_cancel_dt->format('Y-m-d H:i:s');
+        } elseif ($days<3){
+            $batas_dp_dt = $request_date_datetime->modify('+12 hours');
+            $batas_dp = $batas_dp_dt->format('Y-m-d H:i:s');
+        
+            $batas_cancel_dt = $request_date_datetime->modify('+12 hours');
+            $batas_cancel = $batas_cancel_dt->format('Y-m-d H:i:s');
+        }
+
 
         $data = [
             //data package
@@ -495,6 +512,7 @@ class DetailReservation extends ResourcePresenter
     {
         $contents = $this->packageModel->get_list_package_distinct()->getResultArray();
         $datareservation = $this->reservationModel->get_reservation_by_id($id)->getRowArray();
+        // dd($id);
         $package_reservation= $datareservation['package_id'];
         
         //detail package 
@@ -569,8 +587,27 @@ class DetailReservation extends ResourcePresenter
             $check_out = $check_in_datetime->format('Y-m-d') . ' 12:00:00';
         }
 
-        $batas_dp_dt = $check_in_datetime->modify('-' . '3'. ' days');
-        $batas_dp = $batas_dp_dt->format('Y-m-d H:i:s');
+        $requestDate = $datareservation['request_date'];
+        $request_date_datetime = new DateTime($requestDate);
+
+        $timeDifference = $check_in_datetime->diff($request_date_datetime);
+        $days = $timeDifference->d;
+
+        // dd($days);
+
+        if($days>3){
+            $batas_dp_dt = $check_in_datetime->modify('-' . '3'. ' days');
+            $batas_dp = $batas_dp_dt->format('Y-m-d H:i:s');
+    
+            $batas_cancel_dt = $check_in_datetime->modify('-' . '2'. ' days');
+            $batas_cancel = $batas_cancel_dt->format('Y-m-d H:i:s');
+        } elseif ($days<=3){
+            $batas_dp_dt = $request_date_datetime->modify('+' . '12'. ' hours');
+            $batas_dp = $batas_dp_dt->format('Y-m-d H:i:s');
+        
+            $batas_cancel_dt = $request_date_datetime->modify('+' . '12'. ' hours');
+            $batas_cancel = $batas_cancel_dt->format('Y-m-d H:i:s');
+        };
 
         $data = [
             //data package
@@ -589,6 +626,7 @@ class DetailReservation extends ResourcePresenter
             'date'=>$date,
             'check_out'=>$check_out,
             'batas_dp'=>$batas_dp,
+            'batas_cancel'=>$batas_cancel,
             'dayhome'=> $dayhome,
             'data_unit'=>$booking_unit,
             'booking'=>$data_unit_booking,
@@ -607,6 +645,7 @@ class DetailReservation extends ResourcePresenter
             'status' => $request['status'],
             'confirmation_date'=>$date,
             'feedback' => $request['feedback'],
+            'admin_confirm' => $request['admin_confirm'],
         ];
 
         // dd($requestData);
@@ -642,9 +681,11 @@ class DetailReservation extends ResourcePresenter
                 $deletefromDE = $this->detailReservationModel->where($array)->delete();
             }
         } 
+        $date = date('Y-m-d H:i');
 
         $requestData = [
             'cancel' =>  '1',
+            'cancel_date' => $date,
         ];
         $updateDR = $this->reservationModel->update_cancel($id, $requestData);
 
@@ -658,6 +699,25 @@ class DetailReservation extends ResourcePresenter
 
     }
 
+    public function saveresponse($id = null)
+    {
+        $request = $this->request->getPost();
+
+        $requestData = [
+            'response' =>  $request['response'],
+        ];
+        $updateDR = $this->reservationModel->update_response($id, $requestData);
+
+        if ($updateDR) {
+            session()->setFlashdata('success', 'Response telah dikirim');
+
+            return redirect()->back();
+        } else {
+            return redirect()->back()->withInput();
+        }
+
+    }
+    
     public function saverefund($id = null)
     {
         $booking_unit = $this->detailReservationModel->get_unit_homestay_bookingnya($id)->getResultArray();
@@ -677,9 +737,12 @@ class DetailReservation extends ResourcePresenter
         } 
         $request = $this->request->getPost();
 
+        $date = date('Y-m-d H:i');
+
         $requestData = [
             'cancel' =>  $request['cancel'],
             'account_refund' => $request['account_refund'],
+            'cancel_date' => $date
         ];
 
         foreach ($requestData as $key => $value) {

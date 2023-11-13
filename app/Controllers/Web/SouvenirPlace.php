@@ -87,7 +87,6 @@ class SouvenirPlace extends ResourcePresenter
             'open' => $request['open'],
             'close' => $request['close'],
             'description' => $request['description'],
-            'status' => $request['status']
         ];
         foreach ($requestData as $key => $value) {
             if (empty($value)) {

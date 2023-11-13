@@ -246,13 +246,16 @@ $edit = in_array('edit', $uri);
                                                         <td><?= esc($value['description']); ?></td>
                                                         <td>
                                                             <div class="btn-group" role="group" aria-label="Basic example">
-                                                                <form action="<?= base_url('dashboard/facilityhomestay/delete/').$value['homestay_id']; ?>" method="post" class="d-inline">
+                                                                <form id="deleteFormFH<?= esc($value['homestay_id']) ?><?= esc($value['facility_homestay_id']) ?>" action="<?= base_url('dashboard/facilityhomestay/delete/').$value['homestay_id']; ?>" method="post" class="d-inline">
                                                                     <?= csrf_field(); ?>
                                                                     <input type="hidden" name="homestay_id" value="<?= esc($value['homestay_id']); ?>">
                                                                     <input type="hidden" name="facility_homestay_id" value="<?= esc($value['facility_homestay_id']); ?>">
                                                                     <input type="hidden" name="description" value="<?= esc($value['description']); ?>">
                                                                     <input type="hidden" name="_method" value="DELETE">
-                                                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('apakah anda yakin akan menghapus?');"><i class="fa fa-times"></i></button>
+                                                                    <!-- <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('apakah anda yakin akan menghapus?');"><i class="fa fa-times"></i></button> -->
+                                                                    <button type="button" class="btn btn-danger btn-sm" onclick="confirmDeleteFU('deleteFormFH<?= esc($value['homestay_id']) ?><?= esc($value['facility_homestay_id']); ?>');">
+                                                                        <i class="fa fa-times"></i>
+                                                                    </button>   
                                                                 </form>
                                                             </div>
                                                         </td> 

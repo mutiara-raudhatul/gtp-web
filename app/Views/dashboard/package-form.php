@@ -118,7 +118,7 @@ $edit = in_array('edit', $uri);
                     <h4 class="card-title text-center"><?= $title; ?></h4>
                 </div>
                 <div class="card-body">
-                    <form id="packageForm" class="form form-vertical" action="<?= ($edit) ? base_url('dashboard/package/update') . '/' . $data['id'] : base_url('dashboard/package'); ?>" method="post" enctype="multipart/form-data">
+                    <form id="packageForm" class="form form-vertical" action="<?= ($data['custom'] == 1) ? base_url('dashboard/package/updatecustom/').$data['id'] : (($edit) ? base_url('dashboard/package/update/') . $data['id'] : base_url('dashboard/package')); ?>" method="post" enctype="multipart/form-data">
                         <div class="form-body">
                             <div class="form-group mb-4">
                                 <label for="name" class="mb-2">Package Name</label>

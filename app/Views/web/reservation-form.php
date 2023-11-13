@@ -1,6 +1,7 @@
 <?php
 $uri = service('uri')->getSegments();
 $edit = in_array('edit', $uri);
+$reservationhomestay = in_array('reservationhomestay', $uri);
 ?>
 
 <?= $this->extend('web/layouts/main'); ?>
@@ -141,7 +142,7 @@ $edit = in_array('edit', $uri);
                         </div>
                         <div class="form-group mb-2">
                             <label for="note" class="mb-2">Note</label>
-                            <textarea class="form-control" id="note" name="note" placeholder="Isikan request yang kamu inginkan menjadi catatan reservasi, misalnya menu makanan, aktivitas, dll" required rows="4"><?= ($edit) ? $data['note'] : old('note'); ?></textarea>
+                            <textarea class="form-control" id="note" name="note" placeholder="Make requests that you want to be on the reservation record, such as the proposed food menu and activity" required rows="4"><?= ($edit) ? $data['note'] : old('note'); ?></textarea>
                         </div>
                         <div class="form-group">
                             <label for="price">Price Package</label>
@@ -340,10 +341,10 @@ $edit = in_array('edit', $uri);
             $('#min_capacity').val(capacity);
             const numberOfPackages = Math.floor(totalPeople/capacity);
             const remainder = totalPeople%capacity; // Hitung sisa hasil bagi
-        
+            const batas= Math.ceil(capacity/2)
 
             if (numberOfPackages!=0) {
-                 if (remainder != 0 && remainder<5) {
+                 if (remainder != 0 && remainder<batas) {
                     const add = 0.5;
                     const order = numberOfPackages + add; // Tambahkan 0.5 jika sisa kurang dari 5
                     $('#item').val(order);
@@ -352,7 +353,7 @@ $edit = in_array('edit', $uri);
                     $('#total_price').val(totalPrice);
                     const deposit = totalPrice * 0.2;
                     $('#deposit').val(deposit);
-                } else if (remainder>=5) {
+                } else if (remainder>=batas) {
                     const add = 1;
                     const order = numberOfPackages + add; // Tambahkan 1 jika sisa lebih dari atau sama dengan 5
                     $('#item').val(order);
@@ -401,7 +402,7 @@ $edit = in_array('edit', $uri);
             if (checkInDate && checkInTime) {
                 const checkInDateTime = new Date(checkInDate + ' ' + checkInTime);
                 const checkOutDateTime = new Date(checkInDateTime);
-                checkOutDateTime.setDate(checkOutDateTime.getDate() + day);
+                checkOutDateTime.setDate(checkOutDateTime.getDate() + day - 1);
                 const checkOutDate = checkOutDateTime.toISOString().split('T')[0];
                 const checkOutTime = checkOutDateTime.toTimeString().split(' ')[0];
                 $('#check_out').val(checkOutDate);

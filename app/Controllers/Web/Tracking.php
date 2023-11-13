@@ -51,4 +51,29 @@ class Tracking extends ResourcePresenter
 
         return view('web/tracking_mangrove', $data);
     }
+
+    public function estuaria()
+    {
+        $contents = $this->attractionModel->get_estuaria()->getResultArray();
+
+        $facility = $this->facilityTypeModel->get_list_facility_type()->getResultArray();
+
+        for ($index = 0; $index < count($contents); $index++) {
+            $list_gallery = $this->galleryAttractionModel->get_gallery($contents[$index]['id'])->getResultArray();
+            $galleries = array();
+            foreach ($list_gallery as $gallery) {
+                $galleries[] = $gallery['url'];
+            }
+            $contents[$index]['gallery'] = $galleries;
+        }
+
+        $data = [
+            'title' => 'Estuaria',
+            'folder' => 'attraction',
+            'data' => $contents,
+            'facility' => $facility
+        ];
+
+        return view('web/estuaria', $data);
+    }
 }

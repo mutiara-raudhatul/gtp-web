@@ -67,6 +67,7 @@ class DetailServicePackageModel extends Model
 
         return $query;
     }
+    
     public function checkIfDataExists($requestData)
     {
         return $this->table($this->table)

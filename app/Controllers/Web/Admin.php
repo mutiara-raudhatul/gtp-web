@@ -2,6 +2,7 @@
 
 namespace App\Controllers\Web;
 
+use Myth\Auth\Models\UserModel;
 use App\Controllers\BaseController;
 use CodeIgniter\Session\Session;
 use Myth\Auth\Config\Auth as AuthConfig;
@@ -20,11 +21,14 @@ class Admin extends BaseController
      */
     protected $session;
     
+    protected $userModel;
+
     public function __construct()
     {
         $this->session = service('session');
         $this->config = config('Auth');
         $this->auth = service('authentication');
+        $this->userModel = new UserModel();
     }
     
     public function login() {
@@ -43,6 +47,4 @@ class Admin extends BaseController
         ];
         return view('auth/register', $data);
     }
-    
-
 }

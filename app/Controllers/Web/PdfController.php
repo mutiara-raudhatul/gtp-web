@@ -92,6 +92,7 @@ class PdfController extends ResourcePresenter
         $pdf->SetSubject('Desa Wisata Green Talao Park');
         $pdf->SetKeywords('TCPDF, PDF, invoice, desawisatagtp.online');
 
+
         // set default header data
         $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.' 001', PDF_HEADER_STRING, array(0,64,255), array(0,64,128));
         $pdf->setFooterData(array(0,64,0), array(0,64,128));
@@ -123,11 +124,10 @@ class PdfController extends ResourcePresenter
         // helvetica or times to reduce file size.
         $pdf->SetFont('dejavusans', '', 14, '', true);
 
+
         // Add a page
         // This method has several options, check the source code documentation for more information.
         $pdf->AddPage();
-
-
 
         $contents = $this->packageModel->get_list_package_distinct()->getResultArray();
         $datareservation = $this->reservationModel->get_reservation_by_id($id)->getRowArray();

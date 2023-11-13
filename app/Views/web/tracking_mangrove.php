@@ -5,7 +5,7 @@
 <section class="section"">
     <div class=" row">
     <!--map-->
-    <div class="col-md-8 col-12">
+    <div class="col-md-7 col-12">
         <div class="card">
             <div class="card-header">
                 <div class="row align-items-center">
@@ -19,7 +19,7 @@
         </div>
     </div>
 
-    <div class="col-md-4 col-12">
+    <div class="col-md-5 col-12">
         <div class="row">
             <!--Home-->
             <div class="col-12" id="list-at-col">
@@ -40,13 +40,9 @@
                             </script>
                             <div class="row">
                                 <div class="col table-responsive">
-                                    <table class="table table-borderless">
-                                        <tbody>
-                                            <tr>
-                                                <?= esc($item['description']); ?>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                    <div>
+                                        <?php print $item['description']; ?>
+                                    </div>
                                 </div>
                             </div>
                         <?php endforeach; ?>

@@ -87,7 +87,6 @@ class WorshipPlace extends ResourcePresenter
             'address' => $request['address'],
             'capacity' => $request['capacity'],
             'description' => $request['description'],
-            'status' => $request['status']
         ];
         foreach ($requestData as $key => $value) {
             if (empty($value)) {

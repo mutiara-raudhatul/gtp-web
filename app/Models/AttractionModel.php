@@ -35,6 +35,18 @@ class AttractionModel extends Model
         return $query;
     }
 
+    public function get_estuaria()
+    {
+        $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
+        $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.type,{$this->table}.price,{$this->table}.description,{$this->table}.video_url";
+        $query = $this->db->table($this->table)
+            ->select("{$columns}, {$coords}")
+            ->where('id', 'A0004')
+            ->get();
+        return $query;
+    }
+
+
     public function get_list_attraction()
     {
         $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
@@ -52,6 +64,7 @@ class AttractionModel extends Model
         $query = $this->db->table($this->table)
             ->select("{$columns}, {$coords}")
             ->notLike('id', 'A0001')
+            ->notLike('id', 'A0004')
             ->get();
         return $query;
     }

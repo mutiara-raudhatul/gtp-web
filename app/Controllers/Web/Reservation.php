@@ -140,20 +140,20 @@ class Reservation extends ResourcePresenter
 
     }
 
-    public function packagecustom()
-    {
-        $contents = $this->packageModel->get_list_package_distinct()->getResultArray();
-dd($contents);
-        $list_unit = $this->unitHomestayModel->get_unit_homestay_all()->getResultArray();
+//     public function packagecustom()
+//     {
+//         $contents = $this->packageModel->get_list_package_distinct()->getResultArray();
+// dd($contents);
+//         $list_unit = $this->unitHomestayModel->get_unit_homestay_all()->getResultArray();
 
-        $data = [
-            'title' => 'Custom Package',
-            'data' => $contents,
-            'list_unit' => $list_unit,
-        ];
+//         $data = [
+//             'title' => 'Custom Package',
+//             'data' => $contents,
+//             'list_unit' => $list_unit,
+//         ];
 
-        return view('web/custom-package-form', $data);
-    }
+//         return view('web/custom-package-form', $data);
+//     }
 
     public function dataunithomestay()
     {
@@ -457,11 +457,16 @@ dd($contents);
     public function uploadrefund($id = null)
     {
         $request = $this->request->getPost();
+        $date = date('Y-m-d H:i');
 
+        $requestData = [
+            'refund_date' => $date,
+            'admin_refund' => $request['admin_refund'],
+        ];
         $img = $this->request->getFile('proof_refund');
 
         if (empty($_FILES['proof_refund']['name'])) {
-            $query = $this->reservationModel->upload_deposit($id, $requestData);
+            $query = $this->reservationModel->upload_refund($id, $requestData);
             if ($query) {
                 $response = [
                     'status' => 200,

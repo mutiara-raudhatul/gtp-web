@@ -24,16 +24,6 @@ class DetailPackageModel extends Model
     protected $skipValidation       = false;
     protected $cleanValidationRules = true;
 
-    // public function get_allDetailPackage($package_id = null)
-    // {
-    //     $query = $this->db->table($this->table)
-    //         ->select('service_package_id')
-    //         ->where('package_id', $package_id)
-    //         ->orderBy('service_package_id', 'ASC')
-    //         ->get();
-    //     return $query;
-    // }
-
     public function get_detailPackage_by_id($package_id)
     {
 
@@ -44,29 +34,6 @@ class DetailPackageModel extends Model
 
         return $query;
     }
-
-    public function get_day_by_package($package_id)
-    {
-        $query = $this->db->table($this->table)
-            ->select("day")
-            ->where('package_id', $package_id) 
-            ->distinct()
-            ->get();
-
-        return $query;
-    }
-
-    public function get_activity_day($day, $package_id)
-    {
-        $query = $this->db->table($this->table)
-            ->select("*")
-            ->where('package_id', $package_id) 
-            ->where('day', $day) 
-            ->get();
-
-        return $query;
-    }
-
 
     public function getCombinedData($package_id)
     {
@@ -130,6 +97,34 @@ class DetailPackageModel extends Model
     }
 
 
+
+
+
+//   ---  
+    public function get_day_by_package($package_id)
+    {
+        $query = $this->db->table($this->table)
+            ->select("day")
+            ->where('package_id', $package_id) 
+            ->distinct()
+            ->get();
+
+        return $query;
+    }
+
+    public function get_activity_day($day, $package_id)
+    {
+        $query = $this->db->table($this->table)
+            ->select("*")
+            ->where('package_id', $package_id) 
+            ->where('day', $day) 
+            ->get();
+
+        return $query;
+    }
+
+
+
     public function culinary_place($package_id)
     {
         $culinaryPlaceModel = new CulinaryPlaceModel();
@@ -176,55 +171,6 @@ class DetailPackageModel extends Model
         ->get()->getResultArray();
 
         return $attraction;
-    }
-
-    public function getRouteData()
-    {
-        $culinaryPlaceModel = new CulinaryPlaceModel();
-        $souvenirPlaceModel = new SouvenirPlaceModel();
-        $worshipPlaceModel = new WorshipPlaceModel();
-        $facilityModel = new FacilityModel();
-        $attractionModel = new AttractionModel();
-        $eventModel = new EventModel();
-        $homestayModel = new HomestayModel();
-
-        $culinaryData = $culinaryPlaceModel->select('ST_Y(ST_Centroid(geom)) AS lat, ST_X(ST_Centroid(geom)) AS lng')
-        ->join('detail_package', 'detail_package.object_id=culinary_place.id')
-        ->get()->getResultArray();
-
-        $souvenirData = $souvenirPlaceModel->select('ST_Y(ST_Centroid(geom)) AS lat, ST_X(ST_Centroid(geom)) AS lng')
-        ->join('detail_package', 'detail_package.object_id=souvenir_place.id')
-        ->get()->getResultArray();
-
-        $worshipData = $worshipPlaceModel->select('ST_Y(ST_Centroid(geom)) AS lat, ST_X(ST_Centroid(geom)) AS lng')
-        ->join('detail_package', 'detail_package.object_id=worship_place.id')
-        ->get()->getResultArray();
-
-        $facilityData = $facilityModel->select('ST_Y(ST_Centroid(geom)) AS lat, ST_X(ST_Centroid(geom)) AS lng')
-        ->join('detail_package', 'detail_package.object_id=facility.id')
-        ->get()->getResultArray();
-
-        $attractionData = $attractionModel->select('ST_Y(ST_Centroid(geom)) AS lat, ST_X(ST_Centroid(geom)) AS lng')
-        ->join('detail_package', 'detail_package.object_id=attraction.id')
-        ->get()->getResultArray();
-
-        $eventData = $eventModel->select('ST_Y(ST_Centroid(geom)) AS lat, ST_X(ST_Centroid(geom)) AS lng')
-        ->join('detail_package', 'detail_package.object_id=event.id')
-        ->get()->getResultArray();
-
-        $homestayData = $homestayModel->select('ST_Y(ST_Centroid(geom)) AS lat, ST_X(ST_Centroid(geom)) AS lng')
-        ->join('detail_package', 'detail_package.object_id=homestay.id')
-        ->get()->getResultArray();
-
-        // Gabungkan hasil dari kedua model
-        $routeData = array_merge($culinaryData, $souvenirData, $worshipData, $facilityData, $attractionData, $eventData, $homestayData);
-
-        // // Urutkan data berdasarkan kolom "activity"
-        // usort($routeData, function($a, $b) {
-        //     return strcmp($a['activity'], $b['activity']);
-        // });
-
-        return $routeData;
     }
 
     public function checkIfDataExists($requestData)

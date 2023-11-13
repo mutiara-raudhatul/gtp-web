@@ -59,6 +59,8 @@ class Attraction extends ResourcePresenter
 
         if (url_is('*dashboard*')) {
             return view('dashboard/detail_attraction', $data);
+        } else{
+            return view('web/detail_attraction', $data);
         }
     }
 

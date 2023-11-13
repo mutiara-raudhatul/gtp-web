@@ -62,31 +62,43 @@
                                                 <td><?= date('d F Y, H:i:s', strtotime($item['check_in'])); ?></td>
                                                 <td>
                                                     <?php $date = date('Y-m-d H:i');?>
-                                                    <?php if($item['status']==null && $item['confirmation_date']==null && $item['account_refund']==null ): ?>    
-                                                        <a href="#" class="btn-sm btn-secondary float-center"><i class="fa-solid fa-clock"></i></a>
-                                                        <i>Menunggu konfirmasi</i>
-                                                    <?php elseif($item['status']==null && $item['confirmation_date']!=null && $item['account_refund']==null ): ?>    
-                                                        <a href="#" class="btn-sm btn-secondary float-center"><i class="fa-solid fa-cancel"></i></a>
-                                                        <i>Cancel</i>
-                                                    <?php elseif($item['status']==null && $item['confirmation_date']!=null && $item['account_refund']!=null ): ?>    
-                                                        <a href="#" class="btn-sm btn-secondary float-center"><i class="fa-solid fa-cancel"></i></a>
-                                                        <i>Cancel & refund</i>
-                                                    <?php elseif($item['status']==1): ?>    
-                                                        <a href="#" class="btn-sm btn-success float-center"><i class="fa-solid fa-check"></i></a>
-                                                        <?php if($item['proof_of_deposit']==null) :?>
-                                                            <i>Silakan bayar deposit</i>
-                                                        <?php elseif($item['proof_of_payment']==null): ?>
-                                                            <i>Sisa pembayaran belum</i>
-                                                        <?php elseif($item['proof_of_payment']!=null ):  ?>
-                                                            <?php if($item['review']==null): ?>
-                                                                <i>Belum direview</i>
-                                                            <?php else: ?>
-                                                                <i>Done</i>
-                                                            <?php endif; ?>        
+                                                    <?php if($item['status']==null ): ?>    
+                                                            <a href="#" class="btn-sm btn-warning float-center"><i>Waiting</i></a>
+
+                                                    <?php elseif($item['status']=='1' ): ?>    
+                                                        <?php if($item['cancel']=='0'): ?>
+                                                            <?php if($item['proof_of_deposit']==null) :?>
+                                                                <a href="#" class="btn-sm btn-info float-center"><i>Pay deposit</i></a>
+                                                        
+                                                            <?php elseif($item['proof_of_deposit']!=null && $item['proof_of_payment']==null): ?>
+                                                                <a href="#" class="btn-sm btn-info float-center"><i>Pay in full</i></a>
+                                                            
+                                                            <?php elseif($item['proof_of_deposit']!=null && $item['proof_of_payment']!=null ):  ?>
+                                                                <?php if($item['review']==null): ?>
+                                                                    <a href="#" class="btn-sm btn-info float-center"><i>Unreviewed</i></a>
+                                                            
+                                                                <?php else: ?>
+                                                                    <a href="#" class="btn-sm btn-success float-center"><i>Done</i></a>
+                                                                
+                                                                <?php endif; ?>        
+                                                            <?php endif; ?>
+                                                        <?php elseif($item['cancel']=='1'): ?>
+                                                            <?php if($item['account_refund']==null): ?>
+                                                                <a href="#" class="btn-sm btn-secondary float-center"><i>Cancel</i></a>
+
+                                                            <?php elseif($item['account_refund']!=null && $item['proof_refund']==null): ?>
+                                                                <a href="#" class="btn-sm btn-secondary float-center"><i>Cancel & refund</i></a>
+
+                                                            <?php elseif($item['account_refund']!=null && $item['proof_refund']!=null): ?>
+                                                                <a href="#" class="btn-sm btn-danger float-center"><i>Refund</i></a>
+
+                                                            <?php endif; ?>
+
                                                         <?php endif; ?>
+
                                                     <?php elseif($item['status']==0): ?>    
-                                                        <a href="#" class="btn-sm btn-danger float-center"><i class="fa-solid fa-times"></i></a>
-                                                        <i>Reservasi ditolak</i>
+                                                        <a href="#" class="btn-sm btn-danger float-center"><i>Rejected</i></a>
+                                                    
                                                     <?php endif; ?>  
                                                 </td>
                                                 <td>

@@ -67,7 +67,7 @@ $edit = in_array('edit', $uri);
                                 <label for="description" class="form-label">Description</label>
                                 <textarea class="form-control" id="description" name="description" rows="4"><?= ($edit) ? $data['description'] : old('description'); ?></textarea>
                             </div>
-                            <div class="form-group mb-4">
+                            <!-- <div class="form-group mb-4">
                                 <label for="status">Object in Green Talao Park Area</label><br>
 
                                 <?php if($edit): ?>
@@ -91,7 +91,7 @@ $edit = in_array('edit', $uri);
                                     </label>
                                 <?php endif; ?>
                                                             
-                            </div>
+                            </div> -->
                             <div class="form-group mb-4">
                                 <label for="gallery" class="form-label">Gallery</label>
                                 <input class="form-control" accept="image/*" type="file" name="gallery[]" id="gallery" multiple>
@@ -187,7 +187,7 @@ $edit = in_array('edit', $uri);
 
     <?php if ($edit && count($data['gallery']) > 0) : ?>
         pond.addFiles(
-            <?php foreach ($data['gallery'] as $g) : ?> `<?= base_url('media/photos/facility/' . $g); ?>`,
+            <?php foreach ($data['gallery'] as $g) : ?> `<?= base_url('media/photos/culinary_place/' . $g); ?>`,
             <?php endforeach; ?>
         );
     <?php endif; ?>

@@ -50,7 +50,7 @@
         </a>
 </button>
 <button class="fixed-button">
-        <a data-bs-toggle="tooltip" data-bs-placement="bottom" title="Toggle Legend" class="btn icon btn-primary mx-1" id="legend-map" onclick="viewLegend();">
+        <a data-bs-toggle="tooltip" data-bs-placement="bottom" title="Toggle Legend" class="btn icon btn-primary mx-1" id="legend-map" onclick="viewLegendMobile();">
             <span class="material-symbols-outlined">visibility</span>
         </a>
 </button>

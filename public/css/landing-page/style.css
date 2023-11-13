@@ -13,6 +13,17 @@
     z-index: 99;
 }
 
+.avatar{border-radius:50%;display:inline-flex;position:relative;text-align:center;vertical-align:middle}
+.avatar .avatar-content{align-items:center;color:#fff;display:flex;font-size:.875rem;height:32px;justify-content:center;width:32px}
+.avatar .avatar-content i,.avatar .avatar-content svg{color:#fff;font-size:1rem;height:1rem}
+.avatar .avatar-content i:before{vertical-align:top}
+.avatar img{border-radius:50%;height:32px;width:32px}
+.avatar .avatar-status{border:1px solid #fff;border-radius:50%;bottom:0;height:.7rem;position:absolute;right:0;width:.7rem}
+.avatar.avatar-sm .avatar-content,.avatar.avatar-sm img{font-size:.8rem;height:24px;width:24px}
+.avatar.avatar-md .avatar-content,.avatar.avatar-md img{font-size:.8rem;height:32px;width:32px}
+.avatar.avatar-md2 .avatar-content,.avatar.avatar-md2 img{font-size:.8rem;height:40px;width:40px}
+.avatar.avatar-lg .avatar-content,.avatar.avatar-lg img{font-size:1.2rem;height:48px;width:48px}
+.avatar.avatar-xl .avatar-content,.avatar.avatar-xl img{font-size:1.4rem;height:60px;width:60px}
 
 /*** Spinner ***/
 #spinner {

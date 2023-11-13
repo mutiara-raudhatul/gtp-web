@@ -51,7 +51,7 @@ class Gtp extends ResourcePresenter
             'title' => 'Home',
             'data' => $contents
         ];
-// dd($data);
+
         return view('web/info_home', $data);
     }
 

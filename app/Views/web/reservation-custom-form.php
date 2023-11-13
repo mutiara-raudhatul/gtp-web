@@ -104,7 +104,7 @@ $edit = in_array('edit', $uri);
                         <div class="row g-4">
                             <div class="col-md-7">
                                 <label for="min_capacity">Minimal Capacity</label>
-                                <input type="number" id="min_capacity" name="min_capacity" readonly value="<?= ($edit) ? $keyy['min_capacity'] : old('min_capacity'); ?>" class="form-control" min="1" required>
+                                <input type="number" id="min_capacity" name="min_capacity" readonly  class="form-control" min="1" required>
                             </div>
                             <div class="col-md-5">
                                 <label for="day">Day Activities</label>
@@ -114,7 +114,7 @@ $edit = in_array('edit', $uri);
                         <div class="row g-4">
                             <div class="col-md-7">
                                 <label for="check_in">Check-in</label>
-                                <input type="date" id="check_in" name="check_in" min="<?php echo date('Y-m-d', strtotime('+1 day')); ?>" class="form-control" required>
+                                <input type="date" id="check_in" name="check_in" min="<?php echo date('Y-m-d'); ?>" class="form-control" required>
                             </div>
                             <div class="col-md-5">
                                 <label for="check_in"></label>
@@ -141,7 +141,7 @@ $edit = in_array('edit', $uri);
                         </div>
                         <div class="form-group mb-2">
                             <label for="note" class="mb-2">Note</label>
-                            <textarea class="form-control" id="note" name="note" placeholder="Isikan request yang kamu inginkan menjadi catatan reservasi, misalnya menu makanan, aktivitas, dll" required rows="4"><?= ($edit) ? $data['note'] : old('note'); ?></textarea>
+                            <textarea class="form-control" id="note" name="note" placeholder="Make requests that you want to be on the reservation record, such as the proposed food menu and price range of the package" required rows="4"><?= ($edit) ? $data['note'] : old('note'); ?></textarea>
                         </div>
                         <div class="form-group">
                             <label for="price">Price Package</label>

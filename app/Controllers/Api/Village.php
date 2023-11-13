@@ -78,6 +78,9 @@ class Village extends BaseController
         } elseif ($digitasi == 'A0001') {
             $digiProperty = $this->attractionModel->get_tracking()->getRowArray();
             $geoJson = json_decode($this->attractionModel->get_geoJson($digitasi)->getRowArray()['geoJson']);
+        } elseif ($digitasi == 'A0004') {
+            $digiProperty = $this->attractionModel->get_estuaria()->getRowArray();
+            $geoJson = json_decode($this->attractionModel->get_geoJson($digitasi)->getRowArray()['geoJson']);
         } 
         // else {
         //     $digiProperty = $this->attractionModel->get_list_attraction()->getRowArray();

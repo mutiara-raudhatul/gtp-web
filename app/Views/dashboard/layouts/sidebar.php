@@ -36,18 +36,6 @@ $uri3 = $uri[3] ?? '';
                         </a>
                     </li>
 
-                    <!-- Website Analytics -->
-                    <!-- <?php //if (in_groups(['admin'])) : 
-                            ?>
-                        <li class="sidebar-item <? //= ($uri1 == 'index') ? 'active' : '' 
-                                                ?>">
-                            <a href="<? //= base_url('dashboard');
-                                        ?>" class="sidebar-link">
-                                <i class="fa-solid fa-chart-simple"></i><span> Website Analytics</span>
-                            </a>
-                        </li>
-                    <?php //endif; 
-                    ?> -->
 
                     <?php if (in_groups(['admin'])) :
                     ?>
@@ -56,6 +44,18 @@ $uri3 = $uri[3] ?? '';
                             <a href="<?= base_url('dashboard/gtp');
                                         ?>" class="sidebar-link">
                                 <i class="fa-brands fa-pagelines"></i><span>Manage GTP</span>
+                            </a>
+                        </li>
+                    <?php endif;
+                    ?>
+
+                    <?php if (in_groups(['admin'])) :
+                    ?>
+                        <li class="sidebar-item <?= ($uri1 == 'users') ? 'active' : ''
+                                                ?>">
+                            <a href="<?= base_url('dashboard/users');
+                                        ?>" class="sidebar-link">
+                                <i class="fa fa-users"></i><span>Manage Users</span>
                             </a>
                         </li>
                     <?php endif;

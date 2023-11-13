@@ -241,18 +241,29 @@ $edit = in_array('edit', $uri);
                                             <div class="btn-group float-end" role="group" aria-label="Basic mixed styles example">
                                                 <button type="button" class="btn btn-outline-primary float-end" data-bs-toggle="modal" data-bs-target="#exampleModal<?=esc($itemunit['unit_number'])?><?=esc($itemunit['unit_type'])?>" data-bs-whatever="@getbootstrap"><i class="fa fa-photo"></i></button>
                                                 <button type="button" id="editButtonUnit" class="btn btn btn-outline-warning btn-sm float-end" data-bs-toggle="modal" data-bs-target="#editUnitHomestayModal<?=esc($itemunit['unit_number'])?><?=esc($itemunit['unit_type'])?>"  data-bs-whatever="@getbootstrap"><i class="material-icons">&#xE254;</i></button>                                                            
-                                                <form action="<?= base_url('dashboard/unithomestay/delete/').$itemunit['nama_unit']; ?>" method="post" class="d-inline">
-                                                    <?= csrf_field(); ?>
-                                                    <input type="hidden" name="homestay_id" value="<?= esc($itemunit['homestay_id']); ?>">
-                                                    <input type="hidden" name="unit_type" value="<?= esc($itemunit['unit_type']); ?>">
-                                                        <input type="hidden" name="unit_number" value="<?= esc($itemunit['unit_number']); ?>">                                                    
-                                                        <input type="hidden" name="nama_unit" value="<?= esc($itemunit['nama_unit']); ?>">
-                                                    <input type="hidden" name="description" value="<?= esc($itemunit['description']); ?>">
-                                                    <input type="hidden" name="price" value="<?= esc($itemunit['price']); ?>">
-                                                    <input type="hidden" name="capacity" value="<?= esc($itemunit['capacity']); ?>">
-                                                    <input type="hidden" name="_method" value="DELETE">
-                                                    <button type="submit" class="btn btn-outline-danger btn-sm float-end" onclick="return confirm('apakah anda yakin akan menghapus?');"><i class="material-icons">&#xE872;</i></button>
-                                                </form>
+                                                
+                                                    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+                                                    <form id="deleteForm<?= esc($itemunit['unit_number']) ?>" name="deleteForm" action="<?= base_url('dashboard/unithomestay/delete/') . esc($itemunit['unit_number']); ?>" method="post" class="d-inline">
+                                                        <?= csrf_field(); ?>
+                                                        <input type="hidden" name="homestay_id" value="<?= esc($itemunit['homestay_id']); ?>">
+                                                        <input type="hidden" name="unit_type" value="<?= esc($itemunit['unit_type']); ?>">
+                                                            <input type="hidden" name="unit_number" value="<?= esc($itemunit['unit_number']); ?>">                                                    
+                                                            <input type="hidden" name="nama_unit" value="<?= esc($itemunit['nama_unit']); ?>">
+                                                        <input type="hidden" name="description" value="<?= esc($itemunit['description']); ?>">
+                                                        <input type="hidden" name="price" value="<?= esc($itemunit['price']); ?>">
+                                                        <input type="hidden" name="capacity" value="<?= esc($itemunit['capacity']); ?>">
+                                                        <input type="hidden" name="_method" value="DELETE">
+                                                        <button type="button" class="btn btn-outline-danger btn-sm float-end deleteButton" data-item-number="<?= esc($itemunit['unit_number']) ?>"><i class="material-icons">&#xE872;</i></button>
+                                                    </form>
+
+                                                    <script>
+                                                        document.querySelectorAll('.deleteButton').forEach(item => {
+                                                            item.addEventListener('click', function() {
+                                                                let itemNumber = this.getAttribute('data-item-number');
+                                                                confirmDelete(itemNumber);
+                                                            });
+                                                        });
+                                                    </script>
                                             </div>
 
                                             <!-- modal foto unit -->
@@ -331,7 +342,7 @@ $edit = in_array('edit', $uri);
                                                                     <td>
                                                                         <div class="btn-group" role="group" aria-label="Basic example">
                                                                             <!-- <button type="button" class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap"><i class="fa fa-pencil" aria-hidden="true"></i></button>                                                             -->
-                                                                            <form action="<?= base_url('dashboard/unithomestay/deletefacilityunit/').$dt['unit_number']; ?>" method="post" class="d-inline">
+                                                                            <form id="deleteFormfu<?= esc($dt['unit_number']) ?><?= esc($dt['facility_unit_id']) ?>" name="deleteFormfu" action="<?= base_url('dashboard/unithomestay/deletefacilityunit/').$dt['unit_number']; ?>" method="post" class="d-inline">
                                                                                 <?= csrf_field(); ?>
                                                                                 <input type="hidden" name="homestay_id" value="<?= esc($dt['homestay_id']); ?>">
                                                                                 <input type="hidden" name="unit_type" value="<?= esc($dt['unit_type']); ?>">
@@ -339,7 +350,9 @@ $edit = in_array('edit', $uri);
                                                                                 <input type="hidden" name="facility_unit_id" value="<?= esc($dt['facility_unit_id']); ?>">
                                                                                 <input type="hidden" name="description" value="<?= esc($dt['description']); ?>">
                                                                                 <input type="hidden" name="_method" value="DELETE">
-                                                                                <button type="submit" class="btn btn-light btn-sm" onclick="return confirm('apakah anda yakin akan menghapus?');"><i class="fa fa-remove" aria-hidden="true"></i></button>
+                                                                                <button type="button" class="btn btn-light btn-sm float-end" onclick="confirmDeleteFU('deleteFormfu<?= esc($dt['unit_number']) ?><?= esc($dt['facility_unit_id']); ?>');">
+                                                                                    <i class="fa fa-remove" aria-hidden="true"></i>
+                                                                                </button>                                                                            
                                                                             </form>
                                                                         </div>
                                                                     </td> 

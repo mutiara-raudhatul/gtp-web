@@ -25,15 +25,6 @@ class GtpModel extends Model
     protected $cleanValidationRules = true;
 
     // API
-    public function get_desa_wisata()
-    {
-        $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
-        $query = $this->db->table($this->table)
-            ->select("id, name, {$coords}")
-            ->get();
-        return $query;
-    }
-
     public function get_gtp()
     {
         $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
@@ -41,6 +32,15 @@ class GtpModel extends Model
                         {$this->table}.open,{$this->table}.close,{$this->table}.ticket_price,{$this->table}.contact_person,{$this->table}.description";
         $query = $this->db->table($this->table)
             ->select("{$columns}, {$coords}")
+            ->get();
+        return $query;
+    }
+
+    public function get_desa_wisata()
+    {
+        $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
+        $query = $this->db->table($this->table)
+            ->select("id, name, {$coords}")
             ->get();
         return $query;
     }

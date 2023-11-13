@@ -1,6 +1,7 @@
 <?php
 $uri = service('uri')->getSegments();
 $edit = in_array('edit', $uri);
+$users = in_array('users', $uri);
 ?>
 
 <?= $this->extend('web/layouts/main'); ?>
@@ -165,8 +166,15 @@ $edit = in_array('edit', $uri);
                     </div>
                     <div class="btn-group float-right" role="group">
                         <a href="<?= base_url('web/reservation/custombooking/').$data['id']; ?>" class="btn btn-success"><i class="fa fa-cart-plus"></i> Booking This Package</a>                    
+                        <form action="<?= base_url('web/package/deletepackage') . '/' . $data['id']; ?>" method="post" class="d-inline">
+                            <?= csrf_field(); ?>
+                            <input type="hidden" name="id" value="<?= esc($data['id']); ?>">
+                            <input type="hidden" name="name" value="<?= esc($data['name']); ?>">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('Apakah anda yakin membatalkan kustomisasi paket ini?');"><i class="fa fa-times"></i></button>
+                        </form>
                     </div>
-                    </div>
+                </div>
                 <div class="modal fade" id="dayModal" tabindex="-1" aria-labelledby="dayModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -358,7 +366,6 @@ $edit = in_array('edit', $uri);
                                                                 <!-- <a class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a> -->
 
                                                                 <div class="btn-group" role="group" aria-label="Basic example">
-                                                                    <button type="button" class="btn btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap"><i class="material-icons">&#xE254;</i></button>                                                            
                                                                     <form action="<?= base_url('web/detailreservation/delete') . '/' . $value['package_id']; ?>" method="post" class="d-inline">
                                                                         <?= csrf_field(); ?>
                                                                         <input type="hidden" name="package_id" value="<?= esc($value['package_id']); ?>">

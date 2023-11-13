@@ -206,6 +206,10 @@
         <?php endif; ?>  
 </table>
 
+<img class="w-80" src="<?= base_url('media/photos/deposit/'); ?><?= $detail['proof_of_deposit'] ?>"></td>
+
+
+
 <table cellpadding="4" >
     <tr>
         <td width="50%" style="height: 20px;text-align:center">
@@ -221,4 +225,5 @@
         </td>
     </tr>
 </table>
+
 

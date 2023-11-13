@@ -407,8 +407,10 @@ class UnitHomestay extends ResourcePresenter
         $array1 = array('homestay_id' => $homestay_id, 'unit_type' => $unit_type,'unit_number' => $unit_number);
         $facilityUnitDetail = $this->facilityUnitDetailModel->where($array1)->find();
         $deleteFUD= $this->facilityUnitDetailModel->where($array1)->delete();
+        $gUnitDetail = $this->galleryUnitModel->where($array1)->find();
+        $deleteGUD= $this->galleryUnitModel->where($array1)->delete();
 
-        if ($deleteFUD){
+        if ($deleteGUD){
             $array2 = array('homestay_id' => $homestay_id, 'unit_type' => $unit_type,'unit_number' => $unit_number, 'nama_unit'=> $nama_unit,'description'=> $description);
             $unitHomestay = $this->unitHomestayModel->where($array2)->find();
             $deleteUH= $this->unitHomestayModel->delete_unit($array2);

@@ -60,6 +60,26 @@
             </div>
             <?php if (!logged_in()) : ?>
                 <a href="<?= base_url('login'); ?>" class="btn btn-primary">Login</a>
+            <?php elseif(logged_in()) : ?>
+                <div class="col-1">
+                    <?php if (logged_in()) : ?>
+                        <div class="btn-group mb-1">
+                            <div class="dropdown">
+                                <a class="" role="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <div class="avatar avatar-md">
+                                        <img style="width:30px;" src="<?= base_url('media/photos/user'); ?>/<?= user()->user_image; ?>" alt="Face 1" />
+                                    </div>
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <a class="dropdown-item" href="<?= base_url('web/profile'); ?>">My Profile</a>
+                                    <a class="dropdown-item" href="<?= base_url('logout'); ?>">Log Out</a>
+                                </div>
+                            </div>
+                        </div>
+                    <?php else : ?>
+                        <a href="<?= base_url('login'); ?>" class="btn btn-primary">Login</a>
+                    <?php endif; ?>
+                </div>
             <?php endif; ?>
         </div>
     </nav>

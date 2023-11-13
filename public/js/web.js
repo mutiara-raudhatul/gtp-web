@@ -145,31 +145,6 @@ function digitVillage() {
     });
 }
 
-function digitVillage1() {
-    const digitasi = new google.maps.Data();
-    $.ajax({
-        url: baseUrl + '/api/village',
-        type: 'POST',
-        data: {
-            digitasi: 'GTP01'
-        },
-        dataType: 'json',
-        success: function (response) {
-            const data = response.data;
-            digitasi.addGeoJson(data);
-            digitasi.setStyle({
-                fillColor:'#03C988',
-                strokeWeight:3,
-                strokeColor:'#ffffff',
-                fillOpacity: 2,
-                clickable: false
-            });
-            digitasi.setMap(map);
-        }
-    });
-}
-
-
 function initMap2() {
     initMap();
     digitTracking();
@@ -178,6 +153,11 @@ function initMap2() {
 function initMap3() {
     initMap();
     digitTalao();
+}
+
+function initMap6() {
+    initMap();
+    digitEstuaria();
 }
 
 function initMap4(lat = -0.7005628110637381, lng = 100.19529523662331) {
@@ -234,44 +214,6 @@ function digitNagari() {
     });
 }
 
-function digitNagari1(iddesa) {
-    const digitasi = new google.maps.Data();
-    const infoWindow = new google.maps.InfoWindow();
-
-    if (iddesa < 9) {
-        digitasiValue = 'V0' + iddesa;
-    }
-    $.ajax({
-        url: baseUrl + '/api/village',
-        type: 'POST',
-        data: {
-            digitasi: digitasiValue
-        },
-        dataType: 'json',
-        success: function (response) {
-            const data = response.data;
-            digitasi.addGeoJson(data);
-            digitasi.setStyle({
-                fillColor: '#FFC436',
-                strokeWeight:2,
-                strokeColor: '#ffffff',
-                fillOpacity: 2,
-                clickable: true // Set clickable to true to enable click event
-            });
-            digitasi.setMap(map);
-
-            // Event listener for click
-            digitasi.addListener('click', function(event) {
-                const nagariName = event.feature.getProperty('name');
-
-                // Set label for the clicked feature using InfoWindow
-                infoWindow.setContent('Nagari '+nagariName);
-                infoWindow.setPosition(event.latLng);
-                infoWindow.open(map);
-            });
-        }
-    });
-}
 
 function digitNeg(idneg) {
     const digitasi = new google.maps.Data();
@@ -401,7 +343,6 @@ function digitKabKota(idkabkota) {
     });
 }
 
-
 //Kecamatan
 function digitKec(idkec) {
     const digitasi = new google.maps.Data();
@@ -441,6 +382,69 @@ function digitKec(idkec) {
                 infoWindow.setPosition(event.latLng);
                 infoWindow.open(map);
             });
+        }
+    });
+}
+//Nagari
+function digitNagari1(iddesa) {
+    const digitasi = new google.maps.Data();
+    const infoWindow = new google.maps.InfoWindow();
+
+    if (iddesa < 9) {
+        digitasiValue = 'V0' + iddesa;
+    }
+    $.ajax({
+        url: baseUrl + '/api/village',
+        type: 'POST',
+        data: {
+            digitasi: digitasiValue
+        },
+        dataType: 'json',
+        success: function (response) {
+            const data = response.data;
+            digitasi.addGeoJson(data);
+            digitasi.setStyle({
+                fillColor: '#FFC436',
+                strokeWeight:2,
+                strokeColor: '#ffffff',
+                fillOpacity: 2,
+                clickable: true // Set clickable to true to enable click event
+            });
+            digitasi.setMap(map);
+
+            // Event listener for click
+            digitasi.addListener('click', function(event) {
+                const nagariName = event.feature.getProperty('name');
+
+                // Set label for the clicked feature using InfoWindow
+                infoWindow.setContent('Nagari '+nagariName);
+                infoWindow.setPosition(event.latLng);
+                infoWindow.open(map);
+            });
+        }
+    });
+}
+//GTP
+function digitVillage1() {
+    const digitasi = new google.maps.Data();
+    $.ajax({
+        url: baseUrl + '/api/village',
+        type: 'POST',
+        data: {
+            digitasi: 'GTP01'
+        },
+        dataType: 'json',
+        success: function (response) {
+            const data = response.data;
+            digitasi.addGeoJson(data);
+            digitasi.setStyle({
+                fillColor:'#03C988',
+                strokeWeight:3,
+                strokeColor:'#ffffff',
+                fillOpacity: 2,
+                clickable: false
+            });
+            digitasi.setMap(map);
         }
     });
 }
@@ -667,7 +671,7 @@ function digitTracking() {
     });
 }
 
-// Estuaria/Talao
+// Estuaria/Talao Attraction
 function digitTalao() {
     const digitasi = new google.maps.Data();
     $.ajax({
@@ -692,6 +696,30 @@ function digitTalao() {
     });
 }
 
+function digitEstuaria() {
+    const digitasi = new google.maps.Data();
+    $.ajax({
+        url: baseUrl + '/api/village',
+        type: 'POST',
+        data: {
+            digitasi: 'A0004'
+        },
+        dataType: 'json',
+        success: function (response) {
+            const data = response.data;
+            digitasi.addGeoJson(data);
+            digitasi.setStyle({
+                fillColor:'#FF0000',
+                strokeWeight:0.8,
+                strokeColor:'#FF0000',
+                fillOpacity: 0.2,
+                clickable: false
+            });
+            digitasi.setMap(map);
+        }
+    });
+}
+
 // Display marker for loaded object
 function objectMarker(id, lat, lng, anim = true) {
 
@@ -703,7 +731,7 @@ function objectMarker(id, lat, lng, anim = true) {
     if (id.substring(0,3) === "GTP") {
         icon = baseUrl + '/media/icon/gtp.png';
     } else if (id.substring(0,1) === "A") {
-        if(id === "A0001") {
+        if(id === "A0001" || id === "A0004") {
             icon = baseUrl + '/media/icon/tracking.png';
         } else {
             icon = baseUrl + '/media/icon/talao.png';
@@ -738,8 +766,41 @@ function objectMarker(id, lat, lng, anim = true) {
         infoWindow.open(map, marker);
     });
     markerArray[id] = marker;
+}
 
+function objectMarkerMobile(id, lat, lng, anim = true) {
 
+    google.maps.event.clearListeners(map, 'click');
+    let pos = new google.maps.LatLng(lat, lng);
+    let marker = new google.maps.Marker();
+
+    let icon;
+    if (id.substring(0,1) === "A") {
+        if(id === "A0001" || id === "A0004") {
+            icon = baseUrl + '/media/icon/tracking.png';
+        } else {
+            icon = baseUrl + '/media/icon/talao.png';
+        }
+    } else if (id.substring(0,2) === "HO") {
+        icon = baseUrl + '/media/icon/homestay.png';
+    } 
+
+    markerOption = {
+        position: pos,
+        icon: icon,
+        animation: google.maps.Animation.DROP,
+        map: map,
+    }
+    marker.setOptions(markerOption);
+    if (!anim) {
+        marker.setAnimation(null);
+    }
+    marker.addListener('click', () => {
+        infoWindow.close();
+        objectInfoWindowMobile(id);
+        infoWindow.open(map, marker);
+    });
+    markerArray[id] = marker;
 }
 
 function zoomToGTPMarkers() {
@@ -794,7 +855,7 @@ function objectInfoWindow(id){
                     '<p><i class="fa-solid fa-money-bill me-2"></i> '+ price +'</p>' +
                     '</div>';
                 
-                if(aid == "A0001") {
+                if(aid == "A0001" || aid == "A0004") {
                     contentButton =
                     '<br><div class="text-center">' +
                     '<a title="Nearby" class="btn icon btn-outline-primary mx-1" id="nearbyInfoWindow" onclick="openTrack(`'+ aid +'`,'+ lat +','+ lng +')"><i class="fa-solid fa-map-location-dot"></i></a>' +
@@ -803,8 +864,10 @@ function objectInfoWindow(id){
                     contentButton =
                     '<br><div class="text-center">' +
                     '<a title="Nearby" class="btn icon btn-outline-primary mx-1" id="nearbyInfoWindow" onclick="openNearby(`'+ aid +'`,'+ lat +','+ lng +')"><i class="fa-solid fa-compass"></i></a>' +
+                    '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/attraction/'+aid+'><i class="fa-solid fa-info"></i></a>' +
                     '</div>'
                 }
+                
 
                 if (currentUrl.includes(id)) {
                     infoWindow.setContent(content);
@@ -918,9 +981,13 @@ function objectInfoWindow(id){
                     '<a title="Route" class="btn icon btn-outline-primary mx-1" id="routeInfoWindow" onclick="routeTo('+lat+', '+lng+')"><i class="fa-solid fa-road"></i></a>' +
                     '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/homestay/'+hoid+'><i class="fa-solid fa-info"></i></a>' +
                     '</div>'
-
+                    console.log(currentUrl);
                 if (currentUrl.includes(id)) {
-                    infoWindow.setContent(content + contentButton);
+                    if(currentUrl.startsWith('api')){
+                        infoWindow.setContent(content + contentButton );
+                    } else {
+                        infoWindow.setContent(content );
+                    }
                     infoWindow.open(map, markerArray[hoid])
                 } else {
                     infoWindow.setContent(content + contentButton);
@@ -1030,6 +1097,105 @@ function objectInfoWindow(id){
         });
     }
 }
+
+function objectInfoWindowMobile(id){
+    let content = '';
+    let contentButton = '';
+
+    if (id.substring(0,3) === "GTP") {
+        $.ajax({
+            url: baseUrl + '/api/gtp/' + id,
+            dataType: 'json',
+            success: function (response) {
+                let data = response.data;
+                let name = data.name;
+
+                content =
+                    '<div class="text-center">' +
+                    '<p class="fw-bold fs-6">'+ name +'</p>' +
+                    '<p><i class="fa-solid fa-spa"></i> Tourism Village</p>' +
+                    '</div>';
+
+                infoWindow.setContent(content);
+            }
+        });
+    } else if (id.substring(0,1) === "A") {
+        $.ajax({
+            url: baseUrl + '/api/attraction/' + id,
+            dataType: 'json',
+            success: function (response) {
+                let data = response.data;
+                let aid = data.id;
+                let name = data.name;
+                let lat = data.lat;
+                let lng = data.lng;
+                let type = data.type;
+                let price = (data.price == 0) ? 'Free' : formatter.format(data.price);
+                
+                content =
+                    '<div class="text-center">' +
+                    '<p class="fw-bold fs-6">'+ name +'</p> <br>' +
+                    '<p><i class="fa-solid fa-spa"></i> '+ type +'</p>' +
+                    '<p><i class="fa-solid fa-money-bill me-2"></i> '+ price +'</p>' +
+                    '</div>';
+                
+                if(aid == "A0001" || aid == "A0004") {
+                    contentButton =
+                    '<br><div class="text-center">' +
+                    '<a title="Route" class="btn icon btn-outline-primary mx-1" id="routeInfoWindow" onclick="routeTo('+lat+', '+lng+')"><i class="fa-solid fa-road"></i></a>' +
+                    '</div>'
+                } else {
+                    contentButton =
+                    '<br><div class="text-center">' +
+                    '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/attraction/'+aid+'><i class="fa-solid fa-info"></i></a>' +
+                    '<a title="Route" class="btn icon btn-outline-primary mx-1" id="routeInfoWindow" onclick="routeTo('+lat+', '+lng+')"><i class="fa-solid fa-road"></i></a>' +
+                    '</div>'
+                }
+                
+                if (currentUrl.includes(id)) {
+                    infoWindow.setContent(content + contentButton);
+                    infoWindow.open(map, markerArray[aid])
+                } else {
+                    infoWindow.setContent(content + contentButton);
+                }
+            }
+        });
+    } else if (id.substring(0,2) === "HO") {
+        $.ajax({
+            url: baseUrl + '/api/homestay/' + id,
+            dataType: 'json',
+            success: function (response) {
+                let data = response.data;
+                let hoid = data.id;
+                let name = data.name;
+                let lat = data.lat;
+                let lng = data.lng;
+                let contact_person = (data.contact_person == 0) ? '-' : data.contact_person;
+                let address = data.address;
+
+                content =
+                    '<div class="text-center">' +
+                    '<p class="fw-bold fs-6">'+ name +'</p> <br>' +
+                    '<p><i class="fa-solid fa-phone me-2"></i> '+ contact_person +'</p>' +
+                    '<p><i class="fa-solid fa-map-pin"></i> '+ address +'</p>' +
+                    '</div>';
+                contentButton =
+                    '<br><div class="text-center">' +
+                    '<a title="Route" class="btn icon btn-outline-primary mx-1" id="routeInfoWindow" onclick="routeTo('+lat+', '+lng+')"><i class="fa-solid fa-road"></i></a>' +
+                    '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/homestay/'+hoid+'><i class="fa-solid fa-info"></i></a>' +
+                    '</div>'
+
+                if (currentUrl.includes(id)) {
+                    infoWindow.setContent(content + contentButton);
+                    infoWindow.open(map, markerArray[hoid])
+                } else {
+                    infoWindow.setContent(content + contentButton);
+                }
+            }
+        });
+    } 
+}
+
 
 // Render map to contains all object marker
 function boundToObject() {
@@ -1833,6 +1999,10 @@ function getLegend() {
             name: 'Tracking Mangrove',
             icon: baseUrl + '/media/icon/tracking.png',
         },
+        estuaria :{
+            name: 'Estuaria',
+            icon: baseUrl + '/media/icon/tracking.png',
+        },
         talao :{
             name: 'Water Attractions',
             icon: baseUrl + '/media/icon/talao.png',
@@ -1940,6 +2110,54 @@ function viewLegend() {
     } else {
         $('#legend').hide();
     }
+}
+
+function getLegendMobile() {
+    const icons = {
+        tracking :{
+            name: 'Tracking Mangrove',
+            icon: baseUrl + '/media/icon/tracking.png',
+        },
+        tracking :{
+            name: 'Estuaria',
+            icon: baseUrl + '/media/icon/tracking.png',
+        },
+        talao :{
+            name: 'Water Attractions',
+            icon: baseUrl + '/media/icon/talao.png',
+        },
+        ho :{
+            name: 'Homestay',
+            icon: baseUrl + '/media/icon/homestay.png',
+        },
+        dw :{
+            name: 'Desa Wisata',
+            icon: baseUrl + '/media/icon/desawisata.png',
+        },
+    }
+
+    // const title = '<p class="fw-bold fs-6">Legend</p>';
+    // $('#legend').append(title);
+
+    for (key in icons) {
+        const type = icons[key];
+        const name = type.name;
+        const icon = type.icon;
+        const div = '<div><img src="' + icon + '"> ' + name +'</div>';
+
+        $('#legendMobile').append(div);
+    }
+    map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(legendMobile);
+}
+
+// toggle legend element
+function viewLegendMobile() {
+    if ($('#legendMobile').is(':hidden')) {
+        $('#legendMobile').show();
+    } else {
+        $('#legendMobile').hide();
+    }
+
 }
 
 // Update preview of uploaded photo profile
@@ -2272,6 +2490,57 @@ function drawGeom() {
         return polygon;
     }
 }
+// Delete selected Users
+function deleteUsers(id = null, username = null, csrfToken=null) {
+    var csrfToken = $('input[name="<?= csrf_token() ?>"]').val();
+
+    if (id === null) {
+        return Swal.fire('ID cannot be null');
+    }
+
+    let content, apiUri;
+    content = 'Users';
+    apiUri = 'users/';
+
+    Swal.fire({
+        title: 'Delete ' + content + '?',
+        text: 'You are about to remove ' + username,
+        icon: 'warning',
+        showCancelButton: true,
+        denyButtonText: 'Delete',
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#343a40',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: baseUrl + 'api/' + apiUri + id,
+                type: 'DELETE',
+                dataType: 'json',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                success: function (response) {
+                    if (response.status === 200) {
+                        Swal.fire('Deleted!', 'Successfully remove ' + username, 'success').then((result) => {
+                            if(result.isConfirmed) {
+                                document.location.reload();
+                            }
+                        });
+
+                    } else {
+                        Swal.fire('Failed', 'Delete ' + username + ' failed!', 'warning');
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error("AJAX Error:", textStatus, errorThrown);
+                    Swal.fire('Failed', 'An error occurred while trying to delete ' + username, 'error');
+                }
+            });
+        }
+    });
+}
+
+
 
 // Delete selected object
 function deleteObject(id = null, name = null, user = false) {
@@ -2342,6 +2611,40 @@ function deleteObject(id = null, name = null, user = false) {
                     }
                 }
             });
+        }
+    });
+}
+
+function confirmDelete(itemNumber) {
+    Swal.fire({
+        title: 'Apakah anda yakin akan menghapus data unit homestay ini?',
+        text: "Tindakan tidak dapat dikembalikan!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Ya, hapus!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('deleteForm' + itemNumber).submit(); // Mengirim formulir
+        }
+    });
+}
+
+function confirmDeleteFU(formId) {
+    Swal.fire({
+        title: 'Apakah Anda Yakin?',
+        text: "Anda tidak akan dapat mengembalikan tindakan ini!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Ya, hapus saja!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById(formId).submit(); // Mengirim formulir
         }
     });
 }

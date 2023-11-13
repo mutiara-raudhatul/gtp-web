@@ -3,6 +3,7 @@
 namespace App\Controllers\Web;
 
 use App\Models\GtpModel;
+use Myth\Auth\Models\UserModel;
 use App\Models\GalleryGtpModel;
 use App\Models\AttractionModel;
 use App\Models\EventModel;
@@ -18,6 +19,7 @@ use App\Controllers\BaseController;
 class Dashboard extends BaseController
 {
     protected $gtpModel;
+    protected $userModel;
     protected $galleryGtpModel;
     protected $attractionModel;
     protected $eventModel;
@@ -32,6 +34,7 @@ class Dashboard extends BaseController
     public function __construct()
     {
         $this->gtpModel = new GtpModel();
+        $this->userModel = new UserModel();
         $this->galleryGtpModel = new GalleryGtpModel();
         $this->attractionModel = new AttractionModel();
         $this->eventModel = new EventModel();
@@ -69,6 +72,21 @@ class Dashboard extends BaseController
             'folder' => 'gtp'
         ];
         return view('dashboard/manage-gtp', $data);
+    }
+
+    public function users()
+    {
+        $contentsAdmin = $this->userModel->get_admin()->getResultArray();
+        $contentsCostumer = $this->userModel->get_users()->getResultArray();
+
+        $data = [
+            'title' => 'Manage Users',
+            'manage' => 'Users',
+            'adminData' => $contentsAdmin,
+            'customerData' => $contentsCostumer,
+        ];
+        // DD($data);
+        return view('dashboard/manage-users', $data);
     }
 
     public function attraction()
