@@ -60,6 +60,14 @@ class GalleryCulinaryPlaceModel extends Model
         return $query;
     }
 
+    public function isGalleryExist($id)
+    {
+        return $this->table($this->table)
+            ->where('culinary_place_id', $id)
+            ->get()
+            ->getRow();
+    }
+
     public function update_gallery($id = null, $data = null)
     {
         $queryDel = $this->delete_gallery($id);

@@ -153,7 +153,7 @@ class SouvenirPlace extends ResourcePresenter
             'open' => $request['open'],
             'close' => $request['close'],
             'description' => $request['description'],
-            'status' => $request['status']
+            // 'status' => $request['status']
         ];
         foreach ($requestData as $key => $value) {
             if (empty($value)) {
@@ -167,6 +167,7 @@ class SouvenirPlace extends ResourcePresenter
         $updatesp = $this->souvenirPlaceModel->update_sp($id, $requestData);
         $updateGeom = $this->souvenirPlaceModel->update_geom($id, $geom);
 
+        // Handle gallery files
         if (isset($request['gallery'])) {
             $folders = $request['gallery'];
             $gallery = array();
@@ -174,13 +175,29 @@ class SouvenirPlace extends ResourcePresenter
                 $filepath = WRITEPATH . 'uploads/' . $folder;
                 $filenames = get_filenames($filepath);
                 $fileImg = new File($filepath . '/' . $filenames[0]);
+    
+                // Remove old file with the same name, if exists
+                $existingFile = FCPATH . 'media/photos/souvenir_place/' . $fileImg->getFilename();
+                if (file_exists($existingFile)) {
+                    unlink($existingFile);
+                }
+    
                 $fileImg->move(FCPATH . 'media/photos/souvenir_place');
                 delete_files($filepath);
                 rmdir($filepath);
                 $gallery[] = $fileImg->getFilename();
             }
-            $this->gallerySouvenirPlaceModel->update_gallery($id, $gallery);
+    
+            // Update or add gallery data
+            if ($this->gallerySouvenirPlaceModel->isGalleryExist($id)) {
+                // Update gallery with the new or existing file names
+                $this->gallerySouvenirPlaceModel->update_gallery($id, $gallery);
+            } else {
+                // Add new gallery if it doesn't exist
+                $this->gallerySouvenirPlaceModel->add_new_gallery($id, $gallery);
+            }
         } else {
+            // Delete gallery if no files are uploaded
             $this->gallerySouvenirPlaceModel->delete_gallery($id);
         }
 

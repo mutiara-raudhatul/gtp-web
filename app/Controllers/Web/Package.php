@@ -140,10 +140,13 @@ class Package extends ResourcePresenter
         $type = $this->packageTypeModel->get_list_type()->getResultArray();
         $servicelist = $this->servicePackageModel->get_list_service_package()->getResultArray();
         $id = $this->packageModel->get_new_id();
+        $package=array();
+        $package['custom'] = 'P0001';
 
         $data = [
             'title' => 'New Package',
             'type' => $type,
+            'data' => $package,
             'servicelist' => $servicelist,
             'id'=> $id
         ];
@@ -191,7 +194,7 @@ class Package extends ResourcePresenter
         }
         
         $addPA = $this->packageModel->add_new_package($requestData);
-
+        // Handle gallery files
         if (isset($request['gallery'])) {
             $folders = $request['gallery'];
             $gallery = array();
@@ -199,12 +202,30 @@ class Package extends ResourcePresenter
                 $filepath = WRITEPATH . 'uploads/' . $folder;
                 $filenames = get_filenames($filepath);
                 $fileImg = new File($filepath . '/' . $filenames[0]);
+    
+                // Remove old file with the same name, if exists
+                $existingFile = FCPATH . 'media/photos/package/' . $fileImg->getFilename();
+                if (file_exists($existingFile)) {
+                    unlink($existingFile);
+                }
+    
                 $fileImg->move(FCPATH . 'media/photos/package');
                 delete_files($filepath);
                 rmdir($filepath);
                 $gallery[] = $fileImg->getFilename();
             }
-            $this->galleryPackageModel->add_new_gallery($id, $gallery);
+    
+            // Update or add gallery data
+            if ($this->galleryPackageModel->isGalleryExist($id)) {
+                // Update gallery with the new or existing file names
+                $this->galleryPackageModel->update_gallery($id, $gallery);
+            } else {
+                // Add new gallery if it doesn't exist
+                $this->galleryPackageModel->add_new_gallery($id, $gallery);
+            }
+        } else {
+            // Delete gallery if no files are uploaded
+            $this->galleryPackageModel->delete_gallery($id);
         }
         
         if ($addPA) {
@@ -282,10 +303,8 @@ class Package extends ResourcePresenter
                 unset($requestData[$key]);
             }
         }
-
-        // $geom = $request['multipolygon'];
-        // $geojson = $request['geo-json'];
-
+    
+        // Handle video file
         if (isset($request['video'])) {
             $folder = $request['video'];
             $filepath = WRITEPATH . 'uploads/' . $folder;
@@ -298,9 +317,11 @@ class Package extends ResourcePresenter
         } else {
             $requestData['video_url'] = null;
         }
+    
+        // Update package data
         $updatePA = $this->packageModel->update_package($id, $requestData);
-        // $updateGeom = $this->packageModel->update_geom($id, $geom);
-
+    
+        // Handle gallery files
         if (isset($request['gallery'])) {
             $folders = $request['gallery'];
             $gallery = array();
@@ -308,22 +329,39 @@ class Package extends ResourcePresenter
                 $filepath = WRITEPATH . 'uploads/' . $folder;
                 $filenames = get_filenames($filepath);
                 $fileImg = new File($filepath . '/' . $filenames[0]);
+    
+                // Remove old file with the same name, if exists
+                $existingFile = FCPATH . 'media/photos/package/' . $fileImg->getFilename();
+                if (file_exists($existingFile)) {
+                    unlink($existingFile);
+                }
+    
                 $fileImg->move(FCPATH . 'media/photos/package');
                 delete_files($filepath);
                 rmdir($filepath);
                 $gallery[] = $fileImg->getFilename();
             }
-            $this->galleryPackageModel->update_gallery($id, $gallery);
+    
+            // Update or add gallery data
+            if ($this->galleryPackageModel->isGalleryExist($id)) {
+                // Update gallery with the new or existing file names
+                $this->galleryPackageModel->update_gallery($id, $gallery);
+            } else {
+                // Add new gallery if it doesn't exist
+                $this->galleryPackageModel->add_new_gallery($id, $gallery);
+            }
         } else {
+            // Delete gallery if no files are uploaded
             $this->galleryPackageModel->delete_gallery($id);
         }
-
+    
         if ($updatePA) {
             return redirect()->to(base_url('dashboard/package') . '/' . $id);
         } else {
             return redirect()->back()->withInput();
         }
     }
+    
 
     public function updatecustom($id = null)
     {

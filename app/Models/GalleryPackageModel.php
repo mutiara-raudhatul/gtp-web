@@ -57,6 +57,14 @@ class GalleryPackageModel extends Model
         return $query;
     }
 
+    public function isGalleryExist($packageId)
+    {
+        return $this->table($this->table)
+            ->where('package_id', $packageId)
+            ->get()
+            ->getRow();
+    }
+
     public function update_gallery($id = null, $data = null)
     {
         $queryDel = $this->delete_gallery($id);

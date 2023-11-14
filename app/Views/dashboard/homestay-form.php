@@ -141,10 +141,6 @@ $edit = in_array('edit', $uri);
                                 <label for="gallery" class="form-label">Gallery</label>
                                 <input class="form-control" accept="image/*" type="file" name="gallery[]" id="gallery" multiple>
                             </div>
-                            <div class="form-group mb-4">
-                                <label for="video" class="form-label">Video</label>
-                                <input class="form-control" accept="video/*, .mkv" type="file" name="video" id="video">
-                            </div>
                             <button type="reset" class="btn btn-light-secondary me-1 mb-1">Reset</button>
                             <button type="submit" class="btn btn-primary me-1 mb-1">Save & Add Facility</button>
                         </div>

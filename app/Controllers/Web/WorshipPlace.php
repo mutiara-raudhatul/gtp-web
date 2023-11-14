@@ -151,7 +151,7 @@ class WorshipPlace extends ResourcePresenter
             'address' => $request['address'],
             'capacity' => $request['capacity'],
             'description' => $request['description'],
-            'status' => $request['status']
+            // 'status' => $request['status']
         ];
         foreach ($requestData as $key => $value) {
             if (empty($value)) {
@@ -165,6 +165,7 @@ class WorshipPlace extends ResourcePresenter
         $updatewp = $this->worshipPlaceModel->update_wp($id, $requestData);
         $updateGeom = $this->worshipPlaceModel->update_geom($id, $geom);
 
+        // Handle gallery files
         if (isset($request['gallery'])) {
             $folders = $request['gallery'];
             $gallery = array();
@@ -172,15 +173,32 @@ class WorshipPlace extends ResourcePresenter
                 $filepath = WRITEPATH . 'uploads/' . $folder;
                 $filenames = get_filenames($filepath);
                 $fileImg = new File($filepath . '/' . $filenames[0]);
+    
+                // Remove old file with the same name, if exists
+                $existingFile = FCPATH . 'media/photos/worship_place/' . $fileImg->getFilename();
+                if (file_exists($existingFile)) {
+                    unlink($existingFile);
+                }
+    
                 $fileImg->move(FCPATH . 'media/photos/worship_place');
                 delete_files($filepath);
                 rmdir($filepath);
                 $gallery[] = $fileImg->getFilename();
             }
-            $this->galleryWorshipPlaceModel->update_gallery($id, $gallery);
+    
+            // Update or add gallery data
+            if ($this->galleryWorshipPlaceModel->isGalleryExist($id)) {
+                // Update gallery with the new or existing file names
+                $this->galleryWorshipPlaceModel->update_gallery($id, $gallery);
+            } else {
+                // Add new gallery if it doesn't exist
+                $this->galleryWorshipPlaceModel->add_new_gallery($id, $gallery);
+            }
         } else {
+            // Delete gallery if no files are uploaded
             $this->galleryWorshipPlaceModel->delete_gallery($id);
         }
+
 
         if ($updatewp) {
             return redirect()->to(base_url('dashboard/worshipplace') . '/' . $id);

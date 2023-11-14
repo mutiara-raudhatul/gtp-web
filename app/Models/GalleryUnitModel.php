@@ -65,21 +65,30 @@ class GalleryUnitModel extends Model
         return $query;
     }
 
-    // public function update_gallery($id = null, $data = null)
-    // {
-    //     $queryDel = $this->delete_gallery($id);
+    public function isGalleryExist($id)
+    {
+        return $this->table($this->table)
+            ->where('homestay_id', $id)
+            ->get()
+            ->getRow();
+    }
 
-    //     foreach ($data as $key => $value) {
-    //         if (empty($value)) {
-    //             unset($data[$key]);
-    //         }
-    //     }
-    //     $queryIns = $this->add_new_gallery($id, $data);
-    //     return $queryDel && $queryIns;
-    // }
 
-    // public function delete_gallery($id = null)
-    // {
-    //     return $this->db->table($this->table)->delete(['homestay_id' => $id]);
-    // }
+    public function update_gallery($id = null, $data = null)
+    {
+        $queryDel = $this->delete_gallery($id);
+
+        foreach ($data as $key => $value) {
+            if (empty($value)) {
+                unset($data[$key]);
+            }
+        }
+        $queryIns = $this->add_new_gallery($id, $data);
+        return $queryDel && $queryIns;
+    }
+
+    public function delete_gallery($id = null)
+    {
+        return $this->db->table($this->table)->delete(['homestay_id' => $id]);
+    }
 }

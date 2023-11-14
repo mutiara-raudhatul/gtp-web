@@ -530,9 +530,7 @@ $edit = in_array('edit', $uri);
     );
 
     // Get a reference to the file input element
-    const photo = document.querySelector('input[id="gallery"]');
-    const photo = document.querySelector('input[id="galleryunit"]');
-    const video = document.querySelector('input[id="video"]');
+      const photo = document.querySelector('input[id="gallery"]');
 
     // Create a FilePond instance
     const pond = FilePond.create(photo, {
@@ -540,26 +538,17 @@ $edit = in_array('edit', $uri);
         imageResizeUpscale: false,
         credits: false,
     });
-    const vidPond = FilePond.create(video, {
-        credits: false,
-    })
 
     <?php if ($edit && count($data['gallery']) > 0) : ?>
         pond.addFiles(
-            <?php foreach ($data['gallery'] as $g) : ?> `<?= base_url('media/photos/homestay/' . $g); ?>`,
-            <?php endforeach; ?>
-        );
-    <?php endif; ?>
-
-    <?php if (count($gallery_unit) > 0) : ?>
-        pond.addFiles(
-            <?php foreach ($gallery_unit as $gal => $g) : ?> `<?= base_url('media/photos/unithomestay/' . $g['url']); ?>`,
+            <?php foreach ($data['gallery'] as $g) : ?> `<?= base_url('media/photos/unithomestay/' . $g); ?>`,
             <?php endforeach; ?>
         );
     <?php endif; ?>
     pond.setOptions({
         server: '/upload/photo'
     });
+
 
 </script>
 

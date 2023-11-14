@@ -42,8 +42,9 @@
                     <div class="row">
                         <div class="col">
                             <p class="fw-bold">Description</p>
-                            <p><?= esc($data['description']);
-                                ?></p>
+                            <div>
+                                <?php print $data['description']; ?>
+                            </div>
                         </div>
                     </div>
 

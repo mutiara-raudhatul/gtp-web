@@ -143,6 +143,23 @@ class UnitHomestay extends ResourcePresenter
         }
         $addUH = $this->unitHomestayModel->add_new_unitHomestay($requestData);
 
+        // if (isset($request['gallery'])) {
+        //     $folders = $request['gallery'];
+        //     $gallery = array();
+        //     foreach ($folders as $folder) {
+        //         $filepath = WRITEPATH . 'uploads/' . $folder;
+        //         $filenames = get_filenames($filepath);
+        //         $fileImg = new File($filepath . '/' . $filenames[0]);
+        //         $fileImg->move(FCPATH . 'media/photos/unithomestay');
+        //         delete_files($filepath);
+        //         rmdir($filepath);
+        //         $gallery[] = $fileImg->getFilename();
+        //     }
+        //     $this->galleryUnitModel->add_new_gallery($unit_number, $homestay_id, $unit_type, $gallery);
+        // }
+
+
+        // Handle gallery files
         if (isset($request['gallery'])) {
             $folders = $request['gallery'];
             $gallery = array();
@@ -150,14 +167,33 @@ class UnitHomestay extends ResourcePresenter
                 $filepath = WRITEPATH . 'uploads/' . $folder;
                 $filenames = get_filenames($filepath);
                 $fileImg = new File($filepath . '/' . $filenames[0]);
+
+                // Remove old file with the same name, if exists
+                $existingFile = FCPATH . 'media/photos/unithomestay/' . $fileImg->getFilename();
+                if (file_exists($existingFile)) {
+                    unlink($existingFile);
+                }
+
                 $fileImg->move(FCPATH . 'media/photos/unithomestay');
                 delete_files($filepath);
                 rmdir($filepath);
                 $gallery[] = $fileImg->getFilename();
             }
-            $this->galleryUnitModel->add_new_gallery($unit_number, $homestay_id, $unit_type, $gallery);
+
+            // Update or add gallery data
+            if ($this->galleryUnitModel->isGalleryExist($unit_number, $homestay_id, $unit_type,)) {
+                // Update gallery with the new or existing file names
+                $this->galleryUnitModel->update_gallery($unit_number, $homestay_id, $unit_type, $gallery);
+            } else {
+                // Add new gallery if it doesn't exist
+                $this->galleryUnitModel->add_new_gallery($unit_number, $homestay_id, $unit_type, $gallery);
+            }
+        } else {
+            // Delete gallery if no files are uploaded
+            $this->galleryUnitModel->delete_gallery($unit_number, $homestay_id, $unit_type,);
         }
 
+                
         if ($addUH) {
             return redirect()->back();
         } else {
@@ -335,6 +371,7 @@ class UnitHomestay extends ResourcePresenter
 
         $updateUH = $this->unitHomestayModel->update_unit_homestay($unit_number, $homestay_id, $unit_type, $requestData);
 
+        // Handle gallery files
         if (isset($request['gallery'])) {
             $folders = $request['gallery'];
             $gallery = array();
@@ -342,13 +379,32 @@ class UnitHomestay extends ResourcePresenter
                 $filepath = WRITEPATH . 'uploads/' . $folder;
                 $filenames = get_filenames($filepath);
                 $fileImg = new File($filepath . '/' . $filenames[0]);
+
+                // Remove old file with the same name, if exists
+                $existingFile = FCPATH . 'media/photos/unithomestay/' . $fileImg->getFilename();
+                if (file_exists($existingFile)) {
+                    unlink($existingFile);
+                }
+
                 $fileImg->move(FCPATH . 'media/photos/unithomestay');
                 delete_files($filepath);
                 rmdir($filepath);
                 $gallery[] = $fileImg->getFilename();
             }
-            $this->galleryUnitModel->add_new_gallery($unit_number, $homestay_id, $unit_type, $gallery);
+
+            // Update or add gallery data
+            if ($this->galleryUnitModel->isGalleryExist($unit_number, $homestay_id, $unit_type,)) {
+                // Update gallery with the new or existing file names
+                $this->galleryUnitModel->update_gallery($unit_number, $homestay_id, $unit_type, $gallery);
+            } else {
+                // Add new gallery if it doesn't exist
+                $this->galleryUnitModel->add_new_gallery($unit_number, $homestay_id, $unit_type, $gallery);
+            }
+        } else {
+            // Delete gallery if no files are uploaded
+            $this->galleryUnitModel->delete_gallery($unit_number, $homestay_id, $unit_type,);
         }
+
 
         if ($updateUH) {
             return redirect()->back();
