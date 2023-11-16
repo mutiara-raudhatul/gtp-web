@@ -29,6 +29,17 @@ class FacilityTypeModel extends Model
         $query = $this->db->table($this->table)
             ->select("*")
             ->orderBy('id', 'ASC')
+            ->where('id<>', 'A0005')
+            ->get();
+        return $query;
+    }
+
+    public function get_list_facility_type_pieh()
+    {
+        $query = $this->db->table($this->table)
+            ->select("*")
+            ->orderBy('id', 'ASC')
+            ->where('id', 'A0005')
             ->get();
         return $query;
     }

@@ -160,6 +160,48 @@ function initMap6() {
     digitEstuaria();
 }
 
+function initMap7() {
+    initMappulau();
+    digitPieh();
+}
+
+function initMap8() {
+    initMapMakam();
+    digitMakam();
+}
+
+function initMappulau(lat = -0.8273858542304909, lng = 100.18757733756357) {
+    directionsService = new google.maps.DirectionsService();
+    const center = new google.maps.LatLng(lat, lng);
+    map = new google.maps.Map(document.getElementById("googlemaps"), {
+        zoom: 10,
+        center: center,
+        mapTypeId: 'roadmap',
+    });
+    var rendererOptions = {
+        map: map
+    }
+    map.set('styles', customStyled);
+    directionsRenderer = new google.maps.DirectionsRenderer(rendererOptions);
+    digitVillage();
+}
+
+function initMapMakam(lat =-0.701332944875221, lng = 100.18733623545263) {
+    directionsService = new google.maps.DirectionsService();
+    const center = new google.maps.LatLng(lat, lng);
+    map = new google.maps.Map(document.getElementById("googlemaps"), {
+        zoom: 15,
+        center: center,
+        mapTypeId: 'roadmap',
+    });
+    var rendererOptions = {
+        map: map
+    }
+    map.set('styles', customStyled);
+    directionsRenderer = new google.maps.DirectionsRenderer(rendererOptions);
+    digitVillage();
+}
+
 function initMap4(lat = -0.7005628110637381, lng = 100.19529523662331) {
     directionsService = new google.maps.DirectionsService();
     const center = new google.maps.LatLng(lat, lng);
@@ -720,6 +762,54 @@ function digitEstuaria() {
     });
 }
 
+function digitPieh() {
+    const digitasi = new google.maps.Data();
+    $.ajax({
+        url: baseUrl + '/api/village',
+        type: 'POST',
+        data: {
+            digitasi: 'A0005'
+        },
+        dataType: 'json',
+        success: function (response) {
+            const data = response.data;
+            digitasi.addGeoJson(data);
+            digitasi.setStyle({
+                fillColor:'#FF0000',
+                strokeWeight:0.8,
+                strokeColor:'#FF0000',
+                fillOpacity: 0.2,
+                clickable: false
+            });
+            digitasi.setMap(map);
+        }
+    });
+}
+
+function digitMakam() {
+    const digitasi = new google.maps.Data();
+    $.ajax({
+        url: baseUrl + '/api/village',
+        type: 'POST',
+        data: {
+            digitasi: 'A0006'
+        },
+        dataType: 'json',
+        success: function (response) {
+            const data = response.data;
+            digitasi.addGeoJson(data);
+            digitasi.setStyle({
+                fillColor:'#FF0000',
+                strokeWeight:0.8,
+                strokeColor:'#FF0000',
+                fillOpacity: 0.2,
+                clickable: false
+            });
+            digitasi.setMap(map);
+        }
+    });
+}
+
 // Display marker for loaded object
 function objectMarker(id, lat, lng, anim = true) {
 
@@ -733,6 +823,12 @@ function objectMarker(id, lat, lng, anim = true) {
     } else if (id.substring(0,1) === "A") {
         if(id === "A0001" || id === "A0004") {
             icon = baseUrl + '/media/icon/tracking.png';
+        } else if(id === "A0005") {
+            icon = baseUrl + '/media/icon/fish.png';
+        } else if(id === "A0006") {
+            icon = baseUrl + '/media/icon/makam.png';
+        } else if(id === "A0007" || id === "A0008" || id === "A0009") {
+            icon = baseUrl + '/media/icon/music.png';
         } else {
             icon = baseUrl + '/media/icon/talao.png';
         }
@@ -778,6 +874,12 @@ function objectMarkerMobile(id, lat, lng, anim = true) {
     if (id.substring(0,1) === "A") {
         if(id === "A0001" || id === "A0004") {
             icon = baseUrl + '/media/icon/tracking.png';
+        } else if(id === "A0005") {
+            icon = baseUrl + '/media/icon/fish.png';
+        } else if(id === "A0006") {
+            icon = baseUrl + '/media/icon/makam.png';
+        } else if(id === "A0007" || id === "A0008" || id === "A0009") {
+            icon = baseUrl + '/media/icon/music.png';
         } else {
             icon = baseUrl + '/media/icon/talao.png';
         }
@@ -859,6 +961,16 @@ function objectInfoWindow(id){
                     contentButton =
                     '<br><div class="text-center">' +
                     '<a title="Nearby" class="btn icon btn-outline-primary mx-1" id="nearbyInfoWindow" onclick="openTrack(`'+ aid +'`,'+ lat +','+ lng +')"><i class="fa-solid fa-map-location-dot"></i></a>' +
+                    '</div>'
+                } else if(aid == "A0007" || aid == "A0008" || aid == "A0009") {
+                    contentButton =
+                    '<br><div class="text-center">' +
+                    '<a title="Nearby" class="btn icon btn-outline-primary mx-1" id="nearbyInfoWindow" onclick="openNearby(`'+ aid +'`,'+ lat +','+ lng +')"><i class="fa-solid fa-compass"></i></a>' +
+                    '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/attraction/'+aid+'><i class="fa-solid fa-info"></i></a>' +
+                    '</div>'
+                } else if(aid == "A0005" || aid == "A0006") {
+                    contentButton =
+                    '<br><div class="text-center">' +
                     '</div>'
                 } else {
                     contentButton =
@@ -1139,16 +1251,22 @@ function objectInfoWindowMobile(id){
                     '<p><i class="fa-solid fa-money-bill me-2"></i> '+ price +'</p>' +
                     '</div>';
                 
-                if(aid == "A0001" || aid == "A0004") {
+                if(aid == "A0001" || aid == "A0004" || aid == "A0008" || aid == "A0009") {
                     contentButton =
                     '<br><div class="text-center">' +
-                    '<a title="Route" class="btn icon btn-outline-primary mx-1" id="routeInfoWindow" onclick="routeTo('+lat+', '+lng+')"><i class="fa-solid fa-road"></i></a>' +
+                    // '<a title="Nearby" class="btn icon btn-outline-primary mx-1" id="nearbyInfoWindow" onclick="openTrack(`'+ aid +'`,'+ lat +','+ lng +')"><i class="fa-solid fa-map-location-dot"></i></a>' +
+                    '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/attraction/'+aid+'><i class="fa-solid fa-info"></i></a>' +
                     '</div>'
-                } else {
+                } else if(aid == "A0005" || aid == "A0006" || aid == "A0007") {
                     contentButton =
                     '<br><div class="text-center">' +
                     '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/attraction/'+aid+'><i class="fa-solid fa-info"></i></a>' +
-                    '<a title="Route" class="btn icon btn-outline-primary mx-1" id="routeInfoWindow" onclick="routeTo('+lat+', '+lng+')"><i class="fa-solid fa-road"></i></a>' +
+                    '</div>'
+                }else {
+                    contentButton =
+                    '<br><div class="text-center">' +
+                    // '<a title="Nearby" class="btn icon btn-outline-primary mx-1" id="nearbyInfoWindow" onclick="openNearby(`'+ aid +'`,'+ lat +','+ lng +')"><i class="fa-solid fa-compass"></i></a>' +
+                    '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/attraction/'+aid+'><i class="fa-solid fa-info"></i></a>' +
                     '</div>'
                 }
                 
@@ -2015,6 +2133,10 @@ function getLegend() {
             name: 'Estuaria',
             icon: baseUrl + '/media/icon/tracking.png',
         },
+        pieh :{
+            name: 'Pieh',
+            icon: baseUrl + '/media/icon/talao.png',
+        },
         talao :{
             name: 'Water Attractions',
             icon: baseUrl + '/media/icon/talao.png',
@@ -2133,6 +2255,10 @@ function getLegendMobile() {
         tracking :{
             name: 'Estuaria',
             icon: baseUrl + '/media/icon/tracking.png',
+        },
+        pieh :{
+            name: 'Pieh',
+            icon: baseUrl + '/media/icon/talao.png',
         },
         talao :{
             name: 'Water Attractions',

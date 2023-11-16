@@ -39,6 +39,27 @@ class GalleryAttractionModel extends Model
         $query = $this->db->table($this->table)
             ->select('*')
             ->notLike('attraction_id', 'A0001')
+            ->notLike('attraction_id', 'A0005')
+            ->notLike('attraction_id', 'A0006')
+            ->notLike('attraction_id', 'A0007')
+            ->notLike('attraction_id', 'A0008')
+            ->notLike('attraction_id', 'A0009')
+            ->orderBy('id', 'ASC')
+            // ->where('attraction_id', $attraction_id)
+            ->get();
+        return $query;
+    }
+
+    public function get_gallery3()
+    {
+        $query = $this->db->table($this->table)
+            ->select('*')
+            ->notLike('attraction_id', 'A0001')
+            ->notLike('attraction_id', 'A0002')
+            ->notLike('attraction_id', 'A0003')
+            ->notLike('attraction_id', 'A0004')
+            ->notLike('attraction_id', 'A0005')
+            ->notLike('attraction_id', 'A0006')
             ->orderBy('id', 'ASC')
             // ->where('attraction_id', $attraction_id)
             ->get();

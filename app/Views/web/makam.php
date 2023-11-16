@@ -15,7 +15,7 @@
                     <?= $this->include('web/layouts/map-head'); ?>
                 </div>
             </div>
-            <?= $this->include('web/layouts/map-body-6'); ?>
+            <?= $this->include('web/layouts/map-body-8'); ?>
         </div>
     </div>
 
@@ -25,7 +25,7 @@
             <div class="col-12" id="list-at-col">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title text-center">Estuary</h5>
+                        <h5 class="card-title text-center"><?= $title;  ?></h5>
                     </div>
                     <div class="card-body">
                         <script>
@@ -45,6 +45,12 @@
                                     </div>
                                 </div>
                             </div>
+                        <?php endforeach; ?>
+
+                        <?php foreach ($data2 as $item2) : ?>
+                            <script>
+                                objectMarker("<?= esc($item2['id']); ?>", <?= esc($item2['lat']); ?>, <?= esc($item2['lng']); ?>);
+                            </script>
                         <?php endforeach; ?>
 
                         <!-- Object Media -->

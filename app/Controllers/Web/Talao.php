@@ -42,11 +42,33 @@ class Talao extends ResourcePresenter
         }
 
         $data = [
-            'title' => 'Estuaria/Talao',
+            'title' => 'Talao',
             'folder' => 'attraction',
             'data' => $contents
         ];
 
         return view('web/talao', $data);
+    }
+
+    public function seni()
+    {
+        $contents = $this->attractionModel->get_seni()->getResultArray();
+
+        for ($index = 0; $index < count($contents); $index++) {
+            $list_gallery = $this->galleryAttractionModel->get_gallery3()->getResultArray();
+            $galleries = array();
+            foreach ($list_gallery as $gallery) {
+                $galleries[] = $gallery['url'];
+            }
+            $contents[$index]['gallery'] = $galleries;
+        }
+
+        $data = [
+            'title' => 'Culture',
+            'folder' => 'attraction',
+            'data' => $contents
+        ];
+
+        return view('web/seni', $data);
     }
 }

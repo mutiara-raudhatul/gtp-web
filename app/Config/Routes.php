@@ -64,9 +64,24 @@ $routes->group('web', ['namespace' => 'App\Controllers\Web'], function ($routes)
         $routes->get('/', 'Tracking::index');
     });
 
+    $routes->group('pieh', function ($routes) {
+        $routes->presenter('pieh');
+        $routes->get('/', 'Tracking::pieh');
+    });
+
+    $routes->group('makam', function ($routes) {
+        $routes->presenter('makam');
+        $routes->get('/', 'Tracking::makam');
+    });
+
     $routes->group('talao', function ($routes) {
         $routes->presenter('talao');
         $routes->get('/', 'Talao::detail');
+    });
+
+    $routes->group('seni', function ($routes) {
+        $routes->presenter('seni');
+        $routes->get('/', 'Talao::seni');
     });
 
     $routes->presenter('attraction');

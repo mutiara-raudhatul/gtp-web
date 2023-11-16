@@ -46,6 +46,27 @@ class AttractionModel extends Model
         return $query;
     }
 
+    public function get_pieh()
+    {
+        $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
+        $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.type,{$this->table}.price,{$this->table}.description,{$this->table}.video_url";
+        $query = $this->db->table($this->table)
+            ->select("{$columns}, {$coords}")
+            ->where('id', 'A0005')
+            ->get();
+        return $query;
+    }
+
+    public function get_makam()
+    {
+        $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
+        $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.type,{$this->table}.price,{$this->table}.description,{$this->table}.video_url";
+        $query = $this->db->table($this->table)
+            ->select("{$columns}, {$coords}")
+            ->where('id', 'A0006')
+            ->get();
+        return $query;
+    }
 
     public function get_list_attraction()
     {
@@ -63,8 +84,24 @@ class AttractionModel extends Model
         $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.type,{$this->table}.price,{$this->table}.description,{$this->table}.video_url";
         $query = $this->db->table($this->table)
             ->select("{$columns}, {$coords}")
-            ->notLike('id', 'A0001')
-            ->notLike('id', 'A0004')
+            ->notLike('type', 'Religi')
+            ->notLike('type', 'Culture')
+            ->notLike('type', 'Adventure')
+            ->notLike('type', 'Natural Tourism')
+            ->get();
+        return $query;
+    }
+
+    public function get_seni()
+    {
+        $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
+        $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.type,{$this->table}.price,{$this->table}.description,{$this->table}.video_url";
+        $query = $this->db->table($this->table)
+            ->select("{$columns}, {$coords}")
+            ->notLike('type', 'Religi')
+            ->notLike('type', 'Water Attraction')
+            ->notLike('type', 'Adventure')
+            ->notLike('type', 'Natural Tourism')
             ->get();
         return $query;
     }
