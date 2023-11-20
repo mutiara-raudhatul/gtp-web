@@ -10,6 +10,15 @@ use App\Models\PackageTypeModel;
 use App\Models\ServicePackageModel;
 use App\Models\DetailServicePackageModel;
 use App\Models\ReservationModel;
+
+use App\Models\CulinaryPlaceModel;
+use App\Models\WorshipPlaceModel;
+use App\Models\FacilityModel;
+use App\Models\SouvenirPlaceModel;
+use App\Models\AttractionModel;
+use App\Models\EventModel;
+use App\Models\HomestayModel;
+
 use CodeIgniter\RESTful\ResourcePresenter;
 use CodeIgniter\Files\File;
 
@@ -23,6 +32,13 @@ class Package extends ResourcePresenter
     protected $servicePackageModel;
     protected $detailServicePackageModel;
     protected $reservationModel;
+    protected $culinaryPlaceModel;
+    protected $worshipPlaceModel;
+    protected $facilityModel;
+    protected $souvenirPlaceModel;
+    protected $attractionModel;
+    protected $eventModel;
+    protected $homestayModel;
 
     /**
      * Instance of the main Request object.
@@ -44,7 +60,14 @@ class Package extends ResourcePresenter
         $this->servicePackageModel = new ServicePackageModel();
         $this->detailServicePackageModel = new DetailServicePackageModel();
         $this->reservationModel = new ReservationModel();
-
+        $this->culinaryPlaceModel = new CulinaryPlaceModel();
+        $this->worshipPlaceModel = new WorshipPlaceModel();
+        $this->facilityModel = new FacilityModel();
+        $this->souvenirPlaceModel = new SouvenirPlaceModel();
+        $this->attractionModel = new AttractionModel();
+        $this->eventModel = new EventModel();
+        $this->homestayModel = new HomestayModel();
+        
         $this->db = \Config\Database::connect();
         $this->builder = $this->db->table('package');;
     }
@@ -478,6 +501,7 @@ class Package extends ResourcePresenter
         $array1 = array('package_id' => $id);
         $deleteDP= $this->detailPackageModel->where($array1)->delete();
         $deletePD= $this->packageDayModel->where($array1)->delete();
+        $deleteDSP= $this->detailServicePackageModel->where($array1)->delete();
 
         $array = array('id' => $id, 'name' => $name);
         $package = $this->packageModel->where($array)->find();
@@ -500,4 +524,71 @@ class Package extends ResourcePresenter
             return $this->failNotFound($response);
         }
     }
+
+    public function extend($id = null)
+    {
+        $package = $this->packageModel->get_package_by_id($id)->getRowArray();
+        if (empty($package)) {
+            return redirect()->to('web/package');
+        }
+
+        $type = $this->packageTypeModel->get_list_type()->getResultArray();
+
+        $servicelist = $this->servicePackageModel->get_list_service_package()->getResultArray();
+        // $detailservice = $this->detailServicePackageModel->get_detailServicePackage_by_id($id)->getRowArray();
+
+        $this->builder->select ('service_package.id, service_package.name');
+        $this->builder->join ('detail_service_package', 'detail_service_package.package_id = package.id');
+        $this->builder->join ('service_package', 'service_package.id = detail_service_package.service_package_id', 'right');
+        $this->builder->where ('package.id', $id);
+        $query = $this->builder->get();
+        $datase['package']=$query->getResult();
+        $datases = $datase['package'];
+        
+        $servicepackage = $this->detailServicePackageModel->get_service_package_detail_by_id($id)->getResultArray();
+
+        // ---------data activity-------------------
+        $package = $this->packageModel->get_package_by_id($id)->getRowArray();
+        $package_id=$package['id'];
+        $packageDay = $this->packageDayModel->get_package_day_by_id($package_id)->getResultArray();
+
+
+        $culinary = $this->culinaryPlaceModel->get_list_cp()->getResultArray();
+        $worship = $this->worshipPlaceModel->get_list_wp()->getResultArray();
+        $facility = $this->facilityModel->get_list_facility()->getResultArray();
+        $souvenir = $this->souvenirPlaceModel->get_list_sp()->getResultArray();
+        $attraction = $this->attractionModel->get_list_attraction()->getResultArray();
+        $event = $this->eventModel->get_list_event()->getResultArray();
+        $homestay = $this->homestayModel->get_list_homestay()->getResultArray();
+        $data_object = array_merge($culinary,$worship,$facility,$souvenir,$attraction,$event,$homestay);
+        $detailPackage = $this->detailPackageModel->get_detailPackage_by_id($package_id)->getResultArray();
+        $combinedData = $this->detailPackageModel->getCombinedData($package_id);
+            
+        $object = [
+            'culinary' => $culinary,
+            'worship' => $worship,
+            'facility' => $facility,
+            'souvenir' => $souvenir,
+            'attraction' => $attraction,
+            'event' => $event,
+            'homestay' => $homestay
+        ];
+
+        $data = [
+            'title' => 'Detail Package '.$package['name'],
+            'id' => $id,
+            'data' => $package,
+            'type' => $type,
+            'day' => $packageDay,
+            'activity' => $detailPackage,
+            'data_package' => $combinedData,
+            'object' => $object,
+            'detailservice' => $servicepackage,
+            'service' => $datases,
+            'servicelist' => $servicelist
+        ]; 
+// dd($data);
+        return view('web/extend-package-form', $data, $object);
+    }
+
 }

@@ -97,7 +97,7 @@ class ReservationModel extends Model
 
     public function get_list_reservation_by_user($username) {
         $query = $this->db->table($this->table)
-            ->select("`reservation.id`, `reservation.user_id`, `users.username`,`reservation.package_id`,`reservation.total_people`, `package.name`, 
+            ->select("`reservation.id`, `reservation.user_id`, `users.username`,`reservation.package_id`,`package.custom`,`reservation.total_people`, `package.name`, 
             `reservation.deposit`, `reservation.proof_of_deposit`,`reservation.deposit_date`,
             `reservation.total_price`, `reservation.proof_of_payment`,`reservation.payment_date`,
             `reservation.request_date`, `reservation.check_in`, `reservation.note`,
@@ -117,7 +117,7 @@ class ReservationModel extends Model
     public function get_reservation_by_id($id = null)
     {
         $query = $this->db->table($this->table)
-            ->select("`reservation.id`, `reservation.user_id`, `users.username`,`reservation.package_id`,`reservation.total_people`, `package.name`, 
+            ->select("`reservation.id`, `reservation.user_id`, `users.username`,`reservation.package_id`,`package.custom`,`reservation.total_people`, `package.name`, 
             `reservation.deposit`, `reservation.proof_of_deposit`,`reservation.deposit_date`,
             `reservation.total_price`, `reservation.proof_of_payment`,`reservation.payment_date`,
             `reservation.request_date`, `reservation.check_in`, `reservation.note`,
@@ -222,6 +222,12 @@ class ReservationModel extends Model
         return $query;
     }
 
+    public function upload_deposit($id = null, $data = null) {
+        $query = $this->db->table('reservation')
+            ->update($data, ['id' => $id]);
+        return $query;
+    }
+
     public function update_cancel($id = null, $data = null) {
 
         $query = $this->db->table('reservation')
@@ -229,12 +235,6 @@ class ReservationModel extends Model
                         ->where('id', $id)
                         ->update();
     
-        return $query;
-    }
-
-    public function upload_deposit($id = null, $data = null) {
-        $query = $this->db->table('reservation')
-            ->update($data, ['id' => $id]);
         return $query;
     }
 
@@ -249,29 +249,5 @@ class ReservationModel extends Model
             ->update($data, ['id' => $id]);
         return $query;
     }
-
-    // public function update_reservation_custom($id = null, $reservation = null)
-    // {
-    //     foreach ($reservation as $key => $value) {
-    //         if (empty($value)) {
-    //             unset($reservation[$key]);
-    //         }
-    //     }
-    //     $query = $this->db->table($this->table)
-    //         ->where('id', $id)
-    //         ->update($reservation);
-    //     return $query;
-    // }
-
-    // public function upload_deposit($id = null, $deposit = null)
-    // {
-    //     foreach ($deposit as $key => $value) {
-    //         if (empty($value)) {
-    //             unset($deposit[$key]);
-    //         }
-    //     }
-    //     $queryIns = $this->add_new_gallery($id, $deposit);
-    //     return $queryIns;
-    // }
 
 }

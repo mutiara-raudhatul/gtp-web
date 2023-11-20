@@ -77,6 +77,13 @@ class DetailServicePackageModel extends Model
             ->getRow();
     }
     
+    public function add_new_detail_service_package($requestData = null)
+    {
+        $insert = $this->db->table($this->table)
+            ->insert($requestData);
+        return $insert;
+    }
+
     public function add_new_detail_service($id, $requestData)
     {
         $query = false;

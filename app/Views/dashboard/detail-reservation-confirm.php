@@ -356,12 +356,20 @@ $addhome = in_array('addhome', $uri);
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title text-center">Payment</h4>
-                    <?php if (in_groups(['admin'])) : ?>
-                        <?php if(($detail['status'])==null && ($data_package['custom'])==1 && ($detail['response'])==null && ($data_package['price'])==0): ?>
-                            <i class="btn-sm btn-secondary">Complete the customized package data before confirming</i>
-                        <?php elseif(($detail['status'])==null && ($data_package['custom'])==1 && ($detail['response'])==null && ($data_package['price'])!=0): ?>
-                            <i class="btn-sm btn-secondary">Please wait for customer response about the package</i>    
-                        <?php elseif(($detail['status'])==null && ($detail['response'])!=null): ?>
+                    <?php if (in_groups(['admin']) || in_groups(['master'])) : ?>
+                        <?php if($data_package['type_name']==='Custom') : ?>
+                            <?php if(($detail['status'])==null && ($data_package['custom'])==1 && ($detail['response'])==null && ($data_package['price'])==0): ?>
+                                <i class="btn-sm btn-secondary">Complete the customized package data before confirming</i>
+                            <?php elseif(($detail['status'])==null && ($data_package['custom'])==1 && ($detail['response'])==null && ($data_package['price'])!=0): ?>
+                                <i class="btn-sm btn-secondary">Please wait for customer response about the package</i>    
+                            <?php elseif(($detail['status'])==null && ($detail['response'])!=null): ?>
+                                <div class="col-auto">
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmModal">
+                                        <i class="fa-solid fa-envelope me-3"></i>Confirmation
+                                    </button> 
+                                </div>
+                            <?php endif; ?>
+                        <?php else: ?>
                             <div class="col-auto">
                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmModal">
                                     <i class="fa-solid fa-envelope me-3"></i>Confirmation
@@ -449,8 +457,11 @@ $addhome = in_array('addhome', $uri);
                                     <td> Status  </td>
                                     <td> : 
                                         <?php if($detail['status']==null ): ?>    
-                                            <a href="#" class="btn-sm btn-warning float-center"><i>Waiting</i></a>
-
+                                            <?php if($detail['custom']=='1' ): ?>
+                                                <a href="#" class="btn-sm btn-warning float-center"><i>Negotiate</i></a>
+                                            <?php elseif($detail['custom']!='0' ): ?>
+                                                <a href="#" class="btn-sm btn-warning float-center"><i>Waiting</i></a>
+                                            <?php endif; ?>
                                         <?php elseif($detail['status']=='1' ): ?>    
                                             <?php if($detail['cancel']=='0'): ?>
                                                 <?php if($detail['proof_of_deposit']==null) :?>
@@ -526,7 +537,7 @@ $addhome = in_array('addhome', $uri);
                                     <?php if($detail['refund_date']!=null): ?> 
                                         <td> Refund Reservation 
                                             <td>
-                                                : <?= esc(date('l, j F Y H:i:s', strtotime($detail['refund_date']))); ?> (by adm<?= esc($detail['admin_refund']); ?>)
+                                                : <?= esc(date('l, j F Y H:i:s', strtotime($detail['refund_date']))); ?> (by admin<?= esc($detail['admin_refund']); ?>)
                                             </td>
                                         </td>                                                
                                     <?php endif; ?>   
@@ -711,12 +722,12 @@ $addhome = in_array('addhome', $uri);
                         <div class="form-group">
                             <label for="confi" class="mb-2">Status Confirmation</label> <br>
                             <label>
-                            <input type="radio" name="status" value="'0'" required>
-                            <i class="fa fa-times"></i> Rejected
+                                <input type="radio" name="status" value="'0'" required>
+                                <i class="fa fa-times"></i> Rejected
                             </label>
                             <label>
-                            <input type="radio" name="status" value="1" required>
-                            <i class="fa fa-check"></i> Accepted
+                                <input type="radio" name="status" value="1" required>
+                                <i class="fa fa-check"></i> Accepted
                             </label>
                         </div>
                         <div class="form-group">

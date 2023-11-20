@@ -482,13 +482,16 @@ $dashboard = in_array('dashboard', $uri);
                                     <td><hr> </td>
                                     <td><hr> </td>
                                 </tr>
-
+                            <?php if(!$addhome):  ?>
                                 <tr>
                                     <td> Status  </td>
                                     <td> : 
                                         <?php if($detail['status']==null ): ?>    
-                                            <a href="#" class="btn-sm btn-warning float-center"><i>Waiting</i></a>
-
+                                            <?php if($detail['custom']=='1' ): ?>
+                                                <a href="#" class="btn-sm btn-warning float-center"><i>Negotiate</i></a>
+                                            <?php elseif($detail['custom']!='0' ): ?>
+                                                <a href="#" class="btn-sm btn-warning float-center"><i>Waiting</i></a>
+                                            <?php endif; ?>
                                         <?php elseif($detail['status']=='1' ): ?>    
                                             <?php if($detail['cancel']=='0'): ?>
                                                 <?php if($detail['proof_of_deposit']==null) :?>
@@ -526,6 +529,7 @@ $dashboard = in_array('dashboard', $uri);
                                         <?php endif; ?>       
                                     </td>                            
                                 </tr>
+                            <?php endif; ?>
                                 <tr>
                                     <?php if($detail['status']=='1' || $detail['status']=='0'): ?> 
                                         <td> Confirmation Date</td>
@@ -695,28 +699,28 @@ $dashboard = in_array('dashboard', $uri);
                                         </script>
                                     <?php endif; ?>
 
-                                <!-- upload proof payment -->
-                                    <?php if ($detail['status']=='1' && $detail['proof_of_deposit']!=null && $detail['cancel']!=1 && $detail['proof_of_payment']==null): ?>                                        
-                                        <br>
-                                        <i class="btn btn-primary btn-sm">Payment deadline in your check out time</i>
-                                        <br> <br>
-                                        <form class="form form-vertical" action="<?= base_url('web/reservation/uploadfullpayment/').$detail['id']; ?>" method="post" onsubmit="checkRequired(event)" enctype="multipart/form-data">
-                                            <div class="form-body">
-                                            <div class="col-md-5 col-12">
-                                                        <div class="form-group mb-4">
-                                                            <label for="proof_of_payment" class="form-label">  Proof of Full Payment</label>
-                                                            <input class="form-control" required accept="image/*" type="file" name="proof_of_payment" id="proof_of_payment">
-                                                        </div>
-                                                    </div>
-                                                    <div col="col-md-5 col-12">
-                                                        <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
-                                                        <button type="reset" class="btn btn-light-secondary me-1 mb-1">Reset</button>
+                            <!-- upload proof payment -->
+                                <?php if ($detail['status']=='1' && $detail['proof_of_deposit']!=null && $detail['cancel']!=1 && $detail['proof_of_payment']==null): ?>                                        
+                                    <br>
+                                    <i class="btn btn-primary btn-sm">Payment deadline in your check out time</i>
+                                    <br> <br>
+                                    <form class="form form-vertical" action="<?= base_url('web/reservation/uploadfullpayment/').$detail['id']; ?>" method="post" onsubmit="checkRequired(event)" enctype="multipart/form-data">
+                                        <div class="form-body">
+                                        <div class="col-md-5 col-12">
+                                                    <div class="form-group mb-4">
+                                                        <label for="proof_of_payment" class="form-label">  Proof of Full Payment</label>
+                                                        <input class="form-control" required accept="image/*" type="file" name="proof_of_payment" id="proof_of_payment">
                                                     </div>
                                                 </div>
+                                                <div col="col-md-5 col-12">
+                                                    <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
+                                                    <button type="reset" class="btn btn-light-secondary me-1 mb-1">Reset</button>
+                                                </div>
                                             </div>
-                                        </form>    
-                                        <br>    
-                                    <?php endif; ?>
+                                        </div>
+                                    </form>    
+                                    <br>    
+                                <?php endif; ?>
                             </tr>
 
                             <tr>

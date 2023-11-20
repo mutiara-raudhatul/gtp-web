@@ -97,9 +97,6 @@ class DetailPackageModel extends Model
     }
 
 
-
-
-
 //   ---  
     public function get_day_by_package($package_id)
     {
@@ -122,8 +119,6 @@ class DetailPackageModel extends Model
 
         return $query;
     }
-
-
 
     public function culinary_place($package_id)
     {

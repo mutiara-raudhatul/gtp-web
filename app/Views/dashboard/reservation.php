@@ -47,8 +47,11 @@ $users = in_array('users', $uri);
                                                 <td>
                                                     <?php $date = date('Y-m-d H:i');?>
                                                     <?php if($item['status']==null ): ?>    
+                                                        <?php if($item['custom']=='1' ): ?>
+                                                            <a href="#" class="btn-sm btn-warning float-center"><i>Negotiate</i></a>
+                                                        <?php elseif($item['custom']!='0' ): ?>
                                                             <a href="#" class="btn-sm btn-warning float-center"><i>Waiting</i></a>
-
+                                                        <?php endif; ?>
                                                     <?php elseif($item['status']=='1' ): ?>    
                                                         <?php if($item['cancel']=='0'): ?>
                                                             <?php if($item['proof_of_deposit']==null) :?>
@@ -86,12 +89,78 @@ $users = in_array('users', $uri);
                                                     <?php endif; ?>
                                                 </td>
                                                 <td>
-                                                    <a data-bs-toggle="tooltip" data-bs-placement="bottom" title="More Info" class="btn icon btn-outline-primary mx-1" href="<?=base_url('dashboard/detailreservation/confirm/').$item['id']; ?>">
-                                                        <i class="fa-solid fa-circle-info"></i>
-                                                     </a>
-                                                     <a data-bs-toggle="tooltip" data-bs-placement="bottom" title="Review" class="btn icon btn-outline-info mx-1" href="<?=base_url('dashboard/detailreservation/review/').$item['id']; ?>">
-                                                        <i class="fa-solid fa-comments"></i>
-                                                     </a>
+                                                    <div class="btn-group" role="group" aria-label="Button Group">
+                                                        <a data-bs-toggle="tooltip" data-bs-placement="bottom" title="More Info" class="btn icon btn-outline-primary mx-1" href="<?=base_url('dashboard/detailreservation/confirm/').$item['id']; ?>">
+                                                            <i class="fa-solid fa-circle-info"></i>
+                                                        </a>
+                                                        <a type="button" class="btn icon btn-outline-success mx-1" title="History" data-bs-toggle="modal" data-bs-target="#historyModal<?=esc($item['id'])?>" data-bs-whatever="@getbootstrap">
+                                                            <i class="fa-solid fa-history"></i>
+                                                        </a>
+                                                        <a data-bs-toggle="tooltip" data-bs-placement="bottom" title="Review" class="btn icon btn-outline-info mx-1" href="<?=base_url('dashboard/detailreservation/review/').$item['id']; ?>">
+                                                            <i class="fa-solid fa-comments"></i>
+                                                        </a>
+                                                    </div>
+                                                     <!-- Modal Detail -->
+                                                    <div class="modal fade" id="historyModal<?=esc($item['id'])?>" tabindex="-1" aria-labelledby="historyModalLabel" aria-hidden="true">
+                                                        <div class="modal-dialog modal-dialog-centered modal-md">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="historyModalLabel">History Reservation</h5>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body" id="historyContent">
+                                                                    <div class="col-12  order-md-first order-last">
+                                                                            <div class="row">
+                                                                                <div class="col-12">
+                                                                                    <br>
+                                                                                    <table>
+                                                                                        <tr>
+                                                                                            <td>Request </td>
+                                                                                            <td>: <?= date('d F Y, h:i:s A', strtotime($item['request_date'])); ?></td>
+                                                                                        </tr>
+                                                                                        <?php if($item['status']!=null): ?>
+                                                                                            <tr>
+                                                                                                <?php if($item['status']==1): ?>
+                                                                                                    <td>Accepted </td>
+                                                                                                <?php elseif ($item['status']==0): ?>
+                                                                                                    <td>Rejected </td>
+                                                                                                <?php endif; ?>
+                                                                                                <td>: <?= date('d F Y, h:i:s A', strtotime($item['confirmation_date'])); ?> (by adm<?= esc($item['admin_confirm']); ?>)</td>
+                                                                                            </tr>
+                                                                                        <?php endif; ?>
+                                                                                        <?php if($item['proof_of_deposit']!=null): ?>
+                                                                                            <tr>
+                                                                                                <td>Deposit </td>
+                                                                                                <td>: <?= date('d F Y, h:i:s A', strtotime($item['deposit_date'])); ?></td>
+                                                                                            </tr>
+                                                                                        <?php endif; ?>
+                                                                                        <?php if($item['proof_of_payment']!=null): ?>
+                                                                                            <tr>
+                                                                                                <td>Full Payment </td>
+                                                                                                <td>: <?= date('d F Y, h:i:s A', strtotime($item['payment_date'])); ?></td>
+                                                                                            <tr>
+                                                                                        <?php endif; ?>
+                                                                                        <?php if($item['cancel']==1): ?>
+                                                                                            <tr>
+                                                                                                <td>Cancel </td>
+                                                                                                <td>: <?= date('d F Y, h:i:s A', strtotime($item['cancel_date'])); ?></td>
+                                                                                            <tr>
+                                                                                        <?php endif; ?>
+                                                                                        <?php if($item['proof_refund']!=null): ?>
+                                                                                            <tr>
+                                                                                                <td>Refund </td>
+                                                                                                <td>: <?= date('d F Y, h:i:s A', strtotime($item['refund_date'])); ?> (by adm<?= esc($item['admin_refund']); ?>)</td>
+                                                                                            <tr>
+                                                                                        <?php endif; ?>
+                                                                                    </table>
+                                                                                </div>
+                                                                            </div>
+                                                                    </div>
+                                                                </div>
+                                                                <!-- Tambahkan footer modal jika diperlukan -->
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </td>
                                                 <?php $i++ ?>
                                             </tr>

@@ -2,7 +2,7 @@
 
 <?= $this->section('content') ?>
 
-<section class="section"">
+<section class="section">
     <div class=" row">
     <!--map-->
     <div class="col-md-7 col-12">

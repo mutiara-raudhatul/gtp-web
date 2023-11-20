@@ -113,7 +113,7 @@ class DetailReservation extends ResourcePresenter
             $requestData['video_url'] = $vidFile->getFilename();
         }
         
-        $addPA = $this->packageModel->add_new_package($requestData, $geom);
+        $addPA = $this->packageModel->add_new_package($requestData);
         if (isset($request['gallery'])) {
             $folders = $request['gallery'];
             $gallery = array();
@@ -194,6 +194,67 @@ class DetailReservation extends ResourcePresenter
         
 
         return view('web/custom-package-form', $data, $object);
+        
+    }
+
+    public function addextend($base_id)
+    {
+        $id = $this->packageModel->get_new_id();
+        $package = $this->packageModel->get_package_by_id($base_id)->getRowArray();
+
+        $name_package= $package['name'];
+        $date = date('Y-m-d H:i');
+        $user = user()->username;
+        $requestData = [
+            'id' => $id,
+            'name' => $name_package.' by '.$user.' at '.$date,
+            'type_id' => $package['type_id'],
+            'min_capacity' => $package['min_capacity'],
+            'price' => 0,
+            'description' => 'Paket wisata ini disesuaikan oleh '.$name_package.' .'.$package['description'],
+            'contact_person' => $package['contact_person'],
+            'custom'=>'1'
+        ];
+        $addPA = $this->packageModel->add_new_package($requestData);
+
+        $packageDay = $this->packageDayModel->get_package_day_by_id($base_id)->getResultArray();
+        foreach ($packageDay as $data) {
+            $newData = array(
+                'day' => $data['day'], 
+                'package_id' => $id,
+                'description' => $data['description']
+            );
+            $addPD = $this->packageDayModel->add_new_packageDay($newData);
+        }
+
+        $detailPackage = $this->detailPackageModel->get_detailPackage_by_id($base_id)->getResultArray();
+        foreach ($detailPackage as $data) {
+            $newData = array(
+                'activity' => $data['activity'], 
+                'day' => $data['day'], 
+                'package_id' => $id,
+                'activity_type' => $data['activity_type'],
+                'object_id' => $data['object_id'],
+                'description' => $data['description']
+            );
+            $addDP = $this->detailPackageModel->add_new_packageActivity($newData);
+        }
+
+        $servicepackage = $this->detailServicePackageModel->get_service_package_detail_by_id($base_id)->getResultArray();
+        foreach ($servicepackage as $data) {
+            $newData = array(
+                'service_package_id' => $data['service_package_id'], 
+                'package_id' => $id,
+                'status' => $data['status']
+            );
+            $addSP = $this->detailServicePackageModel->add_new_detail_service_package($newData);
+        }
+
+        if ($addSP) {
+            return redirect()->to(base_url('web/package/extend/').$id);
+        } else {
+            return redirect()->back()->withInput();
+        } 
         
     }
 
@@ -648,7 +709,6 @@ class DetailReservation extends ResourcePresenter
             'admin_confirm' => $request['admin_confirm'],
         ];
 
-        // dd($requestData);
         foreach ($requestData as $key => $value) {
             if (empty($value)) {
                 unset($requestData[$key]);
@@ -691,25 +751,6 @@ class DetailReservation extends ResourcePresenter
 
         if ($updateDR) {
             session()->setFlashdata('success', 'Reservasi telah di cancel');
-
-            return redirect()->back();
-        } else {
-            return redirect()->back()->withInput();
-        }
-
-    }
-
-    public function saveresponse($id = null)
-    {
-        $request = $this->request->getPost();
-
-        $requestData = [
-            'response' =>  $request['response'],
-        ];
-        $updateDR = $this->reservationModel->update_response($id, $requestData);
-
-        if ($updateDR) {
-            session()->setFlashdata('success', 'Response telah dikirim');
 
             return redirect()->back();
         } else {
@@ -761,6 +802,24 @@ class DetailReservation extends ResourcePresenter
         }
     }
 
+    public function saveresponse($id = null)
+    {
+        $request = $this->request->getPost();
+
+        $requestData = [
+            'response' =>  $request['response'],
+        ];
+        $updateDR = $this->reservationModel->update_response($id, $requestData);
+
+        if ($updateDR) {
+            session()->setFlashdata('success', 'Response telah dikirim');
+
+            return redirect()->back();
+        } else {
+            return redirect()->back()->withInput();
+        }
+
+    }
 
     public function create()
     {

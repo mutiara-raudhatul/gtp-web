@@ -36,7 +36,6 @@ $routes->set404Override();
 $routes->get('/', 'Home::landingPage');
 $routes->get('/403', 'Home::error403');
 $routes->get('/login', 'Web\Admin::login');
-// $routes->get('/register', 'Web\Admin::register');
 
 $routes->group('web', function ($routes) {
     $routes->group('profile', function ($routes) {
@@ -56,22 +55,22 @@ $routes->group('web', ['namespace' => 'App\Controllers\Web'], function ($routes)
 
     $routes->group('estuaria', function ($routes) {
         $routes->presenter('estuaria');
-        $routes->get('/', 'Tracking::estuaria');
+        $routes->get('/', 'Unik::estuaria');
     });
 
     $routes->group('tracking', function ($routes) {
         $routes->presenter('tracking');
-        $routes->get('/', 'Tracking::index');
+        $routes->get('/', 'Unik::index');
     });
 
     $routes->group('pieh', function ($routes) {
         $routes->presenter('pieh');
-        $routes->get('/', 'Tracking::pieh');
+        $routes->get('/', 'Unik::pieh');
     });
 
     $routes->group('makam', function ($routes) {
         $routes->presenter('makam');
-        $routes->get('/', 'Tracking::makam');
+        $routes->get('/', 'Unik::makam');
     });
 
     $routes->group('talao', function ($routes) {
@@ -83,6 +82,8 @@ $routes->group('web', ['namespace' => 'App\Controllers\Web'], function ($routes)
         $routes->presenter('seni');
         $routes->get('/', 'Talao::seni');
     });
+    $routes->get('package/extend/(:any)', 'Package::extend/$1', ['filter' => 'login']);
+    $routes->post('detailreservation/addextend/(:any)', 'DetailReservation::addextend/$1', ['filter' => 'login']);
 
     $routes->presenter('attraction');
     $routes->presenter('event');
@@ -135,7 +136,7 @@ $routes->group('web', ['namespace' => 'App\Controllers\Web'], function ($routes)
 });
 
 // Dashboard
-$routes->group('dashboard', ['namespace' => 'App\Controllers\Web', 'filter' => 'role:admin'], function ($routes) {
+$routes->group('dashboard', ['namespace' => 'App\Controllers\Web', 'filter' => 'role:admin, master'], function ($routes) {
     $routes->get('/', 'Dashboard::index');
     $routes->get('gtp', 'Dashboard::gtp');
     $routes->get('users', 'Dashboard::users');

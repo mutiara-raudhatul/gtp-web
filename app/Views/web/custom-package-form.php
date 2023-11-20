@@ -30,89 +30,116 @@ $users = in_array('users', $uri);
     }
 
     body {
-    color: #404E67;
-    background: #F5F7FA;
-    /* font-family: 'Open Sans', sans-serif; */
+        color: #404E67;
+        background: #F5F7FA;
+        /* font-family: 'Open Sans', sans-serif; */
     }
+
     .table-wrapper {
-        width: 900px;
         margin: 10px auto;
         background: #fff;
-        padding: 10px;	
-        box-shadow: 0 1px 1px rgba(0,0,0,.05);
+        padding: 5px; 
+        box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
     }
+
     .table-title {
         padding-bottom: 0px;
         margin: 0 0 0px;
     }
+
     .table-title h2 {
         margin: 3px 0 0;
-        font-size: 18px;
+        font-size: 16px; 
     }
+
     .table-title .add-new {
         float: right;
-        height: 30px;
+        height: 25px; 
         font-weight: bold;
-        font-size: 12px;
+        font-size: 10px; 
         text-shadow: none;
-        min-width: 100px;
+        min-width: 80px; 
         border-radius: 50px;
-        line-height: 13px;
+        line-height: 11px; 
     }
+
     .table-title .add-new i {
         margin-right: 2px;
     }
+
     table.table {
-        /* table-layout: fixed; */
+        
+        width: 100%;
     }
-    table.table tr th, table.table tr td {
+
+    table.table tr th,
+    table.table tr td {
         border-color: #e9e9e9;
+        padding: 5px; 
     }
+
+    table.table tr {
+        margin-bottom: 0px;
+        height: 20px; 
+    }
+
     table.table th i {
-        font-size: 13px;
-        margin: 0 5px;
+        font-size: 11px; 
+        margin: 0 3px; 
         cursor: pointer;
     }
+
     table.table th:last-child {
-        width: 100px;
+        width: 80px; 
     }
+
     table.table td a {
         cursor: pointer;
         display: inline-block;
-        margin: 0 5px;
-        min-width: 24px;
-    }    
+        margin: 0 3px; 
+        min-width: 20px; 
+    }
+
     table.table td a.add {
         color: #27C46B;
     }
+
     table.table td a.edit {
         color: #FFC107;
     }
+
     table.table td a.delete {
         color: #E34724;
     }
+
     table.table td i {
-        font-size: 19px;
+        font-size: 14px; 
     }
+
     table.table td a.add i {
-        font-size: 24px;
+        font-size: 18px; 
         margin-right: -1px;
         position: relative;
-        top: 3px;
-    }    
+        top: 1px; 
+    }
+
     table.table .form-control {
-        height: 32px;
-        line-height: 32px;
+        height: 25px; 
+        line-height: 25px; 
         box-shadow: none;
         border-radius: 2px;
+        font-size: 12px; 
     }
+
     table.table .form-control.error {
         border-color: #f50000;
     }
+
     table.table td .add {
         display: none;
     }
 </style>
+
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
@@ -149,172 +176,209 @@ $users = in_array('users', $uri);
                         });
                     </script>
                 <?php endif; ?>
+
         <div class="col-md-12 col-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title text-center"><?= $title; ?></h4>
+                    <h4 class="card-title text-center">Custom Your Package</h4>
                 </div>
-                <br>
-                <div class="card-body">
-            <!-- Menambahkan hari paket -->
-                
-                <div class="col-auto ">
-                    <br>
-                    <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-outline-primary " data-bs-toggle="modal" data-bs-target="#dayModal" data-bs-whatever="@getbootstrap"><i class="fa fa-plus"></i> Day</button>
-                        <button type="button" class="btn btn-outline-info " data-bs-toggle="modal" data-bs-target="#activityModal" data-bs-whatever="@getbootstrap"><i class="fa fa-plus"></i> Activity</button>
-                    </div>
-                    <div class="btn-group float-right" role="group">
+                <div col="auto ">
+                    <div class="btn-group float-end" role="group">
                         <a href="<?= base_url('web/reservation/custombooking/').$data['id']; ?>" class="btn btn-success"><i class="fa fa-cart-plus"></i> Booking This Package</a>                    
                         <form action="<?= base_url('web/package/deletepackage') . '/' . $data['id']; ?>" method="post" class="d-inline">
                             <?= csrf_field(); ?>
                             <input type="hidden" name="id" value="<?= esc($data['id']); ?>">
                             <input type="hidden" name="name" value="<?= esc($data['name']); ?>">
                             <input type="hidden" name="_method" value="DELETE">
-                            <button type="submit" class="btn btn-danger" onclick="return confirm('Apakah anda yakin membatalkan kustomisasi paket ini?');"><i class="fa fa-times"></i></button>
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('Apakah anda yakin membatalkan kustomisasi paket ini?');"><i class="fa fa-times"></i>Cancel Custom This Package</button>
                         </form>
                     </div>
                 </div>
-                <div class="modal fade" id="dayModal" tabindex="-1" aria-labelledby="dayModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="dayModalLabel">Package Day</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col table-responsive">
+                            <table class="table table-borderless">
+                                <tbody>
+                                    <tr>
+                                        <td class="fw-bold">Name</td>
+                                        <td><?= esc($data['name']); ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Package Type</td>
+                                        <td><?= esc($data['type_name']); ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Minimal Capacity</td>
+                                        <td><?= esc($data['min_capacity']); ?> orang</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Price</td>
+                                        <td><?= 'Rp ' . number_format(esc($data['price']), 0, ',', '.'); ?> <i class="small"><i style="color: red;">*</i>The admin will adjust the price of this package based on the activities and services added</i></td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-                        <form class="row g-3" action="<?= base_url('web/detailreservation/createday') . '/' . $data['id']; ?>" method="post" enctype="multipart/form-data">
-                            <div class="modal-body">
-                                <div class="card-header">
-                                    <?php @csrf_field(); ?>
-                                    <h5 class="card-title"><?= esc($data['name']) ?></h5>
-                                    <div class="row g-4">
-                                        <div class="col-md-7">
-                                            <div class="form-group">
-                                                <label for="package">Package</label>
-                                                <input type="text" class="form-control" id="package" name="package" placeholder="Pxxxxx" readonly value="<?= esc($data['id']) ?>">
+                    </div>
+                </div>
+            </div>
+        </div>      
+
+        <div class="col-md-6 col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title text-center">Activity Your Package</h4>
+                </div>
+                <br>
+                <div class="card-body">
+                <!-- Menambahkan hari paket -->
+                    
+                    <div class="col-auto ">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-outline-primary " data-bs-toggle="modal" data-bs-target="#dayModal" data-bs-whatever="@getbootstrap"><i class="fa fa-plus"></i> Day</button>
+                            <button type="button" class="btn btn-outline-info " data-bs-toggle="modal" data-bs-target="#activityModal" data-bs-whatever="@getbootstrap"><i class="fa fa-plus"></i> Activity</button>
+                        </div>
+                        <i class="small"><i style="color: red;">*</i>Add activity what you want</i>
+                    </div>
+                    <div class="modal fade" id="dayModal" tabindex="-1" aria-labelledby="dayModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="dayModalLabel">Package Day</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form class="row g-3" action="<?= base_url('web/detailreservation/createday') . '/' . $data['id']; ?>" method="post" enctype="multipart/form-data">
+                                <div class="modal-body">
+                                    <div class="card-header">
+                                        <?php @csrf_field(); ?>
+                                        <h5 class="card-title"><?= esc($data['name']) ?></h5>
+                                        <div class="row g-4">
+                                            <div class="col-md-7">
+                                                <div class="form-group">
+                                                    <label for="package">Package</label>
+                                                    <input type="text" class="form-control" id="package" name="package" placeholder="Pxxxxx" readonly value="<?= esc($data['id']) ?>">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <div class="form-group">
+                                                    <label for="day">Day</label>
+                                                    <input type="number" class="form-control" id="day" name="day" min="1" required>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-5">
-                                            <div class="form-group">
-                                                <label for="day">Day</label>
-                                                <input type="number" class="form-control" id="day" name="day" min="1" required>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row g-4">
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label for="description">Description</label>
-                                                <input type="text" class="form-control" id="description" name="description" required>
+                                        <div class="row g-4">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label for="description">Description</label>
+                                                    <input type="text" class="form-control" id="description" name="description" required>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                <div class="modal-footer">
+                                    <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+                                    <button type="submit" class="btn btn-outline-primary me-1 mb-1"><i class="fa-solid fa-add"></i></button>
+                                    <button type="reset" class="btn btn-outline-danger me-1 mb-1"><i class="fa-solid fa-trash-can"></i> </button>
+                                </div>
+                            </form>
                             </div>
-                            <div class="modal-footer">
-                                <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
-                                <button type="submit" class="btn btn-outline-primary me-1 mb-1"><i class="fa-solid fa-add"></i></button>
-                                <button type="reset" class="btn btn-outline-danger me-1 mb-1"><i class="fa-solid fa-trash-can"></i> </button>
-                            </div>
-                        </form>
                         </div>
                     </div>
-                </div>
-            <!-- end menambahkan hari paket -->
-            
-            <!-- Menambahkan Aktivitas -->
-                <div class="col-sm-2 float-end">
-                                        <!-- <button type="button" class="btn btn-info add-new"><i class="fa fa-plus"></i> Activity</button> -->
-                                        <div class="modal fade" id="activityModal" tabindex="-1" aria-labelledby="activityModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h1 class="modal-title fs-5" id="activityModalLabel">Activity Package Day </h1>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
+                <!-- end menambahkan hari paket -->
+                
+                <!-- Menambahkan Aktivitas -->
+                    <div class="col-sm-2 float-end">
+                                            <!-- <button type="button" class="btn btn-info add-new"><i class="fa fa-plus"></i> Activity</button> -->
+                                            <div class="modal fade" id="activityModal" tabindex="-1" aria-labelledby="activityModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h1 class="modal-title fs-5" id="activityModalLabel">Activity Package Day </h1>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
 
-                                                <form class="row g-3" action="<?= base_url('web/detailreservation/createactivity') . '/' . $data['id']; ?>" method="post" >
-                                                    <div class="modal-body">
-                                                        <div class="card-header">
-                                                            <?php @csrf_field(); ?>
-                                                            <div class="row g-4">
-                                                                <div class="col-md-12">
-                                                                    <input hidden type="text" class="form-control" id="package" name="package" placeholder="Pxxxxx" disabled value="<?= esc($data['id']) ?>">
-                                                                    <label for="day">Activity Day</label>
-                                                                    <select class="form-select" name="day" required>
-                                                                            <option value="" selected>Select the day</option>
-                                                                        <?php foreach ($day as $item => $keyy) : ?>
-                                                                            <option value="<?= esc($keyy['day']); ?>">Activity Day <?= esc($keyy['day']); ?></option>                                                                
-                                                                        <?php endforeach; ?>
-                                                                    </select>
-                                                                </div>
-                                                            </div><br>
-                                                            <div class="row g-4">
-                                                                <div class="col-md-3">
-                                                                    <label for="activity">Activity</label>
-                                                                    <input type="number" min='1' class="form-control" id="activity" name="activity" required>
-                                                                </div>
-                                                                <div class="col-md-4">
-                                                                    <label for="activity_type">Activity Type</label>
-                                                                    <select class="form-control" name="activity_type" id="activity_type" required>
-                                                                        <option value="" selected>Select Type</option>
-                                                                        <option value="CP">Culinary</option>
-                                                                        <option value="WO">Worship</option>
-                                                                        <option value="SP">Souvenir Place</option>
-                                                                        <option value="HO">Homestay</option>
-                                                                        <option value="FC">Facility</option>
-                                                                        <option value="A">Attraction</option>
-                                                                        <option value="EV">Event</option>
-                                                                    </select>
-                                                                </div>
-                                                                <div class="col-md-5">
-                                                                    <label for="object">Object</label>
-                                                                    <select class="form-control" name="object" id="object" required>
-                                                                        <option value="" selected>Select Object</option>
-                                                                        <?php foreach ($object['culinary'] as $item) : ?>
-                                                                            <option value="<?= esc($item['id']); ?>">[Culinary] <?= esc($item['name']); ?></option>                                                                
-                                                                        <?php endforeach; ?>
-                                                                        <?php foreach ($object['worship'] as $item) : ?>
-                                                                            <option value="<?= esc($item['id']); ?>">[Worship] <?= esc($item['name']); ?></option>                                                                
-                                                                        <?php endforeach; ?>
-                                                                        <?php foreach ($object['souvenir'] as $item) : ?>
-                                                                            <option value="<?= esc($item['id']); ?>">[Souvenir] <?= esc($item['name']); ?></option>                                                                
-                                                                        <?php endforeach; ?>
-                                                                        <?php foreach ($object['facility'] as $item) : ?>
-                                                                            <option value="<?= esc($item['id']); ?>">[Facility] <?= esc($item['name']); ?></option>                                                                
-                                                                        <?php endforeach; ?>
-                                                                        <?php foreach ($object['homestay'] as $item) : ?>
-                                                                            <option value="<?= esc($item['id']); ?>">[Homestay] <?= esc($item['name']); ?></option>                                                                
-                                                                        <?php endforeach; ?>                                                                        <?php foreach ($object['attraction'] as $item) : ?>
-                                                                            <option value="<?= esc($item['id']); ?>">[Attraction] <?= esc($item['name']); ?></option>                                                                
-                                                                        <?php endforeach; ?>
-                                                                        <?php foreach ($object['event'] as $item) : ?>
-                                                                            <option value="<?= esc($item['id']); ?>">[Event] <?= esc($item['name']); ?></option>                                                                
-                                                                        <?php endforeach; ?>
-                                                                    </select>                                                                
-                                                                </div>
-                                                            </div><br>
-                                                            <div class="row g-4">
-                                                                <div class="col-md-12">
-                                                                    <label for="description_activity">Description</label>
-                                                                    <input type="text" class="form-control" id="description_activity" name="description_activity" required>
+                                                    <form class="row g-3" action="<?= base_url('web/detailreservation/createactivity') . '/' . $data['id']; ?>" method="post" >
+                                                        <div class="modal-body">
+                                                            <div class="card-header">
+                                                                <?php @csrf_field(); ?>
+                                                                <div class="row g-4">
+                                                                    <div class="col-md-12">
+                                                                        <input hidden type="text" class="form-control" id="package" name="package" placeholder="Pxxxxx" disabled value="<?= esc($data['id']) ?>">
+                                                                        <label for="day">Activity Day</label>
+                                                                        <select class="form-select" name="day" required>
+                                                                                <option value="" selected>Select the day</option>
+                                                                            <?php foreach ($day as $item => $keyy) : ?>
+                                                                                <option value="<?= esc($keyy['day']); ?>">Activity Day <?= esc($keyy['day']); ?></option>                                                                
+                                                                            <?php endforeach; ?>
+                                                                        </select>
+                                                                    </div>
+                                                                </div><br>
+                                                                <div class="row g-4">
+                                                                    <div class="col-md-3">
+                                                                        <label for="activity">Activity</label>
+                                                                        <input type="number" min='1' class="form-control" id="activity" name="activity" required>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <label for="activity_type">Activity Type</label>
+                                                                        <select class="form-control" name="activity_type" id="activity_type" required>
+                                                                            <option value="" selected>Select Type</option>
+                                                                            <option value="CP">Culinary</option>
+                                                                            <option value="WO">Worship</option>
+                                                                            <option value="SP">Souvenir Place</option>
+                                                                            <option value="HO">Homestay</option>
+                                                                            <option value="FC">Facility</option>
+                                                                            <option value="A">Attraction</option>
+                                                                            <option value="EV">Event</option>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="col-md-5">
+                                                                        <label for="object">Object</label>
+                                                                        <select class="form-control" name="object" id="object" required>
+                                                                            <option value="" selected>Select Object</option>
+                                                                            <?php foreach ($object['culinary'] as $item) : ?>
+                                                                                <option value="<?= esc($item['id']); ?>">[Culinary] <?= esc($item['name']); ?></option>                                                                
+                                                                            <?php endforeach; ?>
+                                                                            <?php foreach ($object['worship'] as $item) : ?>
+                                                                                <option value="<?= esc($item['id']); ?>">[Worship] <?= esc($item['name']); ?></option>                                                                
+                                                                            <?php endforeach; ?>
+                                                                            <?php foreach ($object['souvenir'] as $item) : ?>
+                                                                                <option value="<?= esc($item['id']); ?>">[Souvenir] <?= esc($item['name']); ?></option>                                                                
+                                                                            <?php endforeach; ?>
+                                                                            <?php foreach ($object['facility'] as $item) : ?>
+                                                                                <option value="<?= esc($item['id']); ?>">[Facility] <?= esc($item['name']); ?></option>                                                                
+                                                                            <?php endforeach; ?>
+                                                                            <?php foreach ($object['homestay'] as $item) : ?>
+                                                                                <option value="<?= esc($item['id']); ?>">[Homestay] <?= esc($item['name']); ?></option>                                                                
+                                                                            <?php endforeach; ?>                                                                        <?php foreach ($object['attraction'] as $item) : ?>
+                                                                                <option value="<?= esc($item['id']); ?>">[Attraction] <?= esc($item['name']); ?></option>                                                                
+                                                                            <?php endforeach; ?>
+                                                                            <?php foreach ($object['event'] as $item) : ?>
+                                                                                <option value="<?= esc($item['id']); ?>">[Event] <?= esc($item['name']); ?></option>                                                                
+                                                                            <?php endforeach; ?>
+                                                                        </select>                                                                
+                                                                    </div>
+                                                                </div><br>
+                                                                <div class="row g-4">
+                                                                    <div class="col-md-12">
+                                                                        <label for="description_activity">Description</label>
+                                                                        <input type="text" class="form-control" id="description_activity" name="description_activity" required>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
-                                                        <button type="submit" class="btn btn-outline-primary me-1 mb-1"><i class="fa-solid fa-add"></i></button>
-                                                        <button type="reset" class="btn btn-outline-danger me-1 mb-1"><i class="fa-solid fa-trash-can"></i> </button>
-                                                    </div>
-                                                </form>
+                                                        <div class="modal-footer">
+                                                            <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+                                                            <button type="submit" class="btn btn-outline-primary me-1 mb-1"><i class="fa-solid fa-add"></i></button>
+                                                            <button type="reset" class="btn btn-outline-danger me-1 mb-1"><i class="fa-solid fa-trash-can"></i> </button>
+                                                        </div>
+                                                    </form>
 
 
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-            <!-- end Menambahkan Aktivitas -->
+                <!-- end Menambahkan Aktivitas -->
                     
                     <?php if (isset($day)) : ?>
                         <?php foreach ($day as $item => $key) : ?>
@@ -392,41 +456,7 @@ $users = in_array('users', $uri);
             </div>
         </div>
 
-        <div class="col-md-12 col-12">
-            <!-- ADD DATA Service -->
-                        <div class="modal fade" id="servicesPackageModal" tabindex="-1" aria-labelledby="servicesPackageModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="servicesPackageModalLabel">Data Services</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <form class="row g-3" action="<?= base_url('web/servicepackage/create'); ?>" method="post" enctype="multipart/form-data">
-                            <div class="modal-body">
-                                <div class="card-header">
-                                    <?php @csrf_field(); ?>
-                                    <div class="row g-4">
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label for="name">Service Name</label>
-                                                <input type="text" class="form-control" id="name" name="name" required>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
-                                    <button type="submit" class="btn btn-outline-primary me-1 mb-1"><i class="fa-solid fa-add"></i></button>
-                                    <button type="reset" class="btn btn-outline-danger me-1 mb-1"><i class="fa-solid fa-trash-can"></i> </button>
-                                </div>
-                            </div>
-                        </form>
-                        </div>
-                    </div>
-                </div>
-            <!-- end menambahkan data Service -->
-
-
+        <div class="col-md-6 col-12">
             <!-- Menambahkan Service -->
                             <!-- <button type="button" class="btn btn-info add-new"><i class="fa fa-plus"></i> Activity</button> -->
                             <div class="modal fade" id="detailServicesPackageModal" tabindex="-1" aria-labelledby="detailServicesPackageModalLabel" aria-hidden="true">
@@ -486,11 +516,11 @@ $users = in_array('users', $uri);
                             <div class="form-group mb-4">
                                 <div class="col-auto ">
                                     <div class="btn-group" role="group">
-                                        <button type="button" class="btn btn-outline-primary " data-bs-toggle="modal" data-bs-target="#servicesPackageModal" data-bs-whatever="@getbootstrap"><i class="fa fa-plus"></i> New Services</button>
                                         <button type="button" class="btn btn-outline-info " data-bs-toggle="modal" data-bs-target="#detailServicesPackageModal" data-bs-whatever="@getbootstrap"><i class="fa fa-plus"></i> Add Services Package</button>
                                     </div>
                                 </div>
                                 <br>
+                                
                                 <div class="table-responsive">
                                     <div class="table-wrapper">
                                         <label for="facility" class="mb-2">Services</label>

@@ -105,16 +105,10 @@ class UnitHomestay extends ResourcePresenter
             'facility_unit' => $facilityUnit,
             'facility'=> $fc,
         ];
-// dd($data);
         return view('dashboard/unit-homestay-form', $data);
     }
 
-    /**
-     * Process the creation/insertion of a new resource object.
-     * This should be a POST.
-     *
-     * @return mixed
-     */
+
     public function createunit($id)
     {
         $request = $this->request->getPost();
@@ -142,22 +136,6 @@ class UnitHomestay extends ResourcePresenter
             }
         }
         $addUH = $this->unitHomestayModel->add_new_unitHomestay($requestData);
-
-        // if (isset($request['gallery'])) {
-        //     $folders = $request['gallery'];
-        //     $gallery = array();
-        //     foreach ($folders as $folder) {
-        //         $filepath = WRITEPATH . 'uploads/' . $folder;
-        //         $filenames = get_filenames($filepath);
-        //         $fileImg = new File($filepath . '/' . $filenames[0]);
-        //         $fileImg->move(FCPATH . 'media/photos/unithomestay');
-        //         delete_files($filepath);
-        //         rmdir($filepath);
-        //         $gallery[] = $fileImg->getFilename();
-        //     }
-        //     $this->galleryUnitModel->add_new_gallery($unit_number, $homestay_id, $unit_type, $gallery);
-        // }
-
 
         // Handle gallery files
         if (isset($request['gallery'])) {

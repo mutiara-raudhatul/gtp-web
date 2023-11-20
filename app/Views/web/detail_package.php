@@ -38,7 +38,7 @@
                             <h4 class="card-title text-center">Package Information</h4>
                         </div>
                         <div class="col-3">
-                            <a href="<?= base_url('web/reservation/custombooking/').$data['id']; ?>" class="btn btn-primary btn-sm float-end"><i class="fa-solid fa-book me-3"></i>Booking</a>
+                            <a href="<?= base_url('web/reservation/custombooking/').$data['id']; ?>" class="btn btn-success btn-sm float-end"><i class="fa fa-cart-plus"></i> Booking</a>
                         </div>
                     </div>
                 </div>

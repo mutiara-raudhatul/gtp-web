@@ -142,7 +142,6 @@ class Homestay extends ResourceController
         }
         $homestay['gallery'] = $galleries;
 
-        // $list_unit = $this->unitHomestayModel->get_unit_homestay($id)->getRowArray();
         $list_unit = $this->unitHomestayModel->get_unit_homestay($id)->getResultArray();
 
         $facilities = array();
@@ -153,12 +152,6 @@ class Homestay extends ResourceController
             $list_facility = $this->facilityUnitDetailModel->get_data_facility_unit_detail($unit_number, $homestay_id, $unit_type)->getResultArray();
             $facilities[]=$list_facility;
 
-            // $list_gallery_unit = $this->galleryUnitModel->get_gallery($unit_number, $homestay_id, $unit_type)->getResultArray();
-            // $galleries_unit = array();
-            // foreach ($list_gallery_unit as $gallery) {
-            //     $galleries_unit[] = $gallery['url'];
-            // }
-            // $list_unit['gallery'] = $galleries_unit;
         }
         $fc = $facilities;
 

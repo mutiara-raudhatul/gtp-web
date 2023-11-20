@@ -135,7 +135,7 @@ $uri3 = $uri[3] ?? '';
                         </a>
                     </li>
 
-                    <?php if (in_groups(['admin'])) : ?>
+                    <?php if (in_groups(['admin']) || in_groups(['master'])) : ?>
                         <li class="sidebar-item">
                             <a href="<?= base_url('dashboard/gtp'); ?>" class="sidebar-link">
                                 <i class="bi bi-grid-fill"></i><span>Dashboard</span>

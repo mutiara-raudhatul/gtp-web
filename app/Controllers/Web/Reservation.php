@@ -54,7 +54,7 @@ class Reservation extends ResourcePresenter
 
         $data = [
             'title' => 'Reservation',
-            'data' => $datareservation
+            'data' => $datareservation,
         ];
         return view('web/reservation', $data);
     }

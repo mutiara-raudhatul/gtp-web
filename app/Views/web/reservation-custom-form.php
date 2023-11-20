@@ -161,7 +161,7 @@ $edit = in_array('edit', $uri);
                         </div> -->
                         <?php if(!$edit): ?>
                             <div class="float-end">
-                                <button type="submit" class="btn btn-primary">Booking</button>
+                                <button type="submit" class="btn btn-primary">Save Reservation</button>
                             </div>
                         <?php endif; ?>
                     </div>

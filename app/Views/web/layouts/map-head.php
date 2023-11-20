@@ -15,14 +15,6 @@
         echo '<a data-bs-toggle="tooltip" data-bs-placement="bottom" title="Go to Object" class="btn icon btn-primary mx-1" id="go-to" onclick="zoomToGTPMarkers()">
             Go to object
         </a>';
-        // echo '
-        // <div class="dropdown">
-        //     <button onclick="toggleDropdown()" class="dropbtn">Pilih</button>
-        //     <div id="myDropdown" class="dropdown-content">
-        //         <a href="#" onclick="initMapNegara()">Negara</a>
-        //     </div>
-        // </div>
-        // ';
     }
     ?>
 </div>

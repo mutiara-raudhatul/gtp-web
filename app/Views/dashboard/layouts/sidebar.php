@@ -37,7 +37,7 @@ $uri3 = $uri[3] ?? '';
                     </li>
 
 
-                    <?php if (in_groups(['admin'])) :
+                    <?php if (in_groups(['admin']) || in_groups(['master'])) :
                     ?>
                         <li class="sidebar-item <?= ($uri1 == 'gtp') ? 'active' : ''
                                                 ?>">
@@ -49,7 +49,7 @@ $uri3 = $uri[3] ?? '';
                     <?php endif;
                     ?>
 
-                    <?php if (in_groups(['admin'])) :
+                    <?php if (in_groups(['master'])) :
                     ?>
                         <li class="sidebar-item <?= ($uri1 == 'users') ? 'active' : ''
                                                 ?>">
@@ -61,7 +61,7 @@ $uri3 = $uri[3] ?? '';
                     <?php endif;
                     ?>
 
-                    <?php if (in_groups(['admin'])) :
+                    <?php if (in_groups(['admin']) || in_groups(['master'])) :
                     ?>
                         <li class="sidebar-item <?= ($uri1 == 'attraction') ? 'active' : ''
                                                 ?>">
@@ -73,7 +73,7 @@ $uri3 = $uri[3] ?? '';
                     <?php endif;
                     ?>
 
-                    <?php if (in_groups(['admin'])) : ?>
+                    <?php if (in_groups(['admin']) || in_groups(['master'])) : ?>
                         <li class="sidebar-item <?= ($uri1 == 'event') ? 'active' : '' ?>">
                             <a href="<?= base_url('dashboard/event'); ?>" class="sidebar-link">
                                 <i class="fa-solid fa-bullhorn"></i><span>Manage Event</span>
@@ -81,7 +81,7 @@ $uri3 = $uri[3] ?? '';
                         </li>
                     <?php endif; ?>
 
-                    <?php if (in_groups(['admin'])) :
+                    <?php if (in_groups(['admin']) || in_groups(['master'])) :
                         ?>
                         <li class="sidebar-item has-sub">
                             <a href="" class="sidebar-link">
@@ -101,7 +101,7 @@ $uri3 = $uri[3] ?? '';
                         <?php endif;
                     ?>
 
-                    <?php if (in_groups(['admin'])) : ?>
+                    <?php if (in_groups(['admin']) || in_groups(['master'])) : ?>
                         <li class="sidebar-item <?= ($uri1 == 'homestay') ? 'active' : '' ?>">
                             <a href="<?= base_url('dashboard/homestay'); ?>" class="sidebar-link">
                                 <i class="fa-solid fa-bed"></i><span>Manage Homestay</span>
@@ -109,7 +109,7 @@ $uri3 = $uri[3] ?? '';
                         </li>
                     <?php endif; ?>
 
-                    <?php if (in_groups(['admin'])) : ?>
+                    <?php if (in_groups(['admin']) || in_groups(['master'])) : ?>
                         <li class="sidebar-item <?= ($uri1 == 'reservation') ? 'active' : '' ?>">
                             <a href="<?= base_url('dashboard/managereservation'); ?>" class="sidebar-link">
                                 <i class="fa-solid fa-bullhorn"></i><span>Manage Reservation</span>
@@ -117,7 +117,7 @@ $uri3 = $uri[3] ?? '';
                         </li>
                     <?php endif; ?>
                     
-                    <?php if (in_groups(['admin'])) :
+                    <?php if (in_groups(['admin']) || in_groups(['master'])) :
                         ?>
                         <li class="sidebar-item has-sub">
                             <a href="" class="sidebar-link">

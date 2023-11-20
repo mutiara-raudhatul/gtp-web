@@ -89,7 +89,6 @@ class UnitHomestayModel extends Model
             $count = (int)substr($lastId['unit_number'], 1);
             $unit_number = sprintf('%02d', $count + 1);
         }
-// dd($unit_number);
         return $unit_number;
     }
 

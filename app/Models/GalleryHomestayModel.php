@@ -37,7 +37,7 @@ class GalleryHomestayModel extends Model
     {
         $lastId = $this->db->table($this->table)->select('id')->orderBy('id', 'ASC')->get()->getLastRow('array');
         $count = (int)substr($lastId['id'], 2);
-        $id = sprintf('HO%03d', $count + 1);
+        $id = sprintf('GH%03d', $count + 1);
         return $id;
     }
 
