@@ -458,8 +458,12 @@ $addhome = in_array('addhome', $uri);
                                     <td> : 
                                         <?php if($detail['status']==null ): ?>    
                                             <?php if($detail['custom']=='1' ): ?>
-                                                <a href="#" class="btn-sm btn-warning float-center"><i>Negotiate</i></a>
-                                            <?php elseif($detail['custom']!='0' ): ?>
+                                                <?php if($detail['response']==null ): ?>
+                                                    <a href="#" class="btn-sm btn-warning float-center"><i>Negotiate</i></a>
+                                                <?php elseif($detail['response']!=null ): ?>
+                                                    <a href="#" class="btn-sm btn-warning float-center"><i>Waiting</i></a>
+                                                <?php endif; ?>
+                                            <?php elseif($detail['custom']!='1' ): ?>
                                                 <a href="#" class="btn-sm btn-warning float-center"><i>Waiting</i></a>
                                             <?php endif; ?>
                                         <?php elseif($detail['status']=='1' ): ?>    
@@ -537,7 +541,7 @@ $addhome = in_array('addhome', $uri);
                                     <?php if($detail['refund_date']!=null): ?> 
                                         <td> Refund Reservation 
                                             <td>
-                                                : <?= esc(date('l, j F Y H:i:s', strtotime($detail['refund_date']))); ?> (by admin<?= esc($detail['admin_refund']); ?>)
+                                                : <?= esc(date('l, j F Y H:i:s', strtotime($detail['refund_date']))); ?> (by adm<?= esc($detail['admin_refund']); ?>)
                                             </td>
                                         </td>                                                
                                     <?php endif; ?>   
@@ -671,7 +675,7 @@ $addhome = in_array('addhome', $uri);
                                         <p><?= esc($detail['account_refund']); ?></p>
                                         <?php if($detail['proof_refund']==null): ?>
                                             
-                                            <?php if (in_groups(['admin'])) : ?>
+                                            <?php if (in_groups(['admin']) || in_groups(['master'])) : ?>
                                                 <form class="form form-vertical" action="<?= base_url('dashboard/reservation/uploadrefund/').$detail['id']; ?>" method="post" onsubmit="checkRequired(event)" enctype="multipart/form-data">
                                                     <div class="form-body">
                                                         <div class="col-md-5 col-12">
@@ -837,6 +841,37 @@ $addhome = in_array('addhome', $uri);
                     </button>
                 </div>
                 <div class="modal-body">
+                        <?php if($detail['deposit_check']==null) : ?>
+                            <div>
+                                <form class="row g-4" action="<?= base_url('web/detailreservation/savecheckdeposit/').$detail['id']; ?>" method="post" enctype="multipart/form-data">
+                                    <?php @csrf_field(); ?>
+                                    <div class="form-group">
+                                        <label><b> Is this proof of deposit correct? </b><br>
+                                        <label>
+                                            <input type="radio" name="deposit_check" value="0" required>
+                                            <i class="fa fa-times"></i> Incorrect
+                                        </label>
+                                        <label>
+                                            <input type="radio" name="deposit_check" value="1" required>
+                                            <i class="fa fa-check"></i> Correct
+                                        </label>
+                                        <div col="col-md-5 col-12">
+                                            <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
+                                        </div>
+                                    </div>                                                  
+                                </form>
+                            </div>
+                        <?php else: ?>
+                            <div>
+                                <p>Proof of deposit is 
+                                    <?php if($detail['deposit_check']==1): ?>
+                                        <b class="btn btn-sm btn-success">Correct</b>
+                                    <?php elseif($detail['deposit_check']==0): ?>
+                                        <b class="btn btn-sm btn-danger">Incorrect</b>
+                                    <?php endif; ?>
+                                </p>
+                            </div>
+                        <?php endif; ?>
                     <div id="Gallerycarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
                         <div class="carousel-indicators">
                                 <button type="button" data-bs-target="#Gallerycarousel" data-bs-slide-to="<?= esc($i=1); ?>" class="<?= ($i == 0) ? 'active' : ''; ?>"></button>
@@ -846,7 +881,7 @@ $addhome = in_array('addhome', $uri);
                                 <div class="carousel-item<?= ($i == 0) ? ' active' : ''; ?>">
                                     <img class="d-block w-100" src="<?= base_url('media/photos/deposit/'); ?><?= $detail['proof_of_deposit'] ?>">
                                 </div>
-                        </div>
+                        </div>                        
                         <a class="carousel-control-prev" href="#Gallerycarousel" role="button" type="button" data-bs-slide="prev">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                         </a>
@@ -878,6 +913,37 @@ $addhome = in_array('addhome', $uri);
                     </button>
                 </div>
                 <div class="modal-body">
+                        <?php if($detail['payment_check']==null) : ?>
+                            <div>
+                                <form class="row g-4" action="<?= base_url('web/detailreservation/savecheckpayment/').$detail['id']; ?>" method="post" enctype="multipart/form-data">
+                                    <?php @csrf_field(); ?>
+                                    <div class="form-group">
+                                        <label><b> Is this proof of payment correct? </b><br>
+                                        <label>
+                                            <input type="radio" name="payment_check" value="0" required>
+                                            <i class="fa fa-times"></i> Incorrect
+                                        </label>
+                                        <label>
+                                            <input type="radio" name="payment_check" value="1" required>
+                                            <i class="fa fa-check"></i> Correct
+                                        </label>
+                                        <div col="col-md-5 col-12">
+                                            <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
+                                        </div>
+                                    </div>                                                  
+                                </form>
+                            </div>
+                        <?php else: ?>
+                            <div>
+                                <p>Proof of payment is 
+                                    <?php if($detail['payment_check']==1): ?>
+                                        <b class="btn btn-sm btn-success">Correct</b>
+                                    <?php elseif($detail['payment_check']==0): ?>
+                                        <b class="btn btn-sm btn-danger">Incorrect</b>
+                                    <?php endif; ?>
+                                </p>
+                            </div>
+                        <?php endif; ?>
                     <div id="Gallerycarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
                         <div class="carousel-indicators">
                                 <button type="button" data-bs-target="#Gallerycarousel" data-bs-slide-to="<?= esc($i=1); ?>" class="<?= ($i == 0) ? 'active' : ''; ?>"></button>

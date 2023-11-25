@@ -13,6 +13,11 @@ $dashboard = in_array('dashboard', $uri);
 
 <?= $this->section('content') ?>
 
+<?php 
+    $dateTime = new DateTime('now'); // Waktu sekarang
+    $datenow = $dateTime->format('Y-m-d H:i:s'); 
+?>
+
 <section class="section">
     <div class="row">
         <script>
@@ -31,7 +36,7 @@ $dashboard = in_array('dashboard', $uri);
                     <script>
                         Swal.fire({
                             icon: 'success',
-                            title: 'Berhasil!',
+                            title: 'Success!',
                             text: '<?= session('success') ?>',
                         });
                     </script>
@@ -232,13 +237,13 @@ $dashboard = in_array('dashboard', $uri);
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <b>Reservasi Homestay</b>
-                                                <li>Homestay dapat dipilih sesuai dengan keinginan user</li>
-                                                <li>Informasi detail unit homestay ada pada halaman homestay</li>
-                                                <li>Jumlah hari reservasi homestay menyesuaikan jumlah hari aktivitas pada paket wisata</li>
-                                                <li>Jika unit homestay yang dipesan sudah dibooking maka akan muncul notifikasi 'unit homestay sudah dibooking' ketika ditambahkan</li>
-                                                <li>Jika wisatawan hanya ingin memesan homestay, lakukan kustomisasi package dengan memilih aktivitas package hanya homestay yang dituju</li>
-                                            <br>
+                                            <b>Homestay Reservation</b>
+                                                 <li>Homestays can be selected according to the user's wishes</li>
+                                                 <li>Detailed information on the homestay unit is on the homestay page</li>
+                                                 <li>The number of homestay reservation days depends on the number of activity days in the tour package</li>
+                                                 <li>If the homestay unit ordered has been booked, a notification 'homestay unit has been booked' will appear when added</li>
+                                                 <li>If tourists only want to book a homestay, customize the package by selecting package activities only for the homestay you are visiting</li>
+                                             <br>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -249,10 +254,12 @@ $dashboard = in_array('dashboard', $uri);
                             </div>
                         </div>
                         <?php endif; ?>
+                        <p><i>*This date is the day of the homestay reservation and the check out time is the next day at 12.00 WIB</i></p>
                         <table class="table table-sm">
                             <thead>
                                 <tr>
                                     <th>No</th>
+                                    <th>Date</th>
                                     <th>Nama Homestay</th>
                                     <th>Capacity</th>
                                     <th>Price</th>
@@ -268,6 +275,7 @@ $dashboard = in_array('dashboard', $uri);
                                 <?php foreach ($booking as $dtb) : ?>
                                     <tr>
                                         <td><?= esc($i++); ?></td>
+                                        <td><?= esc(date('j F Y', strtotime($dtb['date']))); ?></td>
                                         <td>[<?= esc($dtb['name']); ?>] <?= esc($dtb['name_type']); ?> <?= esc($dtb['unit_number']); ?> <?= esc($dtb['nama_unit']); ?></td>
                                         <td><?= esc($dtb['capacity']); ?></td>
                                         <td><?= esc($dtb['price']); ?></td>
@@ -459,12 +467,6 @@ $dashboard = in_array('dashboard', $uri);
                                     <?php endif; ?>
                                 </tr>
                                 <tr>
-                                    <?php if($detail['status']=='1' || $detail['status']=='0'): ?> 
-                                        <td> Feedback admin about reservation</td>
-                                        <td> : <?= esc($detail['feedback']); ?></td> 
-                                    <?php endif; ?>   
-                                </tr>
-                                <tr>
                                     <?php if($detail['status']=='1' && $detail['cancel']=='0'): ?> 
                                         <td>
                                             <br>
@@ -488,8 +490,12 @@ $dashboard = in_array('dashboard', $uri);
                                     <td> : 
                                         <?php if($detail['status']==null ): ?>    
                                             <?php if($detail['custom']=='1' ): ?>
-                                                <a href="#" class="btn-sm btn-warning float-center"><i>Negotiate</i></a>
-                                            <?php elseif($detail['custom']!='0' ): ?>
+                                                <?php if($detail['response']==null ): ?>
+                                                    <a href="#" class="btn-sm btn-warning float-center"><i>Negotiate</i></a>
+                                                <?php elseif($detail['response']!=null ): ?>
+                                                    <a href="#" class="btn-sm btn-warning float-center"><i>Waiting</i></a>
+                                                <?php endif; ?>
+                                            <?php elseif($detail['custom']!='1' ): ?>
                                                 <a href="#" class="btn-sm btn-warning float-center"><i>Waiting</i></a>
                                             <?php endif; ?>
                                         <?php elseif($detail['status']=='1' ): ?>    
@@ -532,45 +538,116 @@ $dashboard = in_array('dashboard', $uri);
                             <?php endif; ?>
                                 <tr>
                                     <?php if($detail['status']=='1' || $detail['status']=='0'): ?> 
-                                        <td> Confirmation Date</td>
+                                        <td><i class="fa fa-level-down" aria-hidden="true"></i> Confirmation Date</td>
                                         <td> : <?= esc(date('l, j F Y H:i:s', strtotime($detail['confirmation_date']))); ?> (by adm<?= esc($detail['admin_confirm']); ?>)</td> 
                                     <?php endif; ?>   
                                 </tr>
                                 <tr>
+                                    <?php if($detail['status']=='1' || $detail['status']=='0'): ?>  
+                                        <td> Feedback admin about reservation</td>
+                                        <td> : <?= esc($detail['feedback']); ?> (by adm<?= esc($detail['admin_confirm']); ?>)</td> 
+                                    <?php endif; ?>   
+                                </tr>
+                                <tr>
                                     <?php if($detail['proof_of_deposit']!=null ): ?> 
-                                        <td>Deposit Payment
+                                        <td><i class="fa fa-level-down" aria-hidden="true"></i> Deposit Payment
                                                 <td>
-                                                    : <?= esc(date('l, j F Y H:i:s', strtotime($detail['deposit_date']))); ?>
+                                                    : <?= esc(date('l, j F Y H:i:s', strtotime($detail['deposit_date']))); ?> (by <?= esc(user()->username); ?>)
                                                 </td>
                                                 
                                         </td>
                                     <?php endif; ?>  
                                 </tr>
                                 <tr>
-                                    <?php if($detail['proof_of_payment']!=null): ?> 
-                                        <td> Full Payment Reservation 
+                                    <?php if($detail['proof_of_deposit']!=null): ?>
+                                        <td>Status Deposit Payment
                                             <td>
-                                                : <?= esc(date('l, j F Y H:i:s', strtotime($detail['payment_date']))); ?>
+                                                : 
+                                                <?php if($detail['deposit_check']==null ): ?> 
+                                                We will check your proof of deposit 
+                                                <?php elseif($detail['deposit_check']==1 ): ?> 
+                                                Thank you. The proof of deposit is correct
+                                                <?php elseif($detail['deposit_check']==0 ): ?> 
+                                                Sorry. The proof of deposit is incorrect
+                                                <?php endif; ?> 
+                                                (by adm<?= esc($detail['admin_confirm']); ?>)
+                                            </td>
+                                        </td>
+                                    <?php endif; ?>
+                                </tr>
+                                <tr>
+                                    <?php if($detail['proof_of_payment']!=null): ?> 
+                                        <td><i class="fa fa-level-down" aria-hidden="true"></i> Full Payment Reservation 
+                                            <td>
+                                                : <?= esc(date('l, j F Y H:i:s', strtotime($detail['payment_date']))); ?> (by <?= esc(user()->username); ?>)
                                             </td>
                                         </td>                                                
                                     <?php endif; ?>   
                                 </tr>
                                 <tr>
-                                    <?php if($detail['cancel_date']!=null): ?> 
-                                        <td> Cancel Reservation 
+                                    <?php if($detail['proof_of_payment']!=null): ?>
+                                        <td>Status FullPayment
                                             <td>
-                                                : <?= esc(date('l, j F Y H:i:s', strtotime($detail['cancel_date']))); ?>
+                                                : 
+                                                <?php if($detail['payment_check']==null ): ?> 
+                                                We will check your proof of payment 
+                                                <?php elseif($detail['payment_check']==1 ): ?> 
+                                                Thank you. The proof of payment is correct
+                                                <?php elseif($detail['payment_check']==0 ): ?> 
+                                                Sorry. The proof of payment is incorrect
+                                                <?php endif; ?> 
+                                                (by adm<?= esc($detail['admin_confirm']); ?>)
+                                            </td>
+                                        </td>
+                                    <?php endif; ?>  
+                                </tr>
+                                <tr>
+                                    <?php if($detail['cancel_date']!=null): ?> 
+                                        <td><i class="fa fa-level-down" aria-hidden="true"></i> Cancel Reservation 
+                                            <td>
+                                                : <?= esc(date('l, j F Y H:i:s', strtotime($detail['cancel_date']))); ?> (by <?= esc(user()->username); ?>)
                                             </td>
                                         </td>                                                
                                     <?php endif; ?>   
                                 </tr>
                                 <tr>
                                     <?php if($detail['refund_date']!=null): ?> 
-                                        <td> Refund Reservation 
+                                        <td><i class="fa fa-level-down" aria-hidden="true"></i> Refund Reservation 
                                             <td>
                                                 : <?= esc(date('l, j F Y H:i:s', strtotime($detail['refund_date']))); ?> (by adm<?= esc($detail['admin_refund']); ?>)
                                             </td>
                                         </td>                                                
+                                    <?php endif; ?>   
+                                </tr>
+                                <tr>
+                                    <?php if($detail['refund_date']!=null): ?>
+                                        <td>Status Refund
+                                            <td>
+                                                : 
+                                                <?php if($detail['refund_check']==null ): ?> 
+                                                You must check the proof of refund 
+                                                <?php elseif($detail['refund_check']==1 ): ?> 
+                                                Thank you. The proof of refund is correct
+                                                <?php elseif($detail['refund_check']==0 ): ?> 
+                                                Sorry. The proof of refund is incorrect
+                                                <?php endif; ?> 
+                                                (by <?= esc(user()->username); ?>)
+                                            </td>
+                                        </td>
+                                    <?php endif; ?> 
+                                </tr>
+                                <tr>
+                                    <?php if($datenow>=$check_out && $detail['review']!=null): ?> 
+                                        <td><i class="fa fa-level-down" aria-hidden="true"></i> Reservation 
+                                            <td>
+                                                : You have finished your tour. Thank you for your review. See you on the next tour
+                                            </td>
+                                        </td>       
+                                    <?php elseif($datenow>=$check_out && $detail['review']==null && $detail['status']==1 && $detail['cancel']==0): ?> 
+                                        <td> Reservation 
+                                            <td>
+                                                : You have finished your tour. Please give your review.                                            </td>
+                                        </td>                                          
                                     <?php endif; ?>   
                                 </tr>
                             </tbody>
@@ -580,10 +657,6 @@ $dashboard = in_array('dashboard', $uri);
                             <tbody>
                             <tr>
                                 <!-- upload proof deposit -->
-                                    <?php 
-                                        $dateTime = new DateTime('now'); // Waktu sekarang
-                                        $datenow = $dateTime->format('Y-m-d H:i:s'); 
-                                    ?>
                                     <?php if($detail['status']=='1' && $detail['proof_of_deposit']==null && $detail['cancel']!=1 && $datenow<$batas_dp): ?>
                                         <p class="btn btn-sm btn-primary">Limit pay deposit : <?= esc(date('l, j F Y H:i:s', strtotime($batas_dp)));  ?></p>
                                         <br>
@@ -702,7 +775,7 @@ $dashboard = in_array('dashboard', $uri);
                             <!-- upload proof payment -->
                                 <?php if ($detail['status']=='1' && $detail['proof_of_deposit']!=null && $detail['cancel']!=1 && $detail['proof_of_payment']==null): ?>                                        
                                     <br>
-                                    <i class="btn btn-primary btn-sm">Payment deadline in your check out time</i>
+                                    <i class="btn btn-primary btn-sm">Payment deadline in your check in time</i>
                                     <br> <br>
                                     <form class="form form-vertical" action="<?= base_url('web/reservation/uploadfullpayment/').$detail['id']; ?>" method="post" onsubmit="checkRequired(event)" enctype="multipart/form-data">
                                         <div class="form-body">
@@ -720,6 +793,23 @@ $dashboard = in_array('dashboard', $uri);
                                         </div>
                                     </form>    
                                     <br>    
+                                <?php endif; ?>
+
+                            <!-- cancel and refund sebelum H-3 tapi sudah bayar DP dan fullpayment -->
+                                <?php if($datenow<$batas_dp && $detail['proof_of_payment']!=null && $detail['cancel']!=1): ?>
+                                    <br>
+                                    <i class="btn btn-secondary btn-sm"><b>Do you want to cancel reservation? Limit for cancel and refund until H-3 check in</b></i> <br> <br>
+                                    <button type="button" class="btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#refundModal">
+                                        Yes, request
+                                    </button>
+                                <?php endif; ?>
+
+                                <?php if($datenow>$batas_dp && $datenow<$detail['check_in'] && $detail['proof_of_payment']!=null && $detail['cancel']!=1): ?>
+                                    <br>
+                                    <i class="btn btn-secondary btn-sm"><b>Do you want to cancel reservation?</b></i> <br><br>
+                                    <button type="button" class="btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#refundpaymentModal">
+                                        Yes, request
+                                    </button>
                                 <?php endif; ?>
                             </tr>
 
@@ -830,6 +920,37 @@ $dashboard = in_array('dashboard', $uri);
                     </button>
                 </div>
                 <div class="modal-body">
+                        <?php if($detail['refund_check']==null) : ?>
+                            <div>
+                                <form class="row g-4" action="<?= base_url('web/detailreservation/savecheckrefund/').$detail['id']; ?>" method="post" enctype="multipart/form-data">
+                                    <?php @csrf_field(); ?>
+                                    <div class="form-group">
+                                        <label><b> Is this proof of refund correct? </b><br>
+                                        <label>
+                                            <input type="radio" name="refund_check" value="0" required>
+                                            <i class="fa fa-times"></i> Incorrect
+                                        </label>
+                                        <label>
+                                            <input type="radio" name="refund_check" value="1" required>
+                                            <i class="fa fa-check"></i> Correct
+                                        </label>
+                                        <div col="col-md-5 col-12">
+                                            <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
+                                        </div>
+                                    </div>                                                  
+                                </form>
+                            </div>
+                        <?php else: ?>
+                            <div>
+                                <p>Proof of refund is 
+                                    <?php if($detail['refund_check']==1): ?>
+                                        <b class="btn btn-sm btn-success">Correct</b>
+                                    <?php elseif($detail['refund_check']==0): ?>
+                                        <b class="btn btn-sm btn-danger">Incorrect</b>
+                                    <?php endif; ?>
+                                </p>
+                            </div>
+                        <?php endif; ?>
                     <div id="cGallerycarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
                         <div class="carousel-indicators">
                                 <button type="button" data-bs-target="#cGallerycarousel" data-bs-slide-to="<?= esc($i=1); ?>" class="<?= ($i == 0) ? 'active' : ''; ?>"></button>
@@ -860,37 +981,75 @@ $dashboard = in_array('dashboard', $uri);
 
     <!-- modal request cancel and refund -->
     <div class="modal fade" id="refundModal" tabindex="-1" aria-labelledby="refundModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="refundModalLabel">Cancel and Refund</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="card-header">
-                    <form class="row g-4" action="<?= base_url('web/detailreservation/saverefund/').$detail['id']; ?>" method="post" enctype="multipart/form-data">
-                        <?php @csrf_field(); ?>
-                        <i class="btn btn-secondary btn-sm">Deposit will be returned only 50% of the deposit you sent. </i>
-
-                        <div class="form-group">
-                            <label> Are you sure cancel this reservation? <br>
-                            <input type="radio" name="cancel" value="1" required>
-                            <i class="fa fa-check"></i> Yes
-                            </label>
-                        </div>
-                        <div class="form-group">
-                            <label for="account_refund" class="mb-2">Your bank account for refund</label>
-                            <textarea class="form-control" id="account_refund" name="account_refund" cols="30" rows="5"  placeholder="Isikan akun bank penerima refund dengan detail (Nama bank, nomor rekening, dan nama pemilik akun)" required rows="4"><?= ($edit) ? $data['refund'] : old('refund'); ?></textarea>
-                        </div>                                                    
-                        <div col="col-md-5 col-12">
-                            <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
-                        </div>
-                    </form>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="refundModalLabel">Cancel and Refund</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="card-header">
+                        <form class="row g-4" action="<?= base_url('web/detailreservation/saverefund/').$detail['id']; ?>" method="post" enctype="multipart/form-data">
+                            <?php @csrf_field(); ?>
+                            <?php if($detail['proof_of_payment']==null): ?>
+                                <i class="btn btn-secondary btn-sm">Deposit will be returned only 50% of the deposit you sent. </i>
+                            <?php elseif($detail['proof_of_payment']!=null): ?>
+                                <i class="btn btn-secondary btn-sm">We will deduct 50% of the refund fee from the deposit sent. </i>
+                            <?php endif; ?>
+                                    
+                            <div class="form-group">
+                                <label> Are you sure cancel this reservation? <br>
+                                <input type="radio" name="cancel" value="1" required>
+                                <i class="fa fa-check"></i> Yes
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label for="account_refund" class="mb-2">Your bank account for refund</label>
+                                <textarea class="form-control" id="account_refund" name="account_refund" cols="30" rows="5"  placeholder="Isikan akun bank penerima refund dengan detail (Nama bank, nomor rekening, dan nama pemilik akun)" required rows="4"><?= ($edit) ? $data['refund'] : old('refund'); ?></textarea>
+                            </div>                                                    
+                            <div col="col-md-5 col-12">
+                                <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
- </div>
+
+    <!-- modal request cancel and refund after H-3 tapi biaya sudah lunas-->
+    <div class="modal fade" id="refundpaymentModal" tabindex="-1" aria-labelledby="refundpaymentModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="refundpaymentModalLabel">Cancel and Refund</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="card-header">
+                        <form class="row g-4" action="<?= base_url('web/detailreservation/saverefund/').$detail['id']; ?>" method="post" enctype="multipart/form-data">
+                            <?php @csrf_field(); ?>
+                            <i class="btn btn-secondary btn-sm">Deposits will not be returned. We will only refund the total cost minus the deposit (according to the full payment that has been sent) </i>
+
+                            <div class="form-group">
+                                <label> Are you sure cancel this reservation? <br>
+                                <input type="radio" name="cancel" value="1" required>
+                                <i class="fa fa-check"></i> Yes
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label for="account_refund" class="mb-2">Your bank account for refund</label>
+                                <textarea class="form-control" id="account_refund" name="account_refund" cols="30" rows="5"  placeholder="Isikan akun bank penerima refund dengan detail (Nama bank, nomor rekening, dan nama pemilik akun)" required rows="4"><?= ($edit) ? $data['refund'] : old('refund'); ?></textarea>
+                            </div>                                                    
+                            <div col="col-md-5 col-12">
+                                <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- modal deposit -->
     <div class="modal fade" id="depositModal" tabindex="-1" role="dialog" aria-labelledby="depositModalTitle" aria-hidden="true">
@@ -905,6 +1064,21 @@ $dashboard = in_array('dashboard', $uri);
                     </button>
                 </div>
                 <div class="modal-body">
+                        <?php if($detail['deposit_check']==null) : ?>
+                            <div>
+                                <p>Thank you for your deposit. Please wait, admin will check the deposit proof </p>
+                            </div>
+                        <?php else: ?>
+                            <div>
+                                <p>Proof of deposit is 
+                                    <?php if($detail['deposit_check']==1): ?>
+                                        <b class="btn btn-sm btn-success">Correct</b>
+                                    <?php elseif($detail['deposit_check']==0): ?>
+                                        <b class="btn btn-sm btn-danger">Incorrect</b>
+                                    <?php endif; ?>
+                                </p>
+                            </div>
+                        <?php endif; ?>
                     <div id="Gallerycarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
                         <div class="carousel-indicators">
                                 <button type="button" data-bs-target="#Gallerycarousel" data-bs-slide-to="<?= esc($i=1); ?>" class="<?= ($i == 0) ? 'active' : ''; ?>"></button>
@@ -946,6 +1120,21 @@ $dashboard = in_array('dashboard', $uri);
                     </button>
                 </div>
                 <div class="modal-body">
+                        <?php if($detail['payment_check']==null) : ?>
+                            <div>
+                                <p>Thank you for your fullpayment. Please wait, admin will check the payment proof </p>
+                            </div>
+                        <?php else: ?>
+                            <div>
+                                <p>Proof of payment is 
+                                    <?php if($detail['payment_check']==1): ?>
+                                        <b class="btn btn-sm btn-success">Correct</b>
+                                    <?php elseif($detail['payment_check']==0): ?>
+                                        <b class="btn btn-sm btn-danger">Incorrect</b>
+                                    <?php endif; ?>
+                                </p>
+                            </div>
+                        <?php endif; ?>
                     <div id="Gallerycarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
                         <div class="carousel-indicators">
                                 <button type="button" data-bs-target="#Gallerycarousel" data-bs-slide-to="<?= esc($i=1); ?>" class="<?= ($i == 0) ? 'active' : ''; ?>"></button>

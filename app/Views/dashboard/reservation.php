@@ -48,8 +48,12 @@ $users = in_array('users', $uri);
                                                     <?php $date = date('Y-m-d H:i');?>
                                                     <?php if($item['status']==null ): ?>    
                                                         <?php if($item['custom']=='1' ): ?>
-                                                            <a href="#" class="btn-sm btn-warning float-center"><i>Negotiate</i></a>
-                                                        <?php elseif($item['custom']!='0' ): ?>
+                                                            <?php if($item['response']==null ): ?>
+                                                                <a href="#" class="btn-sm btn-warning float-center"><i>Negotiate</i></a>
+                                                            <?php elseif($item['response']!=null ): ?>
+                                                                <a href="#" class="btn-sm btn-warning float-center"><i>Waiting</i></a>
+                                                            <?php endif; ?>
+                                                        <?php elseif($item['custom']!='1' ): ?>
                                                             <a href="#" class="btn-sm btn-warning float-center"><i>Waiting</i></a>
                                                         <?php endif; ?>
                                                     <?php elseif($item['status']=='1' ): ?>    

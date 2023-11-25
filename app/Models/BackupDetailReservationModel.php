@@ -63,13 +63,14 @@ class BackupDetailReservationModel extends Model
     //     return $query;
     // }
 
-    public function get_unit_homestay_booking_data($homestay_id=null, $unit_type=null, $unit_number=null,$reservation_id=null)
+    public function get_unit_homestay_booking_data($date=null,$homestay_id=null, $unit_type=null, $unit_number=null,$reservation_id=null)
     {
         $query = $this->db->table($this->table)
         ->select('*')
         ->join('unit_homestay', 'backup_detail_reservation.homestay_id = unit_homestay.homestay_id', 'backup_detail_reservation.unit_number = unit_homestay.unit_number', 'backup_detail_reservation.unit_type = unit_homestay.unit_type')
         ->join('homestay', 'homestay.id = backup_detail_reservation.homestay_id', 'inner')
         ->join('homestay_unit_type', 'homestay_unit_type.id = backup_detail_reservation.unit_type', 'inner')
+        ->where('backup_detail_reservation.date', $date)
         ->where('unit_homestay.unit_number', $unit_number)
         ->where('unit_homestay.unit_type', $unit_type)
         ->where('unit_homestay.homestay_id', $homestay_id)

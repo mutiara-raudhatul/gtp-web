@@ -33,35 +33,35 @@ $edit = in_array('edit', $uri);
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <b>Reservasi Paket Wisata yang disediakan</b>
-                        <li>Wisatawan memilih paket wisata yang ada pada form inputan (detail informasi paket dapat dilihat pada halaman paket wisata)</li>
-                        <li>Wisatawan mengisi form reservasi paket wisata dan/ atau homestay yang diinginkan</li>
-                    <br>
-                    <b>Reservasi Paket Wisata yang dikustom</b>
-                        <li>Wisatawan dapat memilih tombol 'custom package' untuk membuat paket yang diinginkan</li>
-                        <li>Wisatawan diminta mengisikan kegiatan apa saja, lokasi, dan layanan yang ada pada aktivitas tersebut</li>
-                        <li>Wisatawan melakukan reservasi dengan mengisi form reservasi paket wisata</li>
-                        <li>Jika wisatawan ingin memesan homestay dapat mengisi form reservasi homestay</li>
-                    <br>
-                    <b>Reservasi Homestay</b>
-                        <li>Jika wisatawan hanya ingin melakukan reservasi homestay tanpa paket wisata, maka dapat mengisi form 'custom reservasi' </li>
-                        <li>Wisatawan mengisi hari kegiatan dengan memilih objek aktivitas homestay yang diinginkan</li>
-                        <li>Lalu dapat mengisi form reservasi yang disediakan</li>
-                    <br>
-                    <b>Pemesanan Paket</b>
-                        <li>Jumlah pemesanan minimal harus memenuhi minimal kapasitas</li>
-                        <li>Jika kurang dari jumlah orang minimal maka harga dihitung 1 paket</li>
-                        <li>Jika lebih dari jumlah minimal 1 paket, maka jika tambahan <5 membayar ditambah setengah harga paket, jika >=5 membayar ditambah 1 harga paket, begitu untuk kelipatan minimal kapasitas</li>
-                    <br>
-                    <b>Pembayaran Reservasi</b>
-                        <li>Wisatawan dapat memilih tanggal dan waktu check in pelaksanaan paket wisata</li>
-                        <li>Jika mereservasi homestay, check in dan check out homestay tetap terhitung pada 12.00 siang </li>
-                        <li>Reservasi paket wisata dapat diajukan dan selanjutnya mohon menunggu konfirmasi admin</li>
-                        <li>Jika admin menyetujui, pembayaran deposit adalah 20% dari harga total reservasi dan dibayarkan maksimal pada H-2 waktu kunjungan</li>
-                        <li>Pembatalan reservasi dapat dilakukan maksimal H-3 pelaksanaan kunjungan, untuk kondisi ini deposit yang telah dibayarkan akan dikembalikan</li>
-                        <li><i><b>Jika pembatalan dilakukan setelah H-3 kunjungan maka deposit tidak dikembalikan</i></b></li>
-                        <li>Pembayaran sisa dari deposit dapat dibayarkan pada hari kunjungan wisata</li>
-                </div>
+                     <b>Reservation of Tour Packages provided</b>
+                         <li>Tourists choose a tour package from the input form (detailed package information can be seen on the tour package page)</li>
+                         <li>Tourists fill out the reservation form for the desired tour package and/or homestay</li>
+                     <br>
+                     <b>Customized Tour Package Reservations</b>
+                         <li>Tourists can select the 'custom package' button to create the desired package</li>
+                         <li>Tourists are asked to fill in what activities, locations and services available in those activities</li>
+                         <li>Tourists make a reservation by filling in the tour package reservation form</li>
+                         <li>If tourists want to book a homestay, they can fill in the homestay reservation form</li>
+                     <br>
+                     <b>Homestay Reservation</b>
+                         <li>If tourists only want to make a homestay reservation without a tour package, they can fill in the 'custom reservation' form </li>
+                         <li>Tourists fill their activity day by selecting the desired homestay activity object</li>
+                         <li>Then you can fill in the reservation form provided</li>
+                     <br>
+                     <b>Package Order</b>
+                         <li>The minimum order quantity must meet the minimum capacity</li>
+                         <li>If there is less than the minimum number of people then the price is calculated as 1 package</li>
+                         <li>If there is more than the minimum number of 1 package, then if the additional <5 you pay plus half the package price, if >=5 you pay plus 1 package price, so for multiples of the minimum capacity</li>
+                     <br>
+                     <b>Reservation Payment</b>
+                         <li>Tourists can choose the date and time to check in for the tour package</li>
+                         <li>If you reserve a homestay, check-in and check-out of the homestay still starts at 12.00 noon </li>
+                         <li>Tour package reservations can be submitted and then please wait for admin confirmation</li>
+                         <li>If the admin approves, the deposit payment is 20% of the total reservation price and is paid a maximum of 2 days after the visit</li>
+                         <li>Cancellations of reservations can be made up to 3 days after the visit, in this case the deposit paid will be returned</li>
+                         <li>If cancellation is made after the 3rd day of the visit, the deposit will not be returned</li>
+                         <li>Payment of the remainder of the deposit can be paid on the day of the tourist visit</li>
+                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
@@ -405,7 +405,13 @@ $edit = in_array('edit', $uri);
                 const checkOutDate = checkOutDateTime.toISOString().split('T')[0];
                 const checkOutTime = checkOutDateTime.toTimeString().split(' ')[0];
                 $('#check_out').val(checkOutDate);
-                $('#time_check_out').val('12:00:00');
+                if(day=='1' && checkInTime<'18:00:00'){
+                    $('#time_check_out').val('18:00:00');
+                } else if(day=='1' && checkInTime>'18:00:00'){
+                    $('#time_check_out').val('12:00:00');
+                } else if(day>'1' ){
+                    $('#time_check_out').val('12:00:00');
+                }
             } else {
                 $('#check_out').val('');
                 $('#time_check_out').val('');

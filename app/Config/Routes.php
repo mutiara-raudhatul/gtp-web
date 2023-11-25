@@ -120,6 +120,9 @@ $routes->group('web', ['namespace' => 'App\Controllers\Web'], function ($routes)
     $routes->post('detailreservation/savecancel/(:any)', 'DetailReservation::savecancel/$1');//--------
     $routes->post('detailreservation/saveresponse/(:any)', 'DetailReservation::saveresponse/$1');//--------
     $routes->post('detailreservation/saverefund/(:any)', 'DetailReservation::saverefund/$1');//--------
+    $routes->post('detailreservation/savecheckdeposit/(:any)', 'DetailReservation::savecheckdeposit/$1');//--------
+    $routes->post('detailreservation/savecheckpayment/(:any)', 'DetailReservation::savecheckpayment/$1');//--------
+    $routes->post('detailreservation/savecheckrefund/(:any)', 'DetailReservation::savecheckrefund/$1');//--------
     $routes->presenter('detailreservation', ['filter' => 'login']);
     $routes->resource('detailreservation', ['filter' => 'login']);
 

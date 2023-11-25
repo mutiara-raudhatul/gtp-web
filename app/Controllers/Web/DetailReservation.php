@@ -207,7 +207,7 @@ class DetailReservation extends ResourcePresenter
         $user = user()->username;
         $requestData = [
             'id' => $id,
-            'name' => $name_package.' by '.$user.' at '.$date,
+            'name' => $name_package.' extend by '.$user.' at '.$date,
             'type_id' => $package['type_id'],
             'min_capacity' => $package['min_capacity'],
             'price' => 0,
@@ -318,7 +318,7 @@ class DetailReservation extends ResourcePresenter
 
         if ($checkExistingData) {
             // Data sudah ada, set pesan error flash data
-            session()->setFlashdata('failed', 'Urutan aktivitas tersebut sudah ada.');
+            session()->setFlashdata('failed', 'The sequence of activities already exists.');
 
             return redirect()->back()->withInput();
         } else {
@@ -326,7 +326,7 @@ class DetailReservation extends ResourcePresenter
             $addPA = $this->detailPackageModel->add_new_packageActivity($requestData);
 
             if ($addPA) {
-                session()->setFlashdata('success', 'Aktivitas tersebut berhasil ditambahkan.');
+                session()->setFlashdata('success', 'The activity was added successfully.');
 
                 return redirect()->back();
             } else {
@@ -355,7 +355,7 @@ class DetailReservation extends ResourcePresenter
         $detailPackage = $this->detailPackageModel->get_detailPackage_by_id($package_id_reservation)->getResultArray();
         $getday = $this->packageDayModel->get_day_by_package($package_id_reservation)->getResultArray();
         $combinedData = $this->detailPackageModel->getCombinedData($package_id_reservation);
-// dd($getday);
+
         //data homestay
         $list_unit = $this->unitHomestayModel->get_unit_homestay_all()->getResultArray();
         if($datareservation['cancel']=='0'){
@@ -374,16 +374,17 @@ class DetailReservation extends ResourcePresenter
             $data_unit_booking=array();
             $data_price=array();
             foreach($booking_unit as $booking){
+                $date=$booking['date'];
                 $homestay_id=$booking['homestay_id'];
                 $unit_type=$booking['unit_type'];
                 $unit_number=$booking['unit_number'];
                 $reservation_id=$booking['reservation_id'];
 
                 if($datareservation['cancel']=='0'){
-                    $unit_booking[] = $this->detailReservationModel->get_unit_homestay_booking_data($homestay_id,$unit_type,$unit_number,$id)->getRowArray();
+                    $unit_booking[] = $this->detailReservationModel->get_unit_homestay_booking_data($date,$homestay_id,$unit_type,$unit_number,$id)->getRowArray();
                     $total_price_homestay = $this->detailReservationModel->get_price_homestay_booking($homestay_id,$unit_type,$unit_number,$id)->getRow();
                 } else if ($datareservation['cancel']=='1'){
-                    $unit_booking[] = $this->backupDetailReservationModel->get_unit_homestay_booking_data($homestay_id,$unit_type,$unit_number,$id)->getRowArray();
+                    $unit_booking[] = $this->backupDetailReservationModel->get_unit_homestay_booking_data($date,$homestay_id,$unit_type,$unit_number,$id)->getRowArray();
                     $total_price_homestay = $this->backupDetailReservationModel->get_price_homestay_booking($homestay_id,$unit_type,$unit_number,$id)->getRow();
                 }
                 
@@ -392,7 +393,7 @@ class DetailReservation extends ResourcePresenter
 
             $data_price=$total;
             $tphom = array_sum($data_price);
-            $tph=$tphom*$dayhome;
+            $tph=$tphom;
             $data_unit_booking=$unit_booking;
 
         } else{
@@ -474,16 +475,17 @@ class DetailReservation extends ResourcePresenter
             $data_unit_booking=array();
             $data_price=array();
             foreach($booking_unit as $booking){
+                $date=$booking['date'];
                 $homestay_id=$booking['homestay_id'];
                 $unit_type=$booking['unit_type'];
                 $unit_number=$booking['unit_number'];
                 $reservation_id=$booking['reservation_id'];
 
                 if($datareservation['cancel']=='0'){
-                    $unit_booking[] = $this->detailReservationModel->get_unit_homestay_booking_data($homestay_id,$unit_type,$unit_number,$id)->getRowArray();
+                    $unit_booking[] = $this->detailReservationModel->get_unit_homestay_booking_data($date,$homestay_id,$unit_type,$unit_number,$id)->getRowArray();
                 $total_price_homestay = $this->detailReservationModel->get_price_homestay_booking($homestay_id,$unit_type,$unit_number,$id)->getRow();
                 } else if ($datareservation['cancel']=='1'){
-                    $unit_booking[] = $this->backupDetailReservationModel->get_unit_homestay_booking_data($homestay_id,$unit_type,$unit_number,$id)->getRowArray();
+                    $unit_booking[] = $this->backupDetailReservationModel->get_unit_homestay_booking_data($date,$homestay_id,$unit_type,$unit_number,$id)->getRowArray();
                 $total_price_homestay = $this->backupDetailReservationModel->get_price_homestay_booking($homestay_id,$unit_type,$unit_number,$id)->getRow();
                 }
                 
@@ -600,16 +602,17 @@ class DetailReservation extends ResourcePresenter
             $data_unit_booking=array();
             $data_price=array();
             foreach($booking_unit as $booking){
+                $date=$booking['date'];
                 $homestay_id=$booking['homestay_id'];
                 $unit_type=$booking['unit_type'];
                 $unit_number=$booking['unit_number'];
                 $reservation_id=$booking['reservation_id'];
 
                 if($datareservation['cancel']=='0'){
-                    $unit_booking[] = $this->detailReservationModel->get_unit_homestay_booking_data($homestay_id,$unit_type,$unit_number,$id)->getRowArray();
+                    $unit_booking[] = $this->detailReservationModel->get_unit_homestay_booking_data($date,$homestay_id,$unit_type,$unit_number,$id)->getRowArray();
                 $total_price_homestay = $this->detailReservationModel->get_price_homestay_booking($homestay_id,$unit_type,$unit_number,$id)->getRow();
                 } else if ($datareservation['cancel']=='1'){
-                    $unit_booking[] = $this->backupDetailReservationModel->get_unit_homestay_booking_data($homestay_id,$unit_type,$unit_number,$id)->getRowArray();
+                    $unit_booking[] = $this->backupDetailReservationModel->get_unit_homestay_booking_data($date,$homestay_id,$unit_type,$unit_number,$id)->getRowArray();
                 $total_price_homestay = $this->backupDetailReservationModel->get_price_homestay_booking($homestay_id,$unit_type,$unit_number,$id)->getRow();
                 }
                 
@@ -750,7 +753,7 @@ class DetailReservation extends ResourcePresenter
         $updateDR = $this->reservationModel->update_cancel($id, $requestData);
 
         if ($updateDR) {
-            session()->setFlashdata('success', 'Reservasi telah di cancel');
+            session()->setFlashdata('success', 'Reservation has been canceled');
 
             return redirect()->back();
         } else {
@@ -780,10 +783,20 @@ class DetailReservation extends ResourcePresenter
 
         $date = date('Y-m-d H:i');
 
+        $datareservation = $this->reservationModel->get_reservation_by_id($id)->getRowArray();
+        if($datareservation['proof_of_deposit']!=null && $datareservation['proof_of_payment']==null){
+            $refund_amount = $datareservation['deposit']/2;
+        } elseif($datareservation['proof_of_deposit']!=null && $datareservation['proof_of_payment']!=null){
+            $refund_amount = ($datareservation['deposit']/2)+($datareservation['total_price']-$datareservation['deposit']);
+        } else {
+            $refund_amount = 0;
+        }
+
         $requestData = [
             'cancel' =>  $request['cancel'],
             'account_refund' => $request['account_refund'],
-            'cancel_date' => $date
+            'cancel_date' => $date,
+            'refund_amount' => $refund_amount,
         ];
 
         foreach ($requestData as $key => $value) {
@@ -794,7 +807,7 @@ class DetailReservation extends ResourcePresenter
         $updateR = $this->reservationModel->update_cancel($id, $requestData);
 
         if ($updateR) {
-            session()->setFlashdata('success', 'Reservasi telah di cancel dan refund diajukan');
+            session()->setFlashdata('success', 'Reservation has been canceled and refund requested');
 
             return redirect()->back();
         } else {
@@ -812,13 +825,70 @@ class DetailReservation extends ResourcePresenter
         $updateDR = $this->reservationModel->update_response($id, $requestData);
 
         if ($updateDR) {
-            session()->setFlashdata('success', 'Response telah dikirim');
+            session()->setFlashdata('success', 'Response already sent');
 
             return redirect()->back();
         } else {
             return redirect()->back()->withInput();
         }
 
+    }
+
+    public function savecheckdeposit($id = null)
+    {
+        $request = $this->request->getPost();
+
+        $requestData = [
+            'deposit_check' =>  $request['deposit_check'],
+        ];
+
+        $updateDR = $this->reservationModel->update_reservation($id, $requestData);
+
+        if ($updateDR) {
+            session()->setFlashdata('success', 'Proof of deposit has been checked');
+
+            return redirect()->back();
+        } else {
+            return redirect()->back()->withInput();
+        }
+    }
+
+    public function savecheckpayment($id = null)
+    {
+        $request = $this->request->getPost();
+
+        $requestData = [
+            'payment_check' =>  $request['payment_check'],
+        ];
+
+        $updateDR = $this->reservationModel->update_reservation($id, $requestData);
+
+        if ($updateDR) {
+            session()->setFlashdata('success', 'Proof of payment has been checked');
+
+            return redirect()->back();
+        } else {
+            return redirect()->back()->withInput();
+        }
+    }
+
+    public function savecheckrefund($id = null)
+    {
+        $request = $this->request->getPost();
+
+        $requestData = [
+            'refund_check' =>  $request['refund_check'],
+        ];
+
+        $updateDR = $this->reservationModel->update_reservation($id, $requestData);
+
+        if ($updateDR) {
+            session()->setFlashdata('success', 'Proof of refund has been checked');
+
+            return redirect()->back();
+        } else {
+            return redirect()->back()->withInput();
+        }
     }
 
     public function create()
@@ -859,19 +929,8 @@ class DetailReservation extends ResourcePresenter
 
             if(!$checkExistingData){
                 $addDR = $this->detailReservationModel->add_new_detail_reservation($requestData);
-            } else{
-                $addDR = null;
-            }
-        }
 
-        if ($addDR==null) {
-            session()->setFlashdata('failed', 'Unit homestay tersebut sudah dibooking.');
-
-            return redirect()->back()->withInput();
-        }elseif ($addDR) {
-            session()->setFlashdata('success', 'Unit homestay tersebut berhasil ditambahkan.');
-
-            $data_unit = $this->unitHomestayModel->get_unit_homestay_selected($requestData['unit_number'],$requestData['homestay_id'], $requestData['unit_type'])->getRowArray();
+                $data_unit = $this->unitHomestayModel->get_unit_homestay_selected($requestData['unit_number'],$requestData['homestay_id'], $requestData['unit_type'])->getRowArray();
             $datareservation = $this->reservationModel->get_reservation_by_id($requestData['reservation_id'])->getRowArray();
             $getday = $this->packageDayModel->get_day_by_package($datareservation['package_id'])->getResultArray();
 
@@ -879,7 +938,7 @@ class DetailReservation extends ResourcePresenter
             $day=max($getday);
             $daypack=$day['day'];
             $dayhome=$day['day']-1;
-            $tph=$dayhome*$data_unit['price'];
+            $tph=$data_unit['price'];
 
             $new_price = $datareservation['total_price']+$tph;
             $new_deposit= $new_price*0.2;
@@ -893,6 +952,19 @@ class DetailReservation extends ResourcePresenter
             // dd($id, $requestData);
             $updateR = $this->reservationModel->update_reservation($id, $requestData);
 
+            } else{
+                $addDR = null;
+            }
+        }
+
+        if ($addDR==null) {
+            session()->setFlashdata('failed', 'The homestay unit has been booked.');
+
+            return redirect()->back()->withInput();
+        }elseif ($addDR) {
+            session()->setFlashdata('success', 'The homestay unit was successfully added.');
+
+            
             return redirect()->back();
         } 
 
@@ -942,7 +1014,7 @@ class DetailReservation extends ResourcePresenter
             $deletePD= $this->packageDayModel->where($array2)->delete();
 
             if($deletePD){
-                session()->setFlashdata('pesan', 'Activity "'.$description.'" Berhasil di Hapus.');
+                session()->setFlashdata('pesan', 'Activity "'.$description.'" successfully deleted.');
 
                 $package = $this->packageModel->get_package_by_id($package_id)->getRowArray();
                 $package_id=$package['id'];
@@ -983,7 +1055,7 @@ class DetailReservation extends ResourcePresenter
         $deleteDP= $this->detailPackageModel->where($array)->delete();
 
         if ($deleteDP) {
-            session()->setFlashdata('pesan', 'Activity "'.$description.'" Berhasil di Hapus.');
+            session()->setFlashdata('pesan', 'Activity "'.$description.'" successfully deleted.');
             //jika success
             $package = $this->packageModel->get_package_by_id($package_id)->getRowArray();
 
@@ -1034,14 +1106,14 @@ class DetailReservation extends ResourcePresenter
         $reservation_id=$request['reservation_id'];
         $description=$request['description'];
 
-        $data_unit = $this->unitHomestayModel->get_unit_homestay_selected($date,$unit_number,$homestay_id, $unit_type)->getRowArray();
+        $data_unit = $this->unitHomestayModel->get_unit_homestay_selected($unit_number,$homestay_id, $unit_type)->getRowArray();
 
         $array = array('date' => $date,'unit_number' => $unit_number,'homestay_id' => $homestay_id, 'unit_type' => $unit_type);
         $bookingunit= $this->detailReservationModel->where($array)->find();
         $deleteBU= $this->detailReservationModel->where($array)->delete();
 
         if ($deleteBU) {
-            session()->setFlashdata('pesan', 'Unit Berhasil di Hapus.');
+            session()->setFlashdata('pesan', 'Unit Deleted Successfully.');
             
             $data_unit = $this->unitHomestayModel->get_unit_homestay_selected($unit_number, $homestay_id, $unit_type)->getRowArray();
             $datareservation = $this->reservationModel->get_reservation_by_id($reservation_id)->getRowArray();
@@ -1050,7 +1122,7 @@ class DetailReservation extends ResourcePresenter
 
             $day=max($getday);
             $dayhome=$day['day']-1;
-            $tph=$dayhome*$data_unit['price'];
+            $tph=$data_unit['price'];
 
             $new_price = $datareservation['total_price']-$tph;
             $new_deposit= $new_price*0.2;

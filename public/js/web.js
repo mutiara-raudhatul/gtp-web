@@ -2418,6 +2418,34 @@ function showMap(id = null) {
     })
 }
 
+// Hide All in Explore Ulakan
+function hideMap(id = null) {
+    if (id == 'cp') {
+        hideMarkers('cp');
+    } else if (id == 'ho') {
+        hideMarkers('ho');
+    } else if (id == 'sp') {
+        hideMarkers('sp');
+    } else if (id == 'wp') {
+        hideMarkers('wp');
+    }
+}
+
+function hideMarkers(category) {
+    if (category === 'cp') {
+        for (var i = 0; i < culinaryPlaceMarkers.length; i++) {
+            culinaryPlaceMarkers[i].setMap(null);
+        }
+        culinaryPlaceMarkers = [];
+    } else if (category === 'ho') {
+        hideHomestayMarkers();
+    } else if (category === 'sp') {
+        hideSouvenirPlaceMarkers();
+    } else if (category === 'wp') {
+        hideWorshipPlaceMarkers();
+    }
+}
+
 // Set map to coordinate put by user
 function findCoords(object) {
     clearMarker();

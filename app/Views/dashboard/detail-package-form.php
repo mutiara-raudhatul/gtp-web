@@ -303,6 +303,12 @@ $edit = in_array('edit', $uri);
                                                                     <label for="object">Object</label>
                                                                     <select class="form-control" name="object" id="object" required>
                                                                         <option value="" selected>Select Object</option>
+                                                                        <?php foreach ($object['attraction'] as $item) : ?>
+                                                                            <option value="<?= esc($item['id']); ?>">[Attraction] <?= esc($item['name']); ?></option>                                                                
+                                                                        <?php endforeach; ?>
+                                                                        <?php foreach ($object['homestay'] as $item) : ?>
+                                                                            <option value="<?= esc($item['id']); ?>">[Homestay] <?= esc($item['name']); ?></option>                                                                
+                                                                        <?php endforeach; ?>
                                                                         <?php foreach ($object['culinary'] as $item) : ?>
                                                                             <option value="<?= esc($item['id']); ?>">[Culinary] <?= esc($item['name']); ?></option>                                                                
                                                                         <?php endforeach; ?>
@@ -314,12 +320,7 @@ $edit = in_array('edit', $uri);
                                                                         <?php endforeach; ?>
                                                                         <?php foreach ($object['facility'] as $item) : ?>
                                                                             <option value="<?= esc($item['id']); ?>">[Facility] <?= esc($item['name']); ?></option>                                                                
-                                                                        <?php endforeach; ?>
-                                                                        <?php foreach ($object['homestay'] as $item) : ?>
-                                                                            <option value="<?= esc($item['id']); ?>">[Homestay] <?= esc($item['name']); ?></option>                                                                
-                                                                        <?php endforeach; ?>                                                                        <?php foreach ($object['attraction'] as $item) : ?>
-                                                                            <option value="<?= esc($item['id']); ?>">[Attraction] <?= esc($item['name']); ?></option>                                                                
-                                                                        <?php endforeach; ?>
+                                                                        <?php endforeach; ?>                                                                        
                                                                         <?php foreach ($object['event'] as $item) : ?>
                                                                             <option value="<?= esc($item['id']); ?>">[Event] <?= esc($item['name']); ?></option>                                                                
                                                                         <?php endforeach; ?>

@@ -26,14 +26,15 @@ class ReservationModel extends Model
 
     public function get_list_reservation() {
         $query = $this->db->table($this->table)
-            ->select("`reservation.id`, `reservation.user_id`, `users.username`,`reservation.package_id`,`reservation.total_people`, `package.name`, 
+            ->select("`reservation.id`, `reservation.user_id`, `users.username`,`reservation.package_id`,`reservation.total_people`, `package.name`, `package.custom`,
             `reservation.deposit`, `reservation.proof_of_deposit`,`reservation.deposit_date`,
             `reservation.total_price`, `reservation.proof_of_payment`,`reservation.payment_date`,
             `reservation.request_date`, `reservation.check_in`, `reservation.note`,
             `reservation.status`,`reservation.confirmation_date`,`reservation.feedback`,`reservation.admin_confirm`,
             `reservation.review`,`reservation.rating`,`reservation.response`,
             `reservation.cancel_date`,`reservation.cancel`,`reservation.account_refund`,
-            `reservation.proof_refund`,`reservation.refund_date`,`reservation.admin_refund`,`users.username`")
+            `reservation.proof_refund`,`reservation.refund_date`,`reservation.admin_refund`,`users.username`,
+            `reservation.refund_amount`,`reservation.deposit_check`,`reservation.payment_check`,`reservation.refund_check`")
             ->join('package', 'reservation.package_id = package.id')
             ->join('users', 'reservation.user_id = users.id')
             ->orderBy('reservation.request_date', 'DESC')
@@ -43,14 +44,15 @@ class ReservationModel extends Model
 
     public function get_list_reservation_report() {
         $query = $this->db->table($this->table)
-            ->select("`reservation.id`, `reservation.user_id`, `users.username`,`reservation.package_id`,`reservation.total_people`, `package.name`, 
+            ->select("`reservation.id`, `reservation.user_id`, `users.username`,`reservation.package_id`,`reservation.total_people`, `package.name`, `package.custom`,
             `reservation.deposit`, `reservation.proof_of_deposit`,`reservation.deposit_date`,
             `reservation.total_price`, `reservation.proof_of_payment`,`reservation.payment_date`,
             `reservation.request_date`, `reservation.check_in`, `reservation.note`,
             `reservation.status`,`reservation.confirmation_date`,`reservation.feedback`,`reservation.admin_confirm`,
             `reservation.review`,`reservation.rating`,`reservation.response`,
             `reservation.cancel_date`,`reservation.cancel`,`reservation.account_refund`,
-            `reservation.proof_refund`,`reservation.refund_date`,`reservation.admin_refund`,`users.username`")
+            `reservation.proof_refund`,`reservation.refund_date`,`reservation.admin_refund`,`users.username`,
+            `reservation.refund_amount`,`reservation.deposit_check`,`reservation.payment_check`,`reservation.refund_check`")
             ->join('package', 'reservation.package_id = package.id')
             ->join('users', 'reservation.user_id = users.id')
             ->orderBy('reservation.request_date', 'DESC')
@@ -104,7 +106,8 @@ class ReservationModel extends Model
             `reservation.status`,`reservation.confirmation_date`,`reservation.feedback`,`reservation.admin_confirm`,
             `reservation.review`,`reservation.rating`,`reservation.response`,
             `reservation.cancel_date`,`reservation.cancel`,`reservation.account_refund`,
-            `reservation.proof_refund`,`reservation.refund_date`,`reservation.admin_refund`,`users.username`")
+            `reservation.proof_refund`,`reservation.refund_date`,`reservation.admin_refund`,`users.username`,
+            `reservation.refund_amount`,`reservation.deposit_check`,`reservation.payment_check`,`reservation.refund_check`")
             ->join('package', 'reservation.package_id = package.id')
             ->join('users', 'reservation.user_id = users.id')
             ->orderBy('reservation.request_date', 'DESC')
@@ -124,7 +127,8 @@ class ReservationModel extends Model
             `reservation.status`,`reservation.confirmation_date`,`reservation.feedback`,`reservation.admin_confirm`,
             `reservation.review`,`reservation.rating`,`reservation.response`,
             `reservation.cancel_date`,`reservation.cancel`,`reservation.account_refund`,
-            `reservation.proof_refund`,`reservation.refund_date`,`reservation.admin_refund`,`users.username`")
+            `reservation.proof_refund`,`reservation.refund_date`,`reservation.admin_refund`,`users.username`,
+            `reservation.refund_amount`,`reservation.deposit_check`,`reservation.payment_check`,`reservation.refund_check`")
             ->join('package', 'reservation.package_id = package.id')
             ->join('users', 'reservation.user_id = users.id')
             ->where('reservation.id', $id)
@@ -164,7 +168,8 @@ class ReservationModel extends Model
             `reservation.status`,`reservation.confirmation_date`,`reservation.feedback`,`reservation.admin_confirm`,
             `reservation.review`,`reservation.rating`,`reservation.response`,
             `reservation.cancel_date`,`reservation.cancel`,`reservation.account_refund`,
-            `reservation.proof_refund`,`reservation.refund_date`,`reservation.admin_refund`,`users.username`")
+            `reservation.proof_refund`,`reservation.refund_date`,`reservation.admin_refund`,`package.custom`,`users.username`,
+            `reservation.refund_amount`,`reservation.deposit_check`,`reservation.payment_check`,`reservation.refund_check`")
             ->join('package', 'reservation.package_id = package.id')
             ->join('users', 'reservation.user_id = users.id')
             ->where('reservation.id', $id)
@@ -183,7 +188,8 @@ class ReservationModel extends Model
             `reservation.status`,`reservation.confirmation_date`,`reservation.feedback`,`reservation.admin_confirm`,
             `reservation.review`,`reservation.rating`,`reservation.response`,
             `reservation.cancel_date`,`reservation.cancel`,`reservation.account_refund`,
-            `reservation.proof_refund`,`reservation.refund_date`,`reservation.admin_refund`,`users.username`")
+            `reservation.proof_refund`,`reservation.refund_date`,`reservation.admin_refund`,`package.custom`,`users.username`,
+            `reservation.refund_amount`,`reservation.deposit_check`,`reservation.payment_check`,`reservation.refund_check`")
             ->join('package', 'reservation.package_id = package.id')
             ->join('users', 'reservation.user_id = users.id')
             ->where('reservation.package_id', $id)

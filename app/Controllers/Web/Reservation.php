@@ -52,10 +52,26 @@ class Reservation extends ResourcePresenter
         $user=user()->username;
         $datareservation = $this->reservationModel->get_list_reservation_by_user($user)->getResultArray();
 
+        // $check_in = $datareservation['check_in'];;;-;
+        // $totday=max($getday);
+        // $day=$totday['day']-1;
+        // // Ubah $check_in menjadi objek DateTime untuk mempermudah perhitungan
+        // $check_in_datetime = new DateTime($check_in);
+        // if($day=='0'){
+        //     $check_out = $check_in_datetime->format('Y-m-d') . ' 18:00:00';
+        // } else {
+        //     // Tambahkan jumlah hari
+        //     $check_in_datetime->modify('+' . $day . ' days');
+        //     // Atur waktu selalu menjadi 12:00:00
+        //     $check_out = $check_in_datetime->format('Y-m-d') . ' 12:00:00';
+        // }
+
         $data = [
             'title' => 'Reservation',
             'data' => $datareservation,
+            // 'check_out' => $check_out
         ];
+
         return view('web/reservation', $data);
     }
 

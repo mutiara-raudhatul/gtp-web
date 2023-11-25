@@ -38,7 +38,24 @@
                             <h4 class="card-title text-center">Package Information</h4>
                         </div>
                         <div class="col-3">
-                            <a href="<?= base_url('web/reservation/custombooking/').$data['id']; ?>" class="btn btn-success btn-sm float-end"><i class="fa fa-cart-plus"></i> Booking</a>
+                            <?php if (logged_in()) : ?> <!-- Assuming `logged_in()` is a function that checks if the user is logged in -->
+                                <a href="<?= base_url('web/reservation/custombooking/').$data['id']; ?>" class="btn btn-success btn-sm float-end"><i class="fa fa-cart-plus"></i> Booking</a>
+                            <?php else : ?>
+                                <button type="button" class="btn btn-success btn-sm float-end" onclick="redirectToLogin()"><i class="fa fa-cart-plus"></i> Booking</button>
+                                <script>
+                                    function redirectToLogin() {
+                                        Swal.fire({
+                                            icon: 'warning',
+                                            title: 'You are not logged in',
+                                            text: 'Please log in to proceed.',
+                                            confirmButtonText: 'OK',
+                                        }).then(() => {
+                                            // Optionally, redirect to the login page
+                                            window.location.href = '<?= base_url('/login'); ?>';
+                                        });
+                                    }
+                                </script>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -67,7 +84,7 @@
                                     </tr>
                                     <tr>
                                         <td class="fw-bold">Minimal Capacity</td>
-                                        <td><?= esc($data['min_capacity']); ?> orang</td>
+                                        <td><?= esc($data['min_capacity']); ?> people</td>
                                     </tr>
                                     <tr>
                                         <td class="fw-bold">Contact Person</td>

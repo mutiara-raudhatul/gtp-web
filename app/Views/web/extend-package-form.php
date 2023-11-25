@@ -181,7 +181,7 @@ $extend = in_array('extend', $uri);
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
 
-                                <form class="row g-3" action="<?= base_url('dashboard/servicepackage/createservicepackage/').$id; ?>" method="post" enctype="multipart/form-data">
+                                <form class="row g-3" action="<?= base_url('web/servicepackage/createservicepackage/').$id; ?>" method="post" enctype="multipart/form-data">
                                     <div class="modal-body">
                                         <div class="card-header">
                                             <?php @csrf_field(); ?>
@@ -543,7 +543,6 @@ $extend = in_array('extend', $uri);
                             <div class="form-group mb-4">
                                 <div class="col-auto ">
                                     <div class="btn-group float-right" role="group">
-                                        <button type="button" class="btn btn-outline-primary " data-bs-toggle="modal" data-bs-target="#servicesPackageModal" data-bs-whatever="@getbootstrap"><i class="fa fa-plus"></i> New Services</button>
                                         <button type="button" class="btn btn-outline-info " data-bs-toggle="modal" data-bs-target="#detailServicesPackageModal" data-bs-whatever="@getbootstrap"><i class="fa fa-plus"></i> Add Services Package</button>
                                     </div>
                                 </div>
@@ -589,7 +588,7 @@ $extend = in_array('extend', $uri);
                                                                 <td><?= esc($value['name']); ?></td>
                                                                 <td>
                                                                     <div class="btn-group" role="group" aria-label="Basic example">
-                                                                        <form action="<?= base_url('dashboard/servicepackage/delete/').$value['package_id']; ?>" method="post" class="d-inline">
+                                                                        <form action="<?= base_url('web/servicepackage/delete/').$value['package_id']; ?>" method="post" class="d-inline">
                                                                             <?= csrf_field(); ?>
                                                                             <input type="hidden" name="package_id" value="<?= esc($value['package_id']); ?>">
                                                                             <input type="hidden" name="service_package_id" value="<?= esc($value['service_package_id']); ?>">
@@ -631,7 +630,7 @@ $extend = in_array('extend', $uri);
                                                                 <td><?= esc($value['name']); ?></td>
                                                                 <td>
                                                                     <div class="btn-group" role="group" aria-label="Basic example">
-                                                                        <form action="<?= base_url('dashboard/servicepackage/delete/').$value['package_id']; ?>" method="post" class="d-inline">
+                                                                        <form action="<?= base_url('web/servicepackage/delete/').$value['package_id']; ?>" method="post" class="d-inline">
                                                                             <?= csrf_field(); ?>
                                                                             <input type="hidden" name="package_id" value="<?= esc($value['package_id']); ?>">
                                                                             <input type="hidden" name="service_package_id" value="<?= esc($value['service_package_id']); ?>">

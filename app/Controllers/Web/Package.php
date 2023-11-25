@@ -297,7 +297,6 @@ class Package extends ResourcePresenter
             'service' => $package['datase'],
             'servicelist' => $servicelist
         ];
-// dd($data);
         return view('dashboard/package-form', $data);
     }
 
@@ -384,7 +383,6 @@ class Package extends ResourcePresenter
             return redirect()->back()->withInput();
         }
     }
-    
 
     public function updatecustom($id = null)
     {
@@ -441,7 +439,7 @@ class Package extends ResourcePresenter
 
         
         $dataRC = $this->reservationModel->get_package_reservation_by_idp($id)->getRowArray();
-// dd($dataRC);
+
         $capacity=$request['min_capacity'];
         $price=$request['price'];
         $totalPeople=$dataRC['total_people'];
@@ -476,11 +474,14 @@ class Package extends ResourcePresenter
             $deposit = $totalPrice * 0.2;
         }
 
+        $rekaptotalPrice = $totalPrice+$dataRC['total_price'];
+        $rekaptotalPricedeposit = $deposit+$dataRC['deposit'];
+
         $requestData1 = [
-            'total_price' => $totalPrice, 
-            'deposit' => $deposit 
+            'total_price' => $rekaptotalPrice, 
+            'deposit' => $rekaptotalPricedeposit 
         ];
-        
+
         // dd($requestData1);
         $updateRA = $this->reservationModel->update_reservation($idr, $requestData1);
 

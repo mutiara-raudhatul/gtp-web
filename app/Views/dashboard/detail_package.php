@@ -36,7 +36,7 @@
                                     </tr>
                                     <tr>
                                         <td class="fw-bold">Minimal Capacity </td>
-                                        <td><?= esc($data['min_capacity']); ?> orang</td>
+                                        <td><?= esc($data['min_capacity']); ?> people</td>
                                     </tr>
                                     <tr>
                                         <td class="fw-bold">Contact Person</td>
