@@ -205,7 +205,7 @@
                 <div class="card-header">
                     <h5 class="card-title">Google Maps</h5>
                 </div>                
-                <?= $this->include('web/layouts/map-body-4'); ?>
+                <?= $this->include('web/layouts/map-body'); ?>
                 <script>
                     initMap(<?= esc($data['lat']); ?>, <?= esc($data['lng']); ?>)
                 </script>

@@ -219,7 +219,7 @@ class Homestay extends ResourcePresenter
         if ($checkExistingData) {
             // Data sudah ada, set pesan error flash data
             $session = session();
-            $session->setFlashdata('error', 'Data sudah ada');
+            $session->setFlashdata('error', 'The data already exists');
             return redirect()->back()->withInput();
         } else {
             // Data belum ada, jalankan query insert
@@ -299,9 +299,7 @@ class Homestay extends ResourcePresenter
                 rmdir($filepath);
                 $gallery[] = $fileImg->getFilename();
             }
-            $this->galleryHomestayModel->update_gallery($id, $gallery);
-        } else {
-            $this->galleryHomestayModel->delete_gallery($id);
+            $this->galleryHomestayModel->add_new_gallery($id, $gallery);
         }
 
         if ($updateHM) {

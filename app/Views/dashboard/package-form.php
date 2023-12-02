@@ -196,7 +196,7 @@ $edit = in_array('edit', $uri);
                                     <script>
                                         Swal.fire({
                                             icon: 'success',
-                                            title: 'Berhasil!',
+                                            title: 'Success!',
                                             text: '<?= session('success') ?>',
                                         });
                                     </script>
@@ -240,7 +240,7 @@ $edit = in_array('edit', $uri);
                                                                             <input type="hidden" name="name" value="<?= esc($value['name']); ?>">
                                                                             <input type="hidden" name="status" value="<?= esc($value['status']); ?>">
                                                                             <input type="hidden" name="_method" value="DELETE">
-                                                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('apakah anda yakin akan menghapus?');"><i class="fa fa-times"></i></button>
+                                                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this service?');"><i class="fa fa-times"></i></button>
                                                                         </form>
                                                                     </div>
                                                                 </td> 
@@ -282,7 +282,7 @@ $edit = in_array('edit', $uri);
                                                                             <input type="hidden" name="name" value="<?= esc($value['name']); ?>">
                                                                             <input type="hidden" name="status" value="<?= esc($value['status']); ?>">
                                                                             <input type="hidden" name="_method" value="DELETE">
-                                                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('apakah anda yakin akan menghapus?');"><i class="fa fa-times"></i></button>
+                                                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this service?');"><i class="fa fa-times"></i></button>
                                                                         </form>
                                                                     </div>
                                                                 </td> 

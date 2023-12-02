@@ -162,7 +162,7 @@ $users = in_array('users', $uri);
                     <script>
                         Swal.fire({
                             icon: 'success',
-                            title: 'Berhasil!',
+                            title: 'Success!',
                             text: '<?= session('success') ?>',
                         });
                     </script>
@@ -182,18 +182,41 @@ $users = in_array('users', $uri);
                 <div class="card-header">
                     <h4 class="card-title text-center">Custom Your Package</h4>
                 </div>
-                <div col="auto ">
+                <div col="auto">
                     <div class="btn-group float-end" role="group">
                         <a href="<?= base_url('web/reservation/custombooking/').$data['id']; ?>" class="btn btn-success"><i class="fa fa-cart-plus"></i> Booking This Package</a>                    
-                        <form action="<?= base_url('web/package/deletepackage') . '/' . $data['id']; ?>" method="post" class="d-inline">
+                        <form action="<?= base_url('web/package/deletepackage') . '/' . $data['id']; ?>" method="post" id="formcancel" class="d-inline">
                             <?= csrf_field(); ?>
                             <input type="hidden" name="id" value="<?= esc($data['id']); ?>">
                             <input type="hidden" name="name" value="<?= esc($data['name']); ?>">
                             <input type="hidden" name="_method" value="DELETE">
-                            <button type="submit" class="btn btn-danger" onclick="return confirm('Apakah anda yakin membatalkan kustomisasi paket ini?');"><i class="fa fa-times"></i>Cancel Custom This Package</button>
+                            <button type="button" class="btn btn-danger" onclick="return showconfirmcancelbooking();"><i class="fa fa-times"></i>Cancel Custom This Package</button>
                         </form>
                     </div>
                 </div>
+
+                <script>
+                function showconfirmcancelbooking() {
+                    Swal.fire({
+                        title: 'Cancel Custom?',
+                        text: 'You want to cancel customizing this package?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Yes, cancel it!',
+                        cancelButtonText: 'No, keep customizing'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Continue with form submission
+                            document.querySelector('#formcancel').submit();
+                        }
+                    });
+
+                    // Prevent form submission
+                    return false;
+                }
+                </script>
                 <div class="card-body">
                     <div class="row">
                         <div class="col table-responsive">
@@ -322,12 +345,12 @@ $users = in_array('users', $uri);
                                                                         <label for="activity_type">Activity Type</label>
                                                                         <select class="form-control" name="activity_type" id="activity_type" required>
                                                                             <option value="" selected>Select Type</option>
+                                                                            <option value="A">Attraction</option>
+                                                                            <option value="HO">Homestay</option>
                                                                             <option value="CP">Culinary</option>
                                                                             <option value="WO">Worship</option>
                                                                             <option value="SP">Souvenir Place</option>
-                                                                            <option value="HO">Homestay</option>
                                                                             <option value="FC">Facility</option>
-                                                                            <option value="A">Attraction</option>
                                                                             <option value="EV">Event</option>
                                                                         </select>
                                                                     </div>
@@ -335,6 +358,12 @@ $users = in_array('users', $uri);
                                                                         <label for="object">Object</label>
                                                                         <select class="form-control" name="object" id="object" required>
                                                                             <option value="" selected>Select Object</option>
+                                                                            <?php foreach ($object['attraction'] as $item) : ?>
+                                                                                <option value="<?= esc($item['id']); ?>">[Attraction] <?= esc($item['name']); ?></option>                                                                
+                                                                            <?php endforeach; ?>
+                                                                            <?php foreach ($object['homestay'] as $item) : ?>
+                                                                                <option value="<?= esc($item['id']); ?>">[Homestay] <?= esc($item['name']); ?></option>                                                                
+                                                                            <?php endforeach; ?>
                                                                             <?php foreach ($object['culinary'] as $item) : ?>
                                                                                 <option value="<?= esc($item['id']); ?>">[Culinary] <?= esc($item['name']); ?></option>                                                                
                                                                             <?php endforeach; ?>
@@ -346,11 +375,6 @@ $users = in_array('users', $uri);
                                                                             <?php endforeach; ?>
                                                                             <?php foreach ($object['facility'] as $item) : ?>
                                                                                 <option value="<?= esc($item['id']); ?>">[Facility] <?= esc($item['name']); ?></option>                                                                
-                                                                            <?php endforeach; ?>
-                                                                            <?php foreach ($object['homestay'] as $item) : ?>
-                                                                                <option value="<?= esc($item['id']); ?>">[Homestay] <?= esc($item['name']); ?></option>                                                                
-                                                                            <?php endforeach; ?>                                                                        <?php foreach ($object['attraction'] as $item) : ?>
-                                                                                <option value="<?= esc($item['id']); ?>">[Attraction] <?= esc($item['name']); ?></option>                                                                
                                                                             <?php endforeach; ?>
                                                                             <?php foreach ($object['event'] as $item) : ?>
                                                                                 <option value="<?= esc($item['id']); ?>">[Event] <?= esc($item['name']); ?></option>                                                                

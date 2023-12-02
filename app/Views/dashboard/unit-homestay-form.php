@@ -68,7 +68,7 @@ $edit = in_array('edit', $uri);
                             </div>
                             <form class="row g-3" action="<?= base_url('dashboard/unithomestay/createunit') . '/' . $homestay_id; ?>" method="post" enctype="multipart/form-data">
                                 <div class="modal-body">
-                                    <div class="card-header">
+                                    <div class="card-body">
                                         <?php @csrf_field(); ?>
                                         <h5 class="card-title">Homestay <?= esc($data['name']) ?></h5>
                                         <div class="row g-4">
@@ -112,7 +112,7 @@ $edit = in_array('edit', $uri);
                                             <div class="col-md-12">
                                                 <div class="form-group">
                                                     <label for="description">Description</label>
-                                                    <textarea name="description" id="description" class="form-control" cols="30" rows="10" required></textarea>
+                                                    <textarea name="description" id="description" class="form-control" cols="30" rows="6" required></textarea>
                                                 </div>
                                             </div>
                                         </div>

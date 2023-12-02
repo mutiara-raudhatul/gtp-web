@@ -36,8 +36,13 @@ class GalleryHomestayModel extends Model
     public function get_new_id()
     {
         $lastId = $this->db->table($this->table)->select('id')->orderBy('id', 'ASC')->get()->getLastRow('array');
-        $count = (int)substr($lastId['id'], 2);
-        $id = sprintf('GH%03d', $count + 1);
+
+        if(empty($lastId)){
+            $id = "GH001";
+        } else {
+            $count = (int)substr($lastId['id'], 2);
+            $id = sprintf('GH%03d', $count + 1);
+        }
         return $id;
     }
 

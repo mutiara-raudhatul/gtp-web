@@ -74,7 +74,7 @@
                     initMap(<?= esc($data['lat']); ?>, <?= esc($data['lng']); ?>)
                 </script>
                 <script>
-                    objectMarker("<?= esc($data['id']); ?>", <?= esc($data['lat']); ?>, <?= esc($data['lng']); ?>);
+                    objectMarker("<?= esc($data['id']); ?>", <?= esc($data['lat']); ?>, <?= esc($data['lng']); ?>, <?= esc($data['status']); ?>);
                 </script>
             </div>
 

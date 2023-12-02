@@ -226,7 +226,7 @@ class UnitHomestay extends ResourcePresenter
         $deleteFUD= $this->facilityUnitDetailModel->where($array)->delete();
 
         if ($deleteFUD) {
-            session()->setFlashdata('pesan', 'Facility Unit Berhasil di Hapus.');
+            session()->setFlashdata('pesan', 'Facility Unit Deleted Successfully.');
             
             return redirect()->back();
 
@@ -450,7 +450,7 @@ class UnitHomestay extends ResourcePresenter
             $deleteUH= $this->unitHomestayModel->delete_unit($array2);
 
             if ($deleteUH) {
-                session()->setFlashdata('pesan', 'Unit "'.$nama_unit.' '.$unit_number.'" Homestay "'.$homestay_id.'" Berhasil di Hapus.');
+                session()->setFlashdata('pesan', 'Unit "'.$nama_unit.' '.$unit_number.'" Homestay "'.$homestay_id.'" Deleted Successfully.');
                 
                 return redirect()->back();
 

@@ -36,6 +36,34 @@ class HomestayModel extends Model
         return $query;
     }
 
+    public function get_count_homestay()
+    {
+        $query = $this->db->table($this->table)
+            ->selectCount("id")
+            ->get();
+        return $query;
+    }
+
+    public function get_object($id=null)
+    {
+        $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
+        $query = $this->db->table($this->table)
+            ->select("id, name, {$coords}")
+            ->where('id', $id)
+            ->get();
+        return $query;
+    }
+
+    public function get_geoJson($id = null)
+    {
+        $geoJson = "ST_AsGeoJSON({$this->table}.geom) AS geoJson";
+        $query = $this->db->table($this->table)
+            ->select("{$geoJson}")
+            ->where('id', $id)
+            ->get();
+        return $query;
+    }
+
     // public function get_homestay_by_id($id = null)
     // {
     //     $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";

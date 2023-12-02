@@ -34,7 +34,7 @@ class ReservationModel extends Model
             `reservation.review`,`reservation.rating`,`reservation.response`,
             `reservation.cancel_date`,`reservation.cancel`,`reservation.account_refund`,
             `reservation.proof_refund`,`reservation.refund_date`,`reservation.admin_refund`,`users.username`,
-            `reservation.refund_amount`,`reservation.deposit_check`,`reservation.payment_check`,`reservation.refund_check`")
+            `reservation.refund_amount`,`reservation.deposit_check`,`reservation.payment_check`,`reservation.admin_deposit_check`,`reservation.admin_payment_check`,`reservation.refund_check`")
             ->join('package', 'reservation.package_id = package.id')
             ->join('users', 'reservation.user_id = users.id')
             ->orderBy('reservation.request_date', 'DESC')
@@ -52,7 +52,7 @@ class ReservationModel extends Model
             `reservation.review`,`reservation.rating`,`reservation.response`,
             `reservation.cancel_date`,`reservation.cancel`,`reservation.account_refund`,
             `reservation.proof_refund`,`reservation.refund_date`,`reservation.admin_refund`,`users.username`,
-            `reservation.refund_amount`,`reservation.deposit_check`,`reservation.payment_check`,`reservation.refund_check`")
+            `reservation.refund_amount`,`reservation.deposit_check`,`reservation.payment_check`,`reservation.admin_deposit_check`,`reservation.admin_payment_check`,`reservation.refund_check`")
             ->join('package', 'reservation.package_id = package.id')
             ->join('users', 'reservation.user_id = users.id')
             ->orderBy('reservation.request_date', 'DESC')
@@ -107,7 +107,7 @@ class ReservationModel extends Model
             `reservation.review`,`reservation.rating`,`reservation.response`,
             `reservation.cancel_date`,`reservation.cancel`,`reservation.account_refund`,
             `reservation.proof_refund`,`reservation.refund_date`,`reservation.admin_refund`,`users.username`,
-            `reservation.refund_amount`,`reservation.deposit_check`,`reservation.payment_check`,`reservation.refund_check`")
+            `reservation.refund_amount`,`reservation.deposit_check`,`reservation.payment_check`,`reservation.admin_deposit_check`,`reservation.admin_payment_check`,`reservation.refund_check`")
             ->join('package', 'reservation.package_id = package.id')
             ->join('users', 'reservation.user_id = users.id')
             ->orderBy('reservation.request_date', 'DESC')
@@ -128,7 +128,7 @@ class ReservationModel extends Model
             `reservation.review`,`reservation.rating`,`reservation.response`,
             `reservation.cancel_date`,`reservation.cancel`,`reservation.account_refund`,
             `reservation.proof_refund`,`reservation.refund_date`,`reservation.admin_refund`,`users.username`,
-            `reservation.refund_amount`,`reservation.deposit_check`,`reservation.payment_check`,`reservation.refund_check`")
+            `reservation.refund_amount`,`reservation.deposit_check`,`reservation.payment_check`,`reservation.admin_deposit_check`,`reservation.admin_payment_check`,`reservation.refund_check`")
             ->join('package', 'reservation.package_id = package.id')
             ->join('users', 'reservation.user_id = users.id')
             ->where('reservation.id', $id)
@@ -169,7 +169,7 @@ class ReservationModel extends Model
             `reservation.review`,`reservation.rating`,`reservation.response`,
             `reservation.cancel_date`,`reservation.cancel`,`reservation.account_refund`,
             `reservation.proof_refund`,`reservation.refund_date`,`reservation.admin_refund`,`package.custom`,`users.username`,
-            `reservation.refund_amount`,`reservation.deposit_check`,`reservation.payment_check`,`reservation.refund_check`")
+            `reservation.refund_amount`,`reservation.deposit_check`,`reservation.payment_check`,`reservation.admin_deposit_check`,`reservation.admin_payment_check`,`reservation.refund_check`")
             ->join('package', 'reservation.package_id = package.id')
             ->join('users', 'reservation.user_id = users.id')
             ->where('reservation.id', $id)
@@ -189,7 +189,7 @@ class ReservationModel extends Model
             `reservation.review`,`reservation.rating`,`reservation.response`,
             `reservation.cancel_date`,`reservation.cancel`,`reservation.account_refund`,
             `reservation.proof_refund`,`reservation.refund_date`,`reservation.admin_refund`,`package.custom`,`users.username`,
-            `reservation.refund_amount`,`reservation.deposit_check`,`reservation.payment_check`,`reservation.refund_check`")
+            `reservation.refund_amount`,`reservation.deposit_check`,`reservation.payment_check`,`reservation.admin_deposit_check`,`reservation.admin_payment_check`,`reservation.refund_check`")
             ->join('package', 'reservation.package_id = package.id')
             ->join('users', 'reservation.user_id = users.id')
             ->where('reservation.package_id', $id)
@@ -229,8 +229,14 @@ class ReservationModel extends Model
     }
 
     public function upload_deposit($id = null, $data = null) {
+        $updateData = [
+            'deposit_check' => null,
+            'deposit_date' => $data['deposit_date'],
+            'proof_of_deposit' => $data['proof_of_deposit']
+        ];
+
         $query = $this->db->table('reservation')
-            ->update($data, ['id' => $id]);
+                ->update($updateData, ['id' => $id]);
         return $query;
     }
 
@@ -245,14 +251,29 @@ class ReservationModel extends Model
     }
 
     public function upload_refund($id = null, $data = null) {
+
+        $updateData = [
+            'refund_check' => null,
+            'refund_date' => $data['refund_date'],
+            'admin_refund' => $data['admin_refund'],
+            'proof_refund' => $data['proof_refund']
+        ];
+
         $query = $this->db->table('reservation')
-            ->update($data, ['id' => $id]);
+            ->update($updateData, ['id' => $id]);
         return $query;
     }
 
     public function upload_fullpayment ($id = null, $data = null) {
+
+        $updateData = [
+            'payment_check' => null,
+            'payment_date' => $data['payment_date'],
+            'proof_of_payment' => $data['proof_of_payment']
+        ];
+
         $query = $this->db->table('reservation')
-            ->update($data, ['id' => $id]);
+            ->update($updateData, ['id' => $id]);
         return $query;
     }
 

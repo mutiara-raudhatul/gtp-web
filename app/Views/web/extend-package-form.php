@@ -231,15 +231,38 @@ $extend = in_array('extend', $uri);
                 <div col="auto ">
                     <div class="btn-group float-end" role="group">
                         <a href="<?= base_url('web/reservation/custombooking/').$data['id']; ?>" class="btn btn-success"><i class="fa fa-cart-plus"></i> Booking This Package</a>                    
-                        <form action="<?= base_url('web/package/deletepackage') . '/' . $data['id']; ?>" method="post" class="d-inline">
+                        <form action="<?= base_url('web/package/deletepackage') . '/' . $data['id']; ?>" method="post" id="formcancel" class="d-inline">
                             <?= csrf_field(); ?>
                             <input type="hidden" name="id" value="<?= esc($data['id']); ?>">
                             <input type="hidden" name="name" value="<?= esc($data['name']); ?>">
                             <input type="hidden" name="_method" value="DELETE">
-                            <button type="submit" class="btn btn-danger" onclick="return confirm('Apakah anda yakin membatalkan kustomisasi paket ini?');"><i class="fa fa-times"></i>Cancel Extend This Package</button>
+                            <button type="button" class="btn btn-danger" onclick="return showconfirmcancelbooking();"><i class="fa fa-times"></i>Cancel Extend This Package</button>
                         </form>
                     </div>
                 </div>
+
+                <script>
+                function showconfirmcancelbooking() {
+                    Swal.fire({
+                        title: 'Cancel Extend?',
+                        text: 'You want to cancel extend this package?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Yes, cancel it!',
+                        cancelButtonText: 'No, keep editing'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Continue with form submission
+                            document.querySelector('#formcancel').submit();
+                        }
+                    });
+
+                    // Prevent form submission
+                    return false;
+                }
+                </script>
                 <div class="card-body">
                     <div class="row">
                         <div class="col table-responsive">
@@ -413,6 +436,12 @@ $extend = in_array('extend', $uri);
                                                                     <label for="object">Object</label>
                                                                     <select class="form-control" name="object" id="object" required>
                                                                         <option value="" selected>Select Object</option>
+                                                                        <?php foreach ($object['attraction'] as $item) : ?>
+                                                                            <option value="<?= esc($item['id']); ?>">[Attraction] <?= esc($item['name']); ?></option>                                                                
+                                                                        <?php endforeach; ?>
+                                                                        <?php foreach ($object['homestay'] as $item) : ?>
+                                                                            <option value="<?= esc($item['id']); ?>">[Homestay] <?= esc($item['name']); ?></option>                                                                
+                                                                        <?php endforeach; ?>
                                                                         <?php foreach ($object['culinary'] as $item) : ?>
                                                                             <option value="<?= esc($item['id']); ?>">[Culinary] <?= esc($item['name']); ?></option>                                                                
                                                                         <?php endforeach; ?>
@@ -424,11 +453,6 @@ $extend = in_array('extend', $uri);
                                                                         <?php endforeach; ?>
                                                                         <?php foreach ($object['facility'] as $item) : ?>
                                                                             <option value="<?= esc($item['id']); ?>">[Facility] <?= esc($item['name']); ?></option>                                                                
-                                                                        <?php endforeach; ?>
-                                                                        <?php foreach ($object['homestay'] as $item) : ?>
-                                                                            <option value="<?= esc($item['id']); ?>">[Homestay] <?= esc($item['name']); ?></option>                                                                
-                                                                        <?php endforeach; ?>                                                                        <?php foreach ($object['attraction'] as $item) : ?>
-                                                                            <option value="<?= esc($item['id']); ?>">[Attraction] <?= esc($item['name']); ?></option>                                                                
                                                                         <?php endforeach; ?>
                                                                         <?php foreach ($object['event'] as $item) : ?>
                                                                             <option value="<?= esc($item['id']); ?>">[Event] <?= esc($item['name']); ?></option>                                                                
@@ -551,7 +575,7 @@ $extend = in_array('extend', $uri);
                                     <script>
                                         Swal.fire({
                                             icon: 'success',
-                                            title: 'Berhasil!',
+                                            title: 'Success!',
                                             text: '<?= session('success') ?>',
                                         });
                                     </script>
@@ -595,7 +619,7 @@ $extend = in_array('extend', $uri);
                                                                             <input type="hidden" name="name" value="<?= esc($value['name']); ?>">
                                                                             <input type="hidden" name="status" value="<?= esc($value['status']); ?>">
                                                                             <input type="hidden" name="_method" value="DELETE">
-                                                                            <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('apakah anda yakin akan menghapus?');"><i class="fa fa-times"></i></button>
+                                                                            <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Are you sure you want to delete?');"><i class="fa fa-times"></i></button>
                                                                         </form>
                                                                     </div>
                                                                 </td> 
@@ -637,7 +661,7 @@ $extend = in_array('extend', $uri);
                                                                             <input type="hidden" name="name" value="<?= esc($value['name']); ?>">
                                                                             <input type="hidden" name="status" value="<?= esc($value['status']); ?>">
                                                                             <input type="hidden" name="_method" value="DELETE">
-                                                                            <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('apakah anda yakin akan menghapus?');"><i class="fa fa-times"></i></button>
+                                                                            <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Are you sure you want to delete?');"><i class="fa fa-times"></i></button>
                                                                         </form>
                                                                     </div>
                                                                 </td> 

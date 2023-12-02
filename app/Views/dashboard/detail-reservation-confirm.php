@@ -5,7 +5,10 @@ $addhome = in_array('addhome', $uri);
 ?>
 
 <?= $this->extend('dashboard/layouts/main'); ?>
-
+<?php 
+    $dateTime = new DateTime('now'); // Waktu sekarang
+    $datenow = $dateTime->format('Y-m-d H:i:s'); 
+?>
 <?= $this->section('content') ?>
 
 <section class="section">
@@ -26,7 +29,7 @@ $addhome = in_array('addhome', $uri);
                     <script>
                         Swal.fire({
                             icon: 'success',
-                            title: 'Berhasil!',
+                            title: 'Success!',
                             text: '<?= session('success') ?>',
                         });
                     </script>
@@ -245,6 +248,7 @@ $addhome = in_array('addhome', $uri);
                             <thead>
                                 <tr>
                                     <th>No</th>
+                                    <th>Date</th>
                                     <th>Nama Homestay</th>
                                     <th>Capacity</th>
                                     <th>Price</th>
@@ -260,6 +264,7 @@ $addhome = in_array('addhome', $uri);
                                 <?php foreach ($booking as $dtb) : ?>
                                     <tr>
                                         <td><?= esc($i++); ?></td>
+                                        <td><?= esc(date('j F Y', strtotime($dtb['date']))); ?></td>
                                         <td>[<?= esc($dtb['name']); ?>] <?= esc($dtb['name_type']); ?> <?= esc($dtb['unit_number']); ?> <?= esc($dtb['nama_unit']); ?></td>
                                         <td><?= esc($dtb['capacity']); ?></td>
                                         <td><?= esc($dtb['price']); ?></td>
@@ -357,7 +362,7 @@ $addhome = in_array('addhome', $uri);
                 <div class="card-header">
                     <h4 class="card-title text-center">Payment</h4>
                     <?php if (in_groups(['admin']) || in_groups(['master'])) : ?>
-                        <?php if($data_package['type_name']==='Custom') : ?>
+                        <?php if($data_package['custom']==='1') : ?>
                             <?php if(($detail['status'])==null && ($data_package['custom'])==1 && ($detail['response'])==null && ($data_package['price'])==0): ?>
                                 <i class="btn-sm btn-secondary">Complete the customized package data before confirming</i>
                             <?php elseif(($detail['status'])==null && ($data_package['custom'])==1 && ($detail['response'])==null && ($data_package['price'])!=0): ?>
@@ -423,30 +428,34 @@ $addhome = in_array('addhome', $uri);
                                     <td><b>:   <?= 'Rp' . number_format(esc($detail['deposit']), 0, ',', '.'); ?></b></td>
                                 </tr>
                                 <tr>
-                                    <?php if($data_package['custom']==1 && $data_package['price']!=0 && $detail['response']!=null): ?>
-                                        <td>Response customer about the package </td>
-                                        <td> : <?= $detail['response'];  ?> </td>
+                                    <?php if($detail['refund_amount']!=null): ?>
+                                        <td><b>Refund Reservation</b></td>
+                                        <td><b>:   <?= 'Rp' . number_format(esc($detail['refund_amount']), 0, ',', '.'); ?></b></td>
                                     <?php endif; ?>
                                 </tr>
+
                                 <tr>
-                                    <?php if($detail['status']=='1' || $detail['status']=='0'): ?> 
-                                        <td> Feedback admin about reservation</td>
-                                        <td> : <?= esc($detail['feedback']); ?></td> 
-                                    <?php endif; ?>   
-                                </tr>
-                                <tr>
-                                    <?php if($detail['status']=='1' && $detail['cancel']=='0'): ?> 
+                                    <?php if($detail['status']=='1' && $detail['cancel']!=null): ?> 
                                         <td>
                                             <br>
-                                            <p> <b>Pembayaran melalui</b>
+                                            <p> <b>Pay for the reservation to </b>
                                                 <ul>
                                                     <li>Bank Syariah Mandiri (BSI) - Kode 451</li>
-                                                    <li>Nomor rekening:  73492379</li>
-                                                    <li>Atas nama: Green Talao Park</li>
+                                                    <li>Account number:  73492379</li>
+                                                    <li>In the name of: Green Talao Park</li>
                                                 </ul>
                                             </p>
                                         </td> 
-                                    <?php endif; ?>  
+                                    <?php endif; ?>
+                                </tr>
+                                <tr>
+                                    <td> 
+                                        <?php if($detail['cancel']=='1' && $detail['account_refund']!=null): ?> 
+                                            <br>
+                                            <b>Account refund</b>
+                                            <p><?= esc($detail['account_refund']); ?></p>
+                                        <?php endif; ?> 
+                                    </td> 
                                 </tr>
                                 <tr>
                                     <td><hr> </td>
@@ -455,7 +464,8 @@ $addhome = in_array('addhome', $uri);
 
                                 <tr>
                                     <td> Status  </td>
-                                    <td> : 
+                                    <td>
+                                        <?php $date = date('Y-m-d H:i');?>
                                         <?php if($detail['status']==null ): ?>    
                                             <?php if($detail['custom']=='1' ): ?>
                                                 <?php if($detail['response']==null ): ?>
@@ -469,19 +479,35 @@ $addhome = in_array('addhome', $uri);
                                         <?php elseif($detail['status']=='1' ): ?>    
                                             <?php if($detail['cancel']=='0'): ?>
                                                 <?php if($detail['proof_of_deposit']==null) :?>
-                                                    <a href="#" class="btn-sm btn-info float-center"><i>Pay deposit</i></a>
+                                                    <a href="#" class="btn-sm btn-info float-center"><i>Pay deposit!</i></a>
                                             
                                                 <?php elseif($detail['proof_of_deposit']!=null && $detail['proof_of_payment']==null): ?>
-                                                    <a href="#" class="btn-sm btn-info float-center"><i>Pay in full</i></a>
-                                                
+                                                    <?php if($detail['deposit_check']==null): ?>
+                                                        <a href="#" class="btn-sm btn-info float-center"><i>Deposit Check</i></a>
+                                                    <?php elseif($detail['deposit_check']==0): ?>
+                                                        <a href="#" class="btn-sm btn-info float-center"><i>Deposit Incorrect</i></a>
+                                                    <?php elseif($detail['deposit_check']==1): ?>
+                                                        <a href="#" class="btn-sm btn-info float-center"><i>Pay in full!</i></a>
+                                                    <?php endif; ?>
+
                                                 <?php elseif($detail['proof_of_deposit']!=null && $detail['proof_of_payment']!=null ):  ?>
-                                                    <?php if($detail['review']==null): ?>
-                                                        <a href="#" class="btn-sm btn-info float-center"><i>Unreviewed</i></a>
-                                                
-                                                    <?php else: ?>
-                                                        <a href="#" class="btn-sm btn-success float-center"><i>Done</i></a>
-                                                    
-                                                    <?php endif; ?>        
+                                                    <?php if($detail['payment_check']==null): ?>
+                                                        <a href="#" class="btn-sm btn-info float-center"><i>Payment Check</i></a>
+                                                    <?php elseif($detail['payment_check']==0): ?>
+                                                        <a href="#" class="btn-sm btn-info float-center"><i>Payment Incorrect</i></a>
+                                                    <?php elseif($detail['payment_check']==1): ?>
+
+                                                        <?php if($detail['review']==null): ?>
+                                                            <?php if($datenow>=$check_out): ?>
+                                                                <a href="#" class="btn-sm btn-dark float-center"><i>Unreviewed</i></a>
+                                                            <?php elseif($datenow<$check_out): ?>
+                                                                <a href="#" class="btn-sm btn-dark float-center"><i>Enjoy trip!</i></a>
+                                                            <?php endif; ?>
+                                                        <?php else: ?>
+                                                            <a href="#" class="btn-sm btn-success float-center"><i>Done</i></a>
+                                                        <?php endif; ?>   
+
+                                                    <?php endif; ?>       
                                                 <?php endif; ?>
                                             <?php elseif($detail['cancel']=='1'): ?>
                                                 <?php if($detail['account_refund']==null): ?>
@@ -491,59 +517,140 @@ $addhome = in_array('addhome', $uri);
                                                     <a href="#" class="btn-sm btn-secondary float-center"><i>Cancel & refund</i></a>
 
                                                 <?php elseif($detail['account_refund']!=null && $detail['proof_refund']!=null): ?>
-                                                    <a href="#" class="btn-sm btn-danger float-center"><i>Refund</i></a>
-
+                                                    <?php if($detail['refund_check']==null): ?>
+                                                        <a href="#" class="btn-sm btn-info float-center"><i>Refund Check</i></a>
+                                                    <?php elseif($detail['refund_check']==0): ?>
+                                                        <a href="#" class="btn-sm btn-info float-center"><i>Refund Incorrect</i></a>
+                                                    <?php elseif($detail['refund_check']==1): ?>
+                                                        <a href="#" class="btn-sm btn-danger float-center"><i>Refund Success</i></a>
+                                                    <?php endif; ?>
                                                 <?php endif; ?>
 
                                             <?php endif; ?>
 
                                         <?php elseif($detail['status']==0): ?>    
                                             <a href="#" class="btn-sm btn-danger float-center"><i>Rejected</i></a>
-                                        
-                                        <?php endif; ?>       
-                                    </td>                            
+                                        <?php endif; ?>  
+                                    </td>                           
+                                </tr>
+                                <tr>
+                                    <?php if($data_package['custom']==1 && $data_package['price']!=0 && $detail['response']!=null): ?>
+                                        <td>Response customer about the package </td>
+                                        <td> : <?= $detail['response'];  ?> (by <?= esc($detail['username']); ?>) </td>
+                                    <?php endif; ?>
                                 </tr>
                                 <tr>
                                     <?php if($detail['status']=='1' || $detail['status']=='0'): ?> 
-                                        <td> Confirmation Date</td>
-                                        <td> : <?= esc(date('l, j F Y H:i:s', strtotime($detail['confirmation_date']))); ?> (by adm<?= esc($detail['admin_confirm']); ?>)</td> 
+                                        <td> Feedback admin about reservation</td>
+                                        <td> : <?= esc($detail['feedback']); ?> (by adm <?= esc($detail['name_admin_confirm']); ?>)</td> 
+                                    <?php endif; ?>   
+                                </tr>
+                                <tr>
+                                    <?php if($detail['status']=='1' || $detail['status']=='0'): ?> 
+                                        <td><i class="fa fa-level-down" aria-hidden="true"></i> Confirmation Date</td>
+                                        <td> : <?= esc(date('l, j F Y H:i:s', strtotime($detail['confirmation_date']))); ?> (by adm <?= esc($detail['name_admin_confirm']); ?>)</td> 
                                     <?php endif; ?>   
                                 </tr>
                                 <tr>
                                     <?php if($detail['proof_of_deposit']!=null ): ?> 
-                                        <td>Deposit Payment
+                                        <td><i class="fa fa-level-down" aria-hidden="true"></i> Deposit Payment
                                                 <td>
-                                                    : <?= esc(date('l, j F Y H:i:s', strtotime($detail['deposit_date']))); ?>
+                                                    : <?= esc(date('l, j F Y H:i:s', strtotime($detail['deposit_date']))); ?> (by <?= esc($detail['username']); ?>)
                                                 </td>
                                                 
                                         </td>
                                     <?php endif; ?>  
                                 </tr>
                                 <tr>
-                                    <?php if($detail['proof_of_payment']!=null): ?> 
-                                        <td> Full Payment Reservation 
+                                    <?php if($detail['proof_of_deposit']!=null): ?>
+                                        <td>Status Deposit Payment
                                             <td>
-                                                : <?= esc(date('l, j F Y H:i:s', strtotime($detail['payment_date']))); ?>
+                                                : 
+                                                <?php if($detail['deposit_check']==null ): ?> 
+                                                We will check your proof of deposit 
+                                                <?php elseif($detail['deposit_check']==1 ): ?> 
+                                                Thank you. The proof of deposit is correct
+                                                <?php elseif($detail['deposit_check']==0 ): ?> 
+                                                Sorry. The proof of deposit is incorrect
+                                                <?php endif; ?> 
+                                                (by admin <?= esc($detail['name_admin_deposit_check']); ?>)
+                                            </td>
+                                        </td>
+                                    <?php endif; ?>
+                                </tr>
+                                <tr>
+                                    <?php if($detail['proof_of_payment']!=null): ?> 
+                                        <td><i class="fa fa-level-down" aria-hidden="true"></i> Full Payment Reservation 
+                                            <td>
+                                                : <?= esc(date('l, j F Y H:i:s', strtotime($detail['payment_date']))); ?> (by <?= esc($detail['username']); ?>)
                                             </td>
                                         </td>                                                
                                     <?php endif; ?>   
                                 </tr>
                                 <tr>
-                                    <?php if($detail['cancel_date']!=null): ?> 
-                                        <td> Cancel Reservation 
+                                    <?php if($detail['proof_of_payment']!=null): ?>
+                                        <td>Status FullPayment
                                             <td>
-                                                : <?= esc(date('l, j F Y H:i:s', strtotime($detail['cancel_date']))); ?>
+                                                : 
+                                                <?php if($detail['payment_check']==null ): ?> 
+                                                We will check your proof of payment 
+                                                <?php elseif($detail['payment_check']==1 ): ?> 
+                                                Thank you. The proof of payment is correct 
+                                                <?php elseif($detail['payment_check']==0 ): ?> 
+                                                Sorry. The proof of payment is incorrect
+                                                <?php endif; ?> 
+                                                (by admin <?= esc($detail['name_admin_payment_check']); ?>)
+                                            </td>
+                                        </td>
+                                    <?php endif; ?>  
+                                </tr>
+                                <tr>
+                                    <?php if($detail['cancel_date']!=null): ?> 
+                                        <td><i class="fa fa-level-down" aria-hidden="true"></i> Cancel Reservation 
+                                            <td>
+                                                : <?= esc(date('l, j F Y H:i:s', strtotime($detail['cancel_date']))); ?> (by <?= esc($detail['username']); ?>)
                                             </td>
                                         </td>                                                
                                     <?php endif; ?>   
                                 </tr>
                                 <tr>
                                     <?php if($detail['refund_date']!=null): ?> 
-                                        <td> Refund Reservation 
+                                        <td><i class="fa fa-level-down" aria-hidden="true"></i> Refund Reservation 
                                             <td>
-                                                : <?= esc(date('l, j F Y H:i:s', strtotime($detail['refund_date']))); ?> (by adm<?= esc($detail['admin_refund']); ?>)
+                                                : <?= esc(date('l, j F Y H:i:s', strtotime($detail['refund_date']))); ?> (by adm <?= esc($detail['name_admin_refund']); ?>)
                                             </td>
                                         </td>                                                
+                                    <?php endif; ?>   
+                                </tr>
+                                <tr>
+                                    <?php if($detail['refund_date']!=null): ?>
+                                        <td>Status Refund
+                                            <td>
+                                                : 
+                                                <?php if($detail['refund_check']==null ): ?> 
+                                                You must check the proof of refund (by adm <?= esc($detail['name_admin_refund']); ?>)
+                                                <?php elseif($detail['refund_check']==1 ): ?> 
+                                                Thank you. The proof of refund is correct (by <?= esc($detail['username']); ?>)
+                                                <?php elseif($detail['refund_check']==0 ): ?> 
+                                                Sorry. The proof of refund is incorrect (by <?= esc($detail['username']); ?>)
+                                                <?php endif; ?> 
+                                                
+                                            </td>
+                                        </td>
+                                    <?php endif; ?> 
+                                </tr>
+                                <tr>
+                                    <?php if($datenow>=$check_out && $detail['review']!=null): ?> 
+                                        <td><i class="fa fa-level-down" aria-hidden="true"></i> Reservation 
+                                            <td>
+                                                : You have finished your tour. Thank you for your review. See you on the next tour
+                                            </td>
+                                        </td>       
+                                    <?php elseif($datenow>=$check_out && $detail['review']==null && $detail['status']==1 && $detail['cancel']==0): ?> 
+                                        <td> Reservation 
+                                            <td>
+                                                : You have finished your tour. Please give your review.                                            </td>
+                                        </td>                                          
                                     <?php endif; ?>   
                                 </tr>
                             </tbody>
@@ -668,17 +775,39 @@ $addhome = in_array('addhome', $uri);
                             <tr>
                                 <td>
                                     <!-- upload proof refund -->
-
-                                    <?php if($detail['cancel']=='1' && $detail['proof_of_deposit']!=null): ?>
-                                        <br>
-                                        <b>Account refund</b>
-                                        <p><?= esc($detail['account_refund']); ?></p>
-                                        <?php if($detail['proof_refund']==null): ?>
-                                            
+                                    <?php if($detail['cancel']==1 && $detail['account_refund']!=null): ?>
+                                        <?php if($detail['refund_check']==null && $detail['proof_refund']==null):?>
+                                                <?php if (in_groups(['admin']) || in_groups(['master'])) : ?>
+                                                    <form class="form form-vertical" action="<?= base_url('dashboard/reservation/uploadrefund/').$detail['id']; ?>" method="post" onsubmit="checkRequired(event)" enctype="multipart/form-data">
+                                                        <div class="form-body">
+                                                            <div class="col-md-5 col-12">
+                                                                <br>
+                                                                <div class="form-group mb-4">
+                                                                        <label for="proof_refund" class="form-label">Proof of Refund</label>
+                                                                        <input class="form-control" accept="image/*" type="file" name="proof_refund" id="proof_refund" required>
+                                                                </div>
+                                                                <div hidden class="form-group mb-2">
+                                                                    <label hidden for="admin_refund" class="mb-2">Refund by</label>
+                                                                    <input type="number" readonly class="form-control" id="admin_refund" name="admin_refund" value="<?= user()->id; ?>" required rows="4"><?= ($edit) ? $data['admin_refund'] : old('admin_refund'); ?></input>
+                                                                </div> 
+                                                            </div>
+                                                                <div col="col-md-5 col-12">
+                                                                    <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
+                                                                    <button type="reset" class="btn btn-light-secondary me-1 mb-1">Reset</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                <?php else: ?>
+                                                    <p><i>Refund has not been sent</i></p>
+                                                <?php endif; ?>
+                                        <?php elseif($detail['refund_check']=='0' && $detail['proof_refund']!=null  ) :?>
                                             <?php if (in_groups(['admin']) || in_groups(['master'])) : ?>
+                                                <br><i>Your refund proof is incorrect. Please check again, and if you want to update the proof will be upload here</1>
                                                 <form class="form form-vertical" action="<?= base_url('dashboard/reservation/uploadrefund/').$detail['id']; ?>" method="post" onsubmit="checkRequired(event)" enctype="multipart/form-data">
                                                     <div class="form-body">
                                                         <div class="col-md-5 col-12">
+                                                            <br>
                                                             <div class="form-group mb-4">
                                                                     <label for="proof_refund" class="form-label">Proof of Refund</label>
                                                                     <input class="form-control" accept="image/*" type="file" name="proof_refund" id="proof_refund" required>
@@ -695,10 +824,8 @@ $addhome = in_array('addhome', $uri);
                                                         </div>
                                                     </div>
                                                 </form>
-                                            <?php else: ?>
-                                                <p><i>Refund belum dikirim</i></p>
-                                            <?php endif; ?>
-                                        <?php endif; ?>
+                                            <?php endif; ?>   
+                                        <?php endif; ?>   
                                     <?php endif; ?>
                                 </td>
                             </tr>
@@ -736,7 +863,7 @@ $addhome = in_array('addhome', $uri);
                         </div>
                         <div class="form-group">
                             <label for="feedback" class="mb-2">Feedback</label>
-                            <textarea class="form-control" id="feedback" name="feedback" cols="30" rows="5"  placeholder="Isikan tanggapan terhadap reservasi" required rows="4"><?= ($edit) ? $data['feedback'] : old('feedback'); ?></textarea>
+                            <textarea class="form-control" id="feedback" name="feedback" cols="30" rows="5"  placeholder="Enter a response to the reservation" required rows="4"><?= ($edit) ? $data['feedback'] : old('feedback'); ?></textarea>
                         </div>                   
                         <div hidden class="form-group mb-2">
                             <label hidden for="admin_confirm" class="mb-2">Confirm by</label>
@@ -766,6 +893,21 @@ $addhome = in_array('addhome', $uri);
                     </button>
                 </div>
                 <div class="modal-body">
+                    <?php if($detail['refund_check']==null) : ?>
+                            <div>
+                                <p>Refund has been sent. Please wait, customer will check the refund proof </p>
+                            </div>
+                        <?php else: ?>
+                            <div>
+                                <p>Proof of refund is 
+                                    <?php if($detail['refund_check']==1): ?>
+                                        <b class="btn btn-sm btn-success">Correct</b>
+                                    <?php elseif($detail['refund_check']==0): ?>
+                                        <b class="btn btn-sm btn-danger">Incorrect</b>
+                                    <?php endif; ?>
+                                </p>
+                            </div>
+                        <?php endif; ?>
                     <div id="cGallerycarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
                         <div class="carousel-indicators">
                                 <button type="button" data-bs-target="#cGallerycarousel" data-bs-slide-to="<?= esc($i=1); ?>" class="<?= ($i == 0) ? 'active' : ''; ?>"></button>
@@ -816,7 +958,7 @@ $addhome = in_array('addhome', $uri);
                         </div>
                         <div class="form-group">
                             <label for="account_refund" class="mb-2">Your bank account for refund</label>
-                            <textarea class="form-control" id="account_refund" name="account_refund" cols="30" rows="5"  placeholder="Isikan akun bank penerima refund dengan detail (Nama bank, nomor rekening, dan nama pemilik akun)" required rows="4"><?= ($edit) ? $data['refund'] : old('refund'); ?></textarea>
+                            <textarea class="form-control" id="account_refund" name="account_refund" cols="30" rows="5"  placeholder="Fill in the refund recipient's bank account with details (bank name, account number and account owner's name)" required rows="4"><?= ($edit) ? $data['refund'] : old('refund'); ?></textarea>
                         </div>                                                    
                         <div col="col-md-5 col-12">
                             <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
@@ -855,6 +997,10 @@ $addhome = in_array('addhome', $uri);
                                             <input type="radio" name="deposit_check" value="1" required>
                                             <i class="fa fa-check"></i> Correct
                                         </label>
+                                        <div hidden class="form-group mb-2">
+                                            <label hidden for="admin_deposit_check" class="mb-2">Check by</label>
+                                            <input type="hidden" readonly class="form-control" id="admin_deposit_check" name="admin_deposit_check" value="<?= user()->id; ?>" required rows="4"><?= ($edit) ? $data['admin_deposit_check'] : old('admin_deposit_check'); ?></input>
+                                        </div> 
                                         <div col="col-md-5 col-12">
                                             <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
                                         </div>
@@ -927,6 +1073,10 @@ $addhome = in_array('addhome', $uri);
                                             <input type="radio" name="payment_check" value="1" required>
                                             <i class="fa fa-check"></i> Correct
                                         </label>
+                                        <div hidden class="form-group mb-2">
+                                            <label hidden for="admin_payment_check" class="mb-2">Check by</label>
+                                            <input type="hidden" readonly class="form-control" id="admin_payment_check" name="admin_payment_check" value="<?= user()->id; ?>" required rows="4"><?= ($edit) ? $data['admin_payment_check'] : old('admin_payment_check'); ?></input>
+                                        </div> 
                                         <div col="col-md-5 col-12">
                                             <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
                                         </div>

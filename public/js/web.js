@@ -134,10 +134,10 @@ function digitVillage() {
             const data = response.data;
             digitasi.addGeoJson(data);
             digitasi.setStyle({
-                fillColor:'#03C988',
-                strokeWeight:1,
+                fillColor:'#00ff77',
+                strokeWeight:0.2,
                 strokeColor:'#ffffff',
-                fillOpacity: 0.2,
+                fillOpacity: 0.3,
                 clickable: false
             });
             digitasi.setMap(map);
@@ -217,6 +217,27 @@ function initMap4(lat = -0.7005628110637381, lng = 100.19529523662331) {
     directionsRenderer = new google.maps.DirectionsRenderer(rendererOptions);
 
     digitNagari();
+}
+
+function initMap9(lat = -0.7005628110637381, lng = 100.19529523662331) {
+    directionsService = new google.maps.DirectionsService();
+    const center = new google.maps.LatLng(lat, lng);
+    map = new google.maps.Map(document.getElementById("googlemaps"), {
+        zoom: 15,
+        center: center,
+        mapTypeId: 'roadmap',
+    });
+    var rendererOptions = {
+        map: map
+    }
+    map.set('styles', customStyled);
+    directionsRenderer = new google.maps.DirectionsRenderer(rendererOptions);
+
+    for (let d = 1; d < 2; d++){
+        const iddesa = d; 
+        digitNagari2(iddesa);
+    }
+    digitVillage();
 }
 
 // Display nagari digitizing
@@ -466,6 +487,200 @@ function digitNagari1(iddesa) {
         }
     });
 }
+
+// Display nagari digitizing
+function digitNagari() {
+    const digitasi = new google.maps.Data();
+    $.ajax({
+        url: baseUrl + '/api/village',
+        type: 'POST',
+        data: {
+            digitasi: 'V0001'
+        },
+        dataType: 'json',
+        success: function (response) {
+            const data = response.data;
+            digitasi.addGeoJson(data);
+            digitasi.setStyle({
+                fillColor:'#00b300',
+                strokeWeight:0.5,
+                strokeColor:'#ffffff',
+                fillOpacity: 0.1,
+                clickable: false
+            });
+            digitasi.setMap(map);
+        }
+    });
+}
+//Nagari
+function digitNagari2(iddesa) {
+    const digitasi = new google.maps.Data();
+    const infoWindow = new google.maps.InfoWindow();
+
+    if (iddesa < 2) {
+        digitasiValue = 'V0' + iddesa;
+    }
+    $.ajax({
+        url: baseUrl + '/api/village',
+        type: 'POST',
+        data: {
+            digitasi: digitasiValue
+        },
+        dataType: 'json',
+        success: function (response) {
+            const data = response.data;
+            digitasi.addGeoJson(data);
+            digitasi.setStyle({
+                fillColor: '#d3e602',
+                strokeWeight:0.1,
+                strokeColor: '#ffffff',
+                fillOpacity: 0.2,
+                clickable: true // Set clickable to true to enable click event
+            });
+            digitasi.setMap(map);
+
+            // Event listener for click
+            digitasi.addListener('click', function(event) {
+                const nagariName = event.feature.getProperty('name');
+
+                // Set label for the clicked feature using InfoWindow
+                infoWindow.setContent('Nagari '+nagariName);
+                infoWindow.setPosition(event.latLng);
+                infoWindow.open(map);
+            });
+        }
+    });
+}
+
+function digitHomestay(idhomestay) {
+    const digitasi = new google.maps.Data();
+
+    $.ajax({
+        url: baseUrl + '/api/homestay',
+        type: 'POST',
+        data: {
+            digitasi: idhomestay
+        },
+        dataType: 'json',
+        success: function (response) {
+            const data = response.data;
+            digitasi.addGeoJson(data);
+            digitasi.setStyle({
+                fillColor: '#9a02e6',
+                strokeWeight: 0.4,
+                strokeColor: '#ffffff',
+                fillOpacity: 0.4,
+            });
+            digitasi.setMap(map);
+        }
+    });
+}
+
+function digitCulinary(idculinary) {
+    const digitasi = new google.maps.Data();
+
+    $.ajax({
+        url: baseUrl + '/api/culinary',
+        type: 'POST',
+        data: {
+            digitasi: idculinary
+        },
+        dataType: 'json',
+        success: function (response) {
+            const data = response.data;
+            digitasi.addGeoJson(data);
+            digitasi.setStyle({
+                fillColor: '#ff6d4d',
+                strokeWeight: 0.3,
+                strokeColor: '#ffffff',
+                fillOpacity: 0.3,
+            });
+            digitasi.setMap(map);
+        }
+    });
+    // console.log(digitasi);
+}
+
+function digitSouvenir(idsouvenir) {
+    const digitasi = new google.maps.Data();
+
+    $.ajax({
+        url: baseUrl + '/api/souvenir',
+        type: 'POST',
+        data: {
+            digitasi: idsouvenir
+        },
+        dataType: 'json',
+        success: function (response) {
+            const data = response.data;
+            digitasi.addGeoJson(data);
+            digitasi.setStyle({
+                fillColor: '#f5670f',
+                strokeWeight: 0.3,
+                strokeColor: '#ffffff',
+                fillOpacity: 0.4,
+            });
+            digitasi.setMap(map);
+        }
+    });
+    // console.log(digitasi);
+}
+
+function digitWorship(idworship) {
+    const digitasi = new google.maps.Data();
+
+    $.ajax({
+        url: baseUrl + '/api/worship',
+        type: 'POST',
+        data: {
+            digitasi: idworship
+        },
+        dataType: 'json',
+        success: function (response) {
+            const data = response.data;
+            digitasi.addGeoJson(data);
+            digitasi.setStyle({
+                fillColor: '#00ad00',
+                strokeWeight: 0.3,
+                strokeColor: '#ffffff',
+                fillOpacity: 0.3,
+            });
+            digitasi.setMap(map);
+        }
+    });
+    // console.log(digitasi);
+}
+
+function digitFacility(idfc) {
+    const digitasi = new google.maps.Data();
+
+    if (idfc < 10) {
+        digitasiValue = 'FC00' + idfc;
+    } else if(idfc >= 10) {
+        digitasiValue = 'FC0' + idfc;
+    }
+
+    $.ajax({
+        url: baseUrl + '/api/facility',
+        type: 'POST',
+        data: {
+            digitasi: digitasiValue
+        },
+        dataType: 'json',
+        success: function (response) {
+            const data = response.data;
+            digitasi.addGeoJson(data);
+            digitasi.setStyle({
+                fillColor: '#898c87',
+                strokeWeight: 0.4,
+                strokeColor: '#ffffff',
+                fillOpacity: 0.4,
+            });
+            digitasi.setMap(map);
+        }
+    });
+}
+
 //GTP
 function digitVillage1() {
     const digitasi = new google.maps.Data();
@@ -811,7 +1026,7 @@ function digitMakam() {
 }
 
 // Display marker for loaded object
-function objectMarker(id, lat, lng, anim = true) {
+function objectMarker(id, lat, lng, status, anim = true) {
 
     google.maps.event.clearListeners(map, 'click');
     let pos = new google.maps.LatLng(lat, lng);
@@ -838,12 +1053,24 @@ function objectMarker(id, lat, lng, anim = true) {
         icon = baseUrl + '/media/icon/package.png';
     } else if (id.substring(0,2) === "HO") {
         icon = baseUrl + '/media/icon/homestay.png';
+        const idhomestay = id; 
+        digitHomestay(idhomestay);        
     } else if (id.substring(0,2) === "CP") {
-        icon = baseUrl + '/media/icon/culinary.png';
+        if (status === "1") {
+            icon = baseUrl + '/media/icon/cpgtp.png';
+        } else {
+            icon = baseUrl + '/media/icon/culinary.png';
+        }
+        const idculinary = id; 
+        digitCulinary(idculinary);
     } else if (id.substring(0,2) === "SP") {
         icon = baseUrl + '/media/icon/souvenir.png';
+        const idsouvenir = id; 
+        digitSouvenir(idsouvenir);
     } else if (id.substring(0,2) === "WP") {
         icon = baseUrl + '/media/icon/worship.png';
+        const idworship = id; 
+        digitWorship(idworship);
     }
 
     markerOption = {
@@ -859,6 +1086,67 @@ function objectMarker(id, lat, lng, anim = true) {
     marker.addListener('click', () => {
         infoWindow.close();
         objectInfoWindow(id);
+        infoWindow.open(map, marker);
+    });
+    markerArray[id] = marker;
+}
+
+function objectMarkerRoute(id, lat, lng, anim = true) {
+
+    google.maps.event.clearListeners(map, 'click');
+    let pos = new google.maps.LatLng(lat, lng);
+    let marker = new google.maps.Marker();
+
+    let icon;
+    if (id.substring(0,3) === "GTP") {
+        icon = baseUrl + '/media/icon/gtp.png';
+    } else if (id.substring(0,1) === "A") {
+        if(id === "A0001" || id === "A0004") {
+            icon = baseUrl + '/media/icon/tracking.png';
+        } else if(id === "A0005") {
+            icon = baseUrl + '/media/icon/fish.png';
+        } else if(id === "A0006") {
+            icon = baseUrl + '/media/icon/makam.png';
+        } else if(id === "A0007" || id === "A0008" || id === "A0009") {
+            icon = baseUrl + '/media/icon/music.png';
+        } else {
+            icon = baseUrl + '/media/icon/talao.png';
+        }
+    } else if (id.substring(0,2) === "EV") {
+        icon = baseUrl + '/media/icon/event.png';
+    } else if (id.substring(0,1) === "P") {
+        icon = baseUrl + '/media/icon/package.png';
+    } else if (id.substring(0,2) === "HO") {
+        icon = baseUrl + '/media/icon/homestay.png';
+        const idhomestay = id; 
+        digitHomestay(idhomestay);        
+    } else if (id.substring(0,2) === "CP") {
+        icon = baseUrl + '/media/icon/culinary.png';
+        const idculinary = id; 
+        digitCulinary(idculinary);
+    } else if (id.substring(0,2) === "SP") {
+        icon = baseUrl + '/media/icon/souvenir.png';
+        const idsouvenir = id; 
+        digitSouvenir(idsouvenir);
+    } else if (id.substring(0,2) === "WP") {
+        icon = baseUrl + '/media/icon/worship.png';
+        const idworship = id; 
+        digitWorship(idworship);
+    } 
+
+    markerOption = {
+        position: pos,
+        icon: icon,
+        animation: google.maps.Animation.DROP,
+        map: map,
+    }
+    marker.setOptions(markerOption);
+    if (!anim) {
+        marker.setAnimation(null);
+    }
+    marker.addListener('click', () => {
+        infoWindow.close();
+        objectInfoWindowRoute(id);
         infoWindow.open(map, marker);
     });
     markerArray[id] = marker;
@@ -976,6 +1264,302 @@ function objectInfoWindow(id){
                     contentButton =
                     '<br><div class="text-center">' +
                     '<a title="Nearby" class="btn icon btn-outline-primary mx-1" id="nearbyInfoWindow" onclick="openNearby(`'+ aid +'`,'+ lat +','+ lng +')"><i class="fa-solid fa-compass"></i></a>' +
+                    '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/attraction/'+aid+'><i class="fa-solid fa-info"></i></a>' +
+                    '</div>'
+                }
+                
+
+                if (currentUrl.includes(id)) {
+                    infoWindow.setContent(content);
+                    infoWindow.open(map, markerArray[aid])
+                } else {
+                    infoWindow.setContent(content + contentButton);
+                }
+            }
+        });
+    } else if (id.substring(0,2) === "EV") {
+        $.ajax({
+            url: baseUrl + '/api/event/' + id,
+            dataType: 'json',
+            success: function (response) {
+                let data = response.data;
+                let evid = data.id;
+                let name = data.name;
+                let type = data.type;
+                // let lat = data.lat;
+                // let lng = data.lng;
+                let price = (data.price == 0) ? 'Free' : formatter.format(data.price);
+
+                content =
+                    '<div class="text-center">' +
+                    '<p class="fw-bold fs-6">'+ name +'</p> <br>' +
+                    '<p><i class="fa-solid fa-spa"></i> '+ type +'</p>' +
+                    '<p><i class="fa-solid fa-money-bill me-2"></i> '+ price +'</p>' +
+                    '</div>';
+                contentButton =
+                    '<br><div class="text-center">' +
+                    '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/event/'+evid+'><i class="fa-solid fa-info"></i></a>' +
+                    '</div>'
+
+                if (currentUrl.includes(id)) {
+                    infoWindow.setContent(content);
+                    infoWindow.open(map, markerArray[evid])
+                } else {
+                    infoWindow.setContent(content + contentButton);
+                }
+            }
+        });
+    } else if (id.substring(0,1) === "P") {
+        $.ajax({
+            url: baseUrl + '/api/package/' + id,
+            dataType: 'json',
+            success: function (response) {
+                let data = response.data;
+                let paid = data.id;
+                let name = data.name;
+                // let lat = data.lat;
+                // let lng = data.lng;
+                let type_name = data.type_name;
+                let price = (data.price == 0) ? 'Free' : formatter.format(data.price);
+
+                content =
+                    '<div class="text-center">' +
+                    '<p class="fw-bold fs-6">'+ name +'</p> <br>' +
+                    '<p><i class="fa-solid fa-spa"></i> '+ type_name +'</p>' +
+                    '<p><i class="fa-solid fa-money-bill me-2"></i> '+ price +'</p>' +
+                    '</div>';
+                contentButton =
+                    '<br><div class="text-center">' +
+                    '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/package/'+paid+'><i class="fa-solid fa-info"></i></a>' +
+                    '</div>'
+
+                if (currentUrl.includes(id)) {
+                    infoWindow.setContent(content);
+                    infoWindow.open(map, markerArray[paid])
+                } else {
+                    infoWindow.setContent(content + contentButton);
+                }
+            }
+        }); 
+    } else if (id.substring(0,2) === "FC") {
+        $.ajax({
+            url: baseUrl + '/api/facility/' + id,
+            dataType: 'json',
+            success: function (response) {
+                let data = response.data;
+                let name = data.name;
+
+                content =
+                    '<div class="text-center">' +
+                    '<p class="fw-bold fs-6">'+ name +'</p>' +
+                    '</div>';
+
+                infoWindow.setContent(content);
+            }
+        });
+    } else if (id.substring(0,2) === "HO") {
+        $.ajax({
+            url: baseUrl + '/api/homestay/' + id,
+            dataType: 'json',
+            success: function (response) {
+                let data = response.data;
+                let hoid = data.id;
+                let name = data.name;
+                let lat = data.lat;
+                let lng = data.lng;
+                let contact_person = (data.contact_person == 0) ? '-' : data.contact_person;
+                let address = data.address;
+
+                content =
+                    '<div class="text-center">' +
+                    '<p class="fw-bold fs-6">'+ name +'</p> <br>' +
+                    '<p><i class="fa-solid fa-phone me-2"></i> '+ contact_person +'</p>' +
+                    '<p><i class="fa-solid fa-map-pin"></i> '+ address +'</p>' +
+                    '</div>';
+                contentButton =
+                    '<br><div class="text-center">' +
+                    '<a title="Route" class="btn icon btn-outline-primary mx-1" id="routeInfoWindow" onclick="routeTo('+lat+', '+lng+')"><i class="fa-solid fa-road"></i></a>' +
+                    '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/homestay/'+hoid+'><i class="fa-solid fa-info"></i></a>' +
+                    '</div>'
+                    console.log(currentUrl);
+                if (currentUrl.includes(id)) {
+                    if(currentUrl.startsWith('api')){
+                        infoWindow.setContent(content + contentButton );
+                    } else {
+                        infoWindow.setContent(content );
+                    }
+                    infoWindow.open(map, markerArray[hoid])
+                } else {
+                    infoWindow.setContent(content + contentButton);
+                }
+            }
+        });
+    } else if (id.substring(0,2) === "CP") {
+        $.ajax({
+            url: baseUrl + '/api/culinaryPlace/' + id,
+            dataType: 'json',
+            success: function (response) {
+                let data = response.data;
+                let cpid = data.id;
+                let name = data.name;
+                let lat = data.lat;
+                let lng = data.lng;
+                let contact = data.contact_person;
+                let address = data.address;
+
+                content =
+                    '<div class="text-center">' +
+                    '<p class="fw-bold fs-6">'+ name +'</p> <br>' +
+                    '<p><i class="fa-solid fa-address-book"></i> '+ contact +'</p>' +
+                    '<p><i class="fa-solid fa-map-pin"></i> '+ address +'</p>' +
+                    '</div>';
+                contentButton =
+                    '<br><div class="text-center">' +
+                    '<a title="Route" class="btn icon btn-outline-primary mx-1" id="routeInfoWindow" onclick="routeTo('+lat+', '+lng+')"><i class="fa-solid fa-road"></i></a>' +
+                    '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/culinaryPlace/'+cpid+'><i class="fa-solid fa-info"></i></a>' +
+                    '</div>'
+
+                if (currentUrl.includes(id)) {
+                    infoWindow.setContent(content);
+                    infoWindow.open(map, markerArray[cpid])
+                } else {
+                    infoWindow.setContent(content + contentButton);
+                }
+            }
+        });
+    }
+
+    else if (id.substring(0,2) === "SP") {
+        $.ajax({
+            url: baseUrl + '/api/souvenirPlace/' + id,
+            dataType: 'json',
+            success: function (response) {
+                let data = response.data;
+                let spid = data.id;
+                let name = data.name;
+                let lat = data.lat;
+                let lng = data.lng;
+                let contact = data.contact_person;
+                let address = data.address;
+
+                content =
+                    '<div class="text-center">' +
+                    '<p class="fw-bold fs-6">'+ name +'</p> <br>' +
+                    '<p><i class="fa-solid fa-address-book"></i> '+ contact +'</p>' +
+                    '<p><i class="fa-solid fa-map-pin"></i> '+ address +'</p>' +
+                    '</div>';
+                contentButton =
+                    '<br><div class="text-center">' +
+                    '<a title="Route" class="btn icon btn-outline-primary mx-1" id="routeInfoWindow" onclick="routeTo('+lat+', '+lng+')"><i class="fa-solid fa-road"></i></a>' +
+                    '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/souvenirPlace/'+spid+'><i class="fa-solid fa-info"></i></a>' +
+                    '</div>'
+
+                if (currentUrl.includes(id)) {
+                    infoWindow.setContent(content);
+                    infoWindow.open(map, markerArray[spid])
+                } else {
+                    infoWindow.setContent(content + contentButton);
+                }
+            }
+        });
+    } else if (id.substring(0,2) === "WP") {
+        $.ajax({
+            url: baseUrl + '/api/worshipPlace/' + id,
+            dataType: 'json',
+            success: function (response) {
+                let data = response.data;
+                let wpid = data.id;
+                let name = data.name;
+                let lat = data.lat;
+                let lng = data.lng;
+                let capacity = data.capacity;
+                let address = data.address;
+
+                content =
+                    '<div class="text-center">' +
+                    '<p class="fw-bold fs-6">'+ name +'</p> <br>' +
+                    '<p><i class="fa-solid fa-person-praying"></i> '+ capacity +'</p>' +
+                    '<p><i class="fa-solid fa-map-pin"></i> '+ address +'</p>' +
+                    '</div>';
+                contentButton =
+                    '<br><div class="text-center">' +
+                    '<a title="Route" class="btn icon btn-outline-primary mx-1" id="routeInfoWindow" onclick="routeTo('+lat+', '+lng+')"><i class="fa-solid fa-road"></i></a>' +
+                    '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/worshipPlace/'+wpid+'><i class="fa-solid fa-info"></i></a>' +
+                    '</div>'
+
+                if (currentUrl.includes(id)) {
+                    infoWindow.setContent(content);
+                    infoWindow.open(map, markerArray[wpid])
+                } else {
+                    infoWindow.setContent(content + contentButton);
+                }
+            }
+        });
+    }
+}
+
+function objectInfoWindowRoute(id){
+    let content = '';
+    let contentButton = '';
+
+    if (id.substring(0,3) === "GTP") {
+        $.ajax({
+            url: baseUrl + '/api/gtp/' + id,
+            dataType: 'json',
+            success: function (response) {
+                let data = response.data;
+                let name = data.name;
+
+                content =
+                    '<div class="text-center">' +
+                    '<p class="fw-bold fs-6">'+ name +'</p>' +
+                    '<p><i class="fa-solid fa-spa"></i> Tourism Village</p>' +
+                    '</div>';
+
+                infoWindow.setContent(content);
+            }
+        });
+    } else if (id.substring(0,1) === "A") {
+        $.ajax({
+            url: baseUrl + '/api/attraction/' + id,
+            dataType: 'json',
+            success: function (response) {
+                let data = response.data;
+                let aid = data.id;
+                let name = data.name;
+                let lat = data.lat;
+                let lng = data.lng;
+                let type = data.type;
+                let price = (data.price == 0) ? 'Free' : formatter.format(data.price);
+                
+                content =
+                    '<div class="text-center">' +
+                    '<p class="fw-bold fs-6">'+ name +'</p> <br>' +
+                    '<p><i class="fa-solid fa-spa"></i> '+ type +'</p>' +
+                    '<p><i class="fa-solid fa-money-bill me-2"></i> '+ price +'</p>' +
+                    '</div>';
+                
+                if(aid == "A0001" || aid == "A0004") {
+                    contentButton =
+                    '<br><div class="text-center">' +
+                    // '<a title="Nearby" class="btn icon btn-outline-primary mx-1" id="nearbyInfoWindow" onclick="openTrack(`'+ aid +'`,'+ lat +','+ lng +')"><i class="fa-solid fa-map-location-dot"></i></a>' +
+                    '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/attraction/'+aid+'><i class="fa-solid fa-info"></i></a>' +
+                    '</div>'
+                } else if(aid == "A0007" || aid == "A0008" || aid == "A0009") {
+                    contentButton =
+                    '<br><div class="text-center">' +
+                    // '<a title="Nearby" class="btn icon btn-outline-primary mx-1" id="nearbyInfoWindow" onclick="openNearby(`'+ aid +'`,'+ lat +','+ lng +')"><i class="fa-solid fa-compass"></i></a>' +
+                    '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/attraction/'+aid+'><i class="fa-solid fa-info"></i></a>' +
+                    '</div>'
+                } else if(aid == "A0005" || aid == "A0006") {
+                    contentButton =
+                    '<br><div class="text-center">' +
+                    '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/attraction/'+aid+'><i class="fa-solid fa-info"></i></a>' +
+                    '</div>'
+                } else {
+                    contentButton =
+                    '<br><div class="text-center">' +
+                    // '<a title="Nearby" class="btn icon btn-outline-primary mx-1" id="nearbyInfoWindow" onclick="openNearby(`'+ aid +'`,'+ lat +','+ lng +')"><i class="fa-solid fa-compass"></i></a>' +
                     '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/attraction/'+aid+'><i class="fa-solid fa-info"></i></a>' +
                     '</div>'
                 }
@@ -1396,7 +1980,7 @@ function displayFoundObject(response) {
                 '</tr>';
 
         $('#table-data').append(row);
-        objectMarker(item.id, item.lat, item.lng);
+        objectMarker(item.id, item.lat, item.lng, item.status);
         counter++;
     }
 }
@@ -1627,6 +2211,7 @@ function displayExploreResult(category, response) {
 
 function objectMarkerExplore(id, lat, lng, status, anim = true) {
 
+
     google.maps.event.clearListeners(map, 'click');
     let pos = new google.maps.LatLng(lat, lng);
     let marker = new google.maps.Marker();
@@ -1638,24 +2223,32 @@ function objectMarkerExplore(id, lat, lng, status, anim = true) {
         } else {
             icon = baseUrl + '/media/icon/homestay.png';
         }
+        const idhomestay = id; 
+        digitHomestay(idhomestay);  
     } else if (id.substring(0,2) === "CP") {
         if (status === "1") {
             icon = baseUrl + '/media/icon/cpgtp.png';
         } else {
             icon = baseUrl + '/media/icon/culinary.png';
         }
+        const idculinary = id; 
+        digitCulinary(idculinary);
     } else if (id.substring(0,2) === "SP") {
         if (status === "1") {
             icon = baseUrl + '/media/icon/souvenir.png';
         } else {
             icon = baseUrl + '/media/icon/souvenir.png';
         }
+        const idsouvenir = id; 
+        digitSouvenir(idsouvenir);
     } else if (id.substring(0,2) === "WP") {
         if (status === "1") {
             icon = baseUrl + '/media/icon/wpgtp.png';
         } else {
             icon = baseUrl + '/media/icon/worship.png';
         }
+        const idworship = id; 
+        digitWorship(idworship);
     }
 
     markerOption = {
@@ -2031,6 +2624,11 @@ function objectMarkerFacility(id, lat, lng, type, anim = true) {
         infoWindow.open(map, marker);
     });
     markerArray[id] = marker;
+
+    for (let h = 1; h < 30; h++){
+        const idfc = h; 
+        digitFacility(idfc);
+    }
 }
 
 // Add nearby object to corresponding table
@@ -2394,7 +2992,7 @@ function showMap(id = null) {
     if (id == 'cp') {
         URI = baseUrl + '/api/culinaryPlace'
     } else if (id == 'ho') {
-        URI = baseUrl + '/api/homestay'
+        URI = baseUrl + '/api/homestay';
     } else if (id == 'sp') {
         URI = baseUrl + '/api/souvenirPlace'
     } else if (id == 'wp') {
@@ -2416,34 +3014,6 @@ function showMap(id = null) {
             boundToObject();
         }
     })
-}
-
-// Hide All in Explore Ulakan
-function hideMap(id = null) {
-    if (id == 'cp') {
-        hideMarkers('cp');
-    } else if (id == 'ho') {
-        hideMarkers('ho');
-    } else if (id == 'sp') {
-        hideMarkers('sp');
-    } else if (id == 'wp') {
-        hideMarkers('wp');
-    }
-}
-
-function hideMarkers(category) {
-    if (category === 'cp') {
-        for (var i = 0; i < culinaryPlaceMarkers.length; i++) {
-            culinaryPlaceMarkers[i].setMap(null);
-        }
-        culinaryPlaceMarkers = [];
-    } else if (category === 'ho') {
-        hideHomestayMarkers();
-    } else if (category === 'sp') {
-        hideSouvenirPlaceMarkers();
-    } else if (category === 'wp') {
-        hideWorshipPlaceMarkers();
-    }
 }
 
 // Set map to coordinate put by user
@@ -2781,16 +3351,48 @@ function deleteObject(id = null, name = null, user = false) {
     });
 }
 
-function confirmDelete(itemNumber) {
+function confirmDeletereservation(formId) {
     Swal.fire({
-        title: 'Apakah anda yakin akan menghapus data unit homestay ini?',
-        text: "Tindakan tidak dapat dikembalikan!",
+        title: 'Are you sure you want to delete the reservation',
+        text: "You cannot restore this data!!",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#d33',
         cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Ya, hapus!',
-        cancelButtonText: 'Batal'
+        confirmButtonText: 'Yes, delete!',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Jika pengguna mengonfirmasi, submit formulir
+            document.getElementById(formId).submit(); // Mengirim formulir
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+            // Jika pengguna membatalkan, tindakan apa yang ingin Anda lakukan (contoh: tampilkan pesan)
+            Swal.fire('Not deleted', 'Your reservation is safe :)', 'info');
+        }
+    });
+}
+
+function showAlert() {
+    Swal.fire({
+        title: 'Unable to delete reservation',
+        text: "Reservations cannot be deleted because the admin has confirmed them!",
+        icon: 'info',
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: 'OK'
+    });
+    return false;
+}
+
+function confirmDelete(itemNumber) {
+    Swal.fire({
+        title: 'Are you sure you deleted this unit homestay?',
+        text: "You cannot restore this data!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete!',
+        cancelButtonText: 'Cancel'
     }).then((result) => {
         if (result.isConfirmed) {
             document.getElementById('deleteForm' + itemNumber).submit(); // Mengirim formulir
@@ -2800,14 +3402,14 @@ function confirmDelete(itemNumber) {
 
 function confirmDeleteFU(formId) {
     Swal.fire({
-        title: 'Apakah Anda Yakin?',
-        text: "Anda tidak akan dapat mengembalikan tindakan ini!",
+        title: 'Are you sure you deleted this facility?',
+        text: "You cannot restore this data!",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#d33',
         cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Ya, hapus saja!',
-        cancelButtonText: 'Batal'
+        confirmButtonText: 'Yes, delete!',
+        cancelButtonText: 'Cancel'
     }).then((result) => {
         if (result.isConfirmed) {
             document.getElementById(formId).submit(); // Mengirim formulir

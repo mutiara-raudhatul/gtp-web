@@ -9,7 +9,10 @@ use App\Models\GalleryPackageModel;
 use App\Models\PackageTypeModel;
 use App\Models\ServicePackageModel;
 use App\Models\DetailServicePackageModel;
+use App\Models\BackupDetailReservationModel;
+use App\Models\DetailReservationModel;
 use App\Models\ReservationModel;
+use App\Models\UnitHomestayModel;
 
 use App\Models\CulinaryPlaceModel;
 use App\Models\WorshipPlaceModel;
@@ -31,7 +34,11 @@ class Package extends ResourcePresenter
     protected $packageTypeModel;
     protected $servicePackageModel;
     protected $detailServicePackageModel;
+    protected $backupDetailReservationModel;
+    protected $detailReservationModel;
     protected $reservationModel;
+    protected $unitHomestayModel;
+
     protected $culinaryPlaceModel;
     protected $worshipPlaceModel;
     protected $facilityModel;
@@ -59,7 +66,11 @@ class Package extends ResourcePresenter
         $this->packageTypeModel = new PackageTypeModel();
         $this->servicePackageModel = new ServicePackageModel();
         $this->detailServicePackageModel = new DetailServicePackageModel();
+        $this->backupDetailReservationModel = new BackupDetailReservationModel();
+        $this->detailReservationModel = new DetailReservationModel();
         $this->reservationModel = new ReservationModel();
+        $this->unitHomestayModel = new UnitHomestayModel();
+        
         $this->culinaryPlaceModel = new CulinaryPlaceModel();
         $this->worshipPlaceModel = new WorshipPlaceModel();
         $this->facilityModel = new FacilityModel();
@@ -376,7 +387,8 @@ class Package extends ResourcePresenter
             // Delete gallery if no files are uploaded
             $this->galleryPackageModel->delete_gallery($id);
         }
-    
+
+
         if ($updatePA) {
             return redirect()->to(base_url('dashboard/package') . '/' . $id);
         } else {
@@ -437,9 +449,52 @@ class Package extends ResourcePresenter
             $this->galleryPackageModel->delete_gallery($id);
         }
 
-        
+        //data reservation
         $dataRC = $this->reservationModel->get_package_reservation_by_idp($id)->getRowArray();
+        $idr = $dataRC['id'];
 
+        //data homestay
+        $list_unit = $this->unitHomestayModel->get_unit_homestay_all()->getResultArray();
+    
+
+        if($dataRC['cancel']=='0'){
+            $booking_unit = $this->detailReservationModel->get_unit_homestay_bookingnya($idr)->getResultArray();
+        } else if ($dataRC['cancel']=='1'){
+            $booking_unit = $this->backupDetailReservationModel->get_unit_homestay_bookingnya($idr)->getResultArray();
+        }
+// dd($booking_unit);
+        if(!empty($booking_unit)){
+            $data_unit_booking=array();
+            $data_price=array();
+            foreach($booking_unit as $booking){
+                $date=$booking['date'];
+                $homestay_id=$booking['homestay_id'];
+                $unit_type=$booking['unit_type'];
+                $unit_number=$booking['unit_number'];
+                $reservation_id=$booking['reservation_id'];
+
+                if($dataRC['cancel']=='0'){
+                    $unit_booking[] = $this->detailReservationModel->get_unit_homestay_booking_data($date,$homestay_id,$unit_type,$unit_number,$idr)->getRowArray();
+                    $total_price_homestay = $this->detailReservationModel->get_price_homestay_booking($homestay_id,$unit_type,$unit_number,$idr)->getRow();
+                } else if ($dataRC['cancel']=='1'){
+                    $unit_booking[] = $this->backupDetailReservationModel->get_unit_homestay_booking_data($date,$homestay_id,$unit_type,$unit_number,$idr)->getRowArray();
+                    $total_price_homestay = $this->backupDetailReservationModel->get_price_homestay_booking($homestay_id,$unit_type,$unit_number,$idr)->getRow();
+                }
+                
+                $total []= $total_price_homestay->price;
+            }
+
+            $data_price=$total;
+            $tphom = array_sum($data_price);
+            $tph=$tphom;
+            $data_unit_booking=$unit_booking;
+
+        } else{
+            $data_unit_booking=[];
+            $tph = '0';
+        }
+
+        //update data biaya reservasi dan deposit
         $capacity=$request['min_capacity'];
         $price=$request['price'];
         $totalPeople=$dataRC['total_people'];
@@ -448,7 +503,7 @@ class Package extends ResourcePresenter
         $numberOfPackages = floor($totalPeople / $capacity);
         $remainder = $totalPeople % $capacity; // Hitung sisa hasil bagi
         $batas = ceil($capacity / 2);
-        
+
         if ($numberOfPackages != 0) {
             if ($remainder != 0 && $remainder < $batas) {
                 $add = 0.5;
@@ -474,8 +529,8 @@ class Package extends ResourcePresenter
             $deposit = $totalPrice * 0.2;
         }
 
-        $rekaptotalPrice = $totalPrice+$dataRC['total_price'];
-        $rekaptotalPricedeposit = $deposit+$dataRC['deposit'];
+        $rekaptotalPrice = $totalPrice+$tph;
+        $rekaptotalPricedeposit = $rekaptotalPrice*0.2;
 
         $requestData1 = [
             'total_price' => $rekaptotalPrice, 

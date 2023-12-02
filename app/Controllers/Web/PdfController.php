@@ -26,6 +26,8 @@ use App\Models\AttractionModel;
 use App\Models\EventModel;
 use App\Models\HomestayModel;
 use App\Models\ServicePackageModel;
+use App\Models\AccountModel;
+use Myth\Auth\Models\UserModel;
 
 class PdfController extends ResourcePresenter
 {
@@ -47,7 +49,8 @@ class PdfController extends ResourcePresenter
     protected $eventModel;
     protected $homestayModel;
     protected $servicePackageModel;
-
+    protected $accountModel;
+    protected $userModel;
     /**
      * Instance of the main Request object.
      *
@@ -78,6 +81,9 @@ class PdfController extends ResourcePresenter
         $this->eventModel = new EventModel();
         $this->homestayModel = new HomestayModel();
         $this->servicePackageModel = new ServicePackageModel();
+        $this->accountModel = new AccountModel();
+        $this->userModel = new UserModel();
+
     }
 
     public function generatePDF($id=null)
@@ -141,9 +147,15 @@ class PdfController extends ResourcePresenter
         $getday = $this->packageDayModel->get_day_by_package($package_id_reservation)->getResultArray();
         $combinedData = $this->detailPackageModel->getCombinedData($package_id_reservation);
 
-        $day=max($getday);
-        $daypack=$day['day'];
-        $dayhome=$day['day']-1;
+        if(!empty($getday)){
+            $day=max($getday);
+            $daypack=$day['day'];
+            $dayhome=$day['day']-1;
+        } else {
+            $day=1;
+            $daypack=1;
+            $dayhome=0;
+        }
         
         //data homestay
         $list_unit = $this->unitHomestayModel->get_unit_homestay_all()->getResultArray();
@@ -193,8 +205,14 @@ class PdfController extends ResourcePresenter
 
         // $check_in = "2023-10-29 11:51:00";
         $check_in = $datareservation['check_in'];
-        $totday=max($getday);
-        $day=$totday['day']-1;
+        if(!empty($getday)){
+            $totday = max($getday);
+            $day = $totday['day'] - 1;
+        } else {
+            $totday=1;
+            $day=$totday-1;
+        }
+
         // Ubah $check_in menjadi objek DateTime 
         $check_in_datetime = new DateTime($check_in);
 
@@ -207,10 +225,46 @@ class PdfController extends ResourcePresenter
             $check_out = $check_in_datetime->format('Y-m-d') . ' 12:00:00';
         }
 
+
+            $name_admin_confirm = $datareservation['admin_confirm'];
+            $getAdminC = $this->accountModel->get_profil_admin($datareservation['admin_confirm'])->getRowArray();
+            if($getAdminC!=null) {
+                $datareservation['name_admin_confirm'] =$getAdminC['username'];
+            } else {
+                $datareservation['name_admin_confirm'] = 'adm';
+            }
+
+            $name_admin_refund = $datareservation['admin_refund'];
+            $getAdminR = $this->accountModel->get_profil_admin($datareservation['admin_refund'])->getRowArray();
+            if($getAdminR!=null) {
+                $datareservation['name_admin_refund'] =$getAdminR['username'];
+            } else {
+                $datareservation['name_admin_refund'] = 'adm';
+            }
+
+            $admin_deposit_check = $datareservation['admin_deposit_check'];
+            $getAdminDP = $this->accountModel->get_profil_admin($datareservation['admin_deposit_check'])->getRowArray();
+            if($getAdminDP!=null) {
+                $datareservation['name_admin_deposit_check'] =$getAdminDP['username'];
+            } else {
+                $datareservation['name_admin_deposit_check'] = 'adm';
+            }
+
+            $admin_payment_check = $datareservation['admin_payment_check'];
+            $getAdminFP= $this->accountModel->get_profil_admin($datareservation['admin_payment_check'])->getRowArray();
+            if($getAdminFP!=null) {
+                $datareservation['name_admin_payment_check'] =$getAdminFP['username'];
+            } else {
+                $datareservation['name_admin_payment_check'] = 'adm';
+            }
+
         if (empty($datareservation)) {
             return redirect()->to('web/detailreservation');
         }
         $date = date('Y-m-d');
+
+        $user_id = $datareservation['user_id'];
+        $us = $this->userModel->get_users_by_id($user_id)->getRowArray();
 
         $data = [
             //data package
@@ -221,6 +275,7 @@ class PdfController extends ResourcePresenter
             'daypack'=> $daypack,
             'activity' => $combinedData,
             'detail' => $datareservation,
+            'customer' => $us,
 
             //data homestay
             'data' => $contents,
@@ -232,7 +287,6 @@ class PdfController extends ResourcePresenter
             'booking'=>$data_unit_booking,
             'price_home'=>$tph
         ];
-        // dd($data);
         // return view('web/invoice', $data);
 
                //view mengarah ke invoice.php

@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class AccountModel extends Model
 {
     protected $DBGroup          = 'default';
-    protected $table            = 'account';
+    protected $table            = 'users';
     protected $primaryKey       = 'id';
     protected $returnType       = 'array';
     protected $allowedFields    = ['id', 'username', 'first_name', 'last_name', 'email', 'address', 'phone', 'password', 'avatar', 'last_login', 'role_id'];
@@ -32,6 +32,15 @@ class AccountModel extends Model
     }
     
     public function get_profil($id = null)
+    {
+        $query = $this->db->table($this->table)
+            ->select("*")
+            ->where('id', $id)
+            ->get();
+        return $query;
+    }
+
+    public function get_profil_admin($id = null)
     {
         $query = $this->db->table($this->table)
             ->select("*")

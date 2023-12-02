@@ -242,7 +242,7 @@
                                             $lng_now = isset($object['lng'])?esc($object['lng']):'';
                                             $objectid = isset($object['object_id'])?esc($object['object_id']):'';
                                             ?>
-                                                objectMarker("<?= $objectid; ?>", <?= $lat_now; ?>, <?= $lng_now; ?>, true, <?= $loop; ?>);
+                                                objectMarkerRoute("<?= $objectid; ?>", <?= $lat_now; ?>, <?= $lng_now; ?>, true, <?= $loop; ?>);
                                             
                                             <?php 
                                                 if (1 < $loop) { ?>

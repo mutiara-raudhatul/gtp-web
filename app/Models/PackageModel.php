@@ -48,7 +48,7 @@ class PackageModel extends Model
             ->join('package_type', 'package.type_id = package_type.id')
             ->select('package_type.type_name')
             ->where('package.custom <>', '1')
-            ->orderby('package.id', 'ASC')
+            ->orderby('package.id', 'DESC')
             // ->groupby('package.id')
             ->get();
         return $query;

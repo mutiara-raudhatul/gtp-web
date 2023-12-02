@@ -10,6 +10,7 @@ use App\Models\PackageModel;
 use App\Models\PackageDayModel;
 use App\Models\DetailPackageModel;
 use App\Models\DetailServicePackageModel;
+use App\Models\AccountModel;
 
 use App\Models\CulinaryPlaceModel;
 use App\Models\WorshipPlaceModel;
@@ -42,6 +43,8 @@ class DetailReservation extends ResourcePresenter
     protected $attractionModel;
     protected $eventModel;
     protected $homestayModel;
+    protected $accountModel;
+
 
     /**
      * Instance of the main Request object.
@@ -71,7 +74,9 @@ class DetailReservation extends ResourcePresenter
         $this->attractionModel = new AttractionModel();
         $this->eventModel = new EventModel();
         $this->homestayModel = new HomestayModel();
+        $this->accountModel = new AccountModel();
 
+        
         $this->db = \Config\Database::connect();
         $this->builder = $this->db->table('package');;
     }
@@ -88,7 +93,7 @@ class DetailReservation extends ResourcePresenter
             'type_id' => 'T0000',
             'min_capacity' => null,
             'price' => null,
-            'description' => 'Paket wisata ini adalah kustomisasi dari user',
+            'description' => 'This tour package is customized by the user',
             'contact_person' => null,
             'custom'=>'1'
         ];
@@ -211,7 +216,7 @@ class DetailReservation extends ResourcePresenter
             'type_id' => $package['type_id'],
             'min_capacity' => $package['min_capacity'],
             'price' => 0,
-            'description' => 'Paket wisata ini disesuaikan oleh '.$name_package.' .'.$package['description'],
+            'description' => 'This tour package is extend from '.$name_package.' .'.$package['description'],
             'contact_person' => $package['contact_person'],
             'custom'=>'1'
         ];
@@ -363,13 +368,17 @@ class DetailReservation extends ResourcePresenter
         } else if ($datareservation['cancel']=='1'){
             $booking_unit = $this->backupDetailReservationModel->get_unit_homestay_bookingnya($id)->getResultArray();
         }
-        // $unit_booking= $this->detailReservationModel->get_unit_homestay_dtbooking($id)->getResultArray();
 
-        $day=max($getday);
-        $daypack=$day['day'];
-        $dayhome=$day['day']-1;
+        if(!empty($getday)){
+            $day=max($getday);
+            $daypack=$day['day'];
+            $dayhome=$day['day']-1;
+        } else {
+            $day=1;
+            $daypack=1;
+            $dayhome=0;
+        }
 
-        // dd($booking_unit);
         if(!empty($booking_unit)){
             $data_unit_booking=array();
             $data_price=array();
@@ -408,8 +417,15 @@ class DetailReservation extends ResourcePresenter
 
         // $check_in = "2023-10-29 11:51:00";
         $check_in = $datareservation['check_in'];
-        $totday=max($getday);
-        $day=$totday['day']-1;
+        
+        if(!empty($getday)){
+            $totday = max($getday);
+            $day = $totday['day'] - 1;
+        } else {
+            $totday=1;
+            $day=$totday-1;
+        }
+
         // Ubah $check_in menjadi objek DateTime untuk mempermudah perhitungan
         $check_in_datetime = new DateTime($check_in);
         if($day=='0'){
@@ -420,6 +436,28 @@ class DetailReservation extends ResourcePresenter
             // Atur waktu selalu menjadi 12:00:00
             $check_out = $check_in_datetime->format('Y-m-d') . ' 12:00:00';
         }
+
+
+        $requestDate = $datareservation['request_date'];
+        $request_date_datetime = new DateTime($requestDate);
+
+        $timeDifference = $check_in_datetime->diff($request_date_datetime);
+        $days = $timeDifference->d;
+
+        if($days>=3){
+            $batas_dp_dt = $check_in_datetime->modify('-' . '3'. ' days');
+            $batas_dp = $batas_dp_dt->format('Y-m-d H:i:s');
+    
+            $batas_cancel_dt = $check_in_datetime->modify('-' . '3'. ' days');
+            $batas_cancel = $batas_cancel_dt->format('Y-m-d H:i:s');
+        } elseif ($days<3){
+            $batas_dp_dt = $request_date_datetime->modify('+12 hours');
+            $batas_dp = $batas_dp_dt->format('Y-m-d H:i:s');
+        
+            $batas_cancel_dt = $request_date_datetime->modify('+12 hours');
+            $batas_cancel = $batas_cancel_dt->format('Y-m-d H:i:s');
+        }
+
         $data = [
             //data package
             'data_package' => $package,
@@ -439,7 +477,8 @@ class DetailReservation extends ResourcePresenter
             'check_out'=>$check_out,
             'data_unit'=>$booking_unit,
             'booking'=>$data_unit_booking,
-            'price_home'=>$tph
+            'price_home'=>$tph,
+            'batas_dp'=>$batas_dp,
         ];
         // dd($data);
         return view('web/detail-reservation-form', $data);
@@ -458,9 +497,16 @@ class DetailReservation extends ResourcePresenter
         $detailPackage = $this->detailPackageModel->get_detailPackage_by_id($package_reservation)->getResultArray();
         $getday = $this->packageDayModel->get_day_by_package($package_reservation)->getResultArray();
         $combinedData = $this->detailPackageModel->getCombinedData($package_reservation);
-        $day=max($getday);
-        $daypack=$day['day'];
-        $dayhome=$day['day']-1;
+        
+        if(!empty($getday)){
+            $day=max($getday);
+            $daypack=$day['day'];
+            $dayhome=$day['day']-1;
+        } else {
+            $day=1;
+            $daypack=1;
+            $dayhome=0;
+        }
 
         //data homestay
         $list_unit = $this->unitHomestayModel->get_unit_homestay_all()->getResultArray();
@@ -504,8 +550,14 @@ class DetailReservation extends ResourcePresenter
 
         // $check_in = "2023-10-29 11:51:00";
         $check_in = $datareservation['check_in'];
-        $totday=max($getday);
-        $day=$totday['day']-1;
+        if(!empty($getday)){
+            $totday = max($getday);
+            $day = $totday['day'] - 1;
+        } else {
+            $totday=1;
+            $day=$totday-1;
+        }
+
         // Ubah $check_in menjadi objek DateTime untuk mempermudah perhitungan
         $check_in_datetime = new DateTime($check_in);
 
@@ -543,6 +595,37 @@ class DetailReservation extends ResourcePresenter
             $batas_cancel = $batas_cancel_dt->format('Y-m-d H:i:s');
         }
 
+        $name_admin_confirm = $datareservation['admin_confirm'];
+        $getAdminC = $this->accountModel->get_profil_admin($datareservation['admin_confirm'])->getRowArray();
+        if($getAdminC!=null) {
+            $datareservation['name_admin_confirm'] =$getAdminC['username'];
+        } else {
+            $datareservation['name_admin_confirm'] = 'adm';
+        }
+
+        $name_admin_refund = $datareservation['admin_refund'];
+        $getAdminR = $this->accountModel->get_profil_admin($datareservation['admin_refund'])->getRowArray();
+        if($getAdminR!=null) {
+            $datareservation['name_admin_refund'] =$getAdminR['username'];
+        } else {
+            $datareservation['name_admin_refund'] = 'adm';
+        }
+
+        $admin_deposit_check = $datareservation['admin_deposit_check'];
+        $getAdminDP = $this->accountModel->get_profil_admin($datareservation['admin_deposit_check'])->getRowArray();
+        if($getAdminDP!=null) {
+            $datareservation['name_admin_deposit_check'] =$getAdminDP['username'];
+        } else {
+            $datareservation['name_admin_deposit_check'] = 'adm';
+        }
+
+        $admin_payment_check = $datareservation['admin_payment_check'];
+        $getAdminFP= $this->accountModel->get_profil_admin($datareservation['admin_payment_check'])->getRowArray();
+        if($getAdminFP!=null) {
+            $datareservation['name_admin_payment_check'] =$getAdminFP['username'];
+        } else {
+            $datareservation['name_admin_payment_check'] = 'adm';
+        }
 
         $data = [
             //data package
@@ -586,9 +669,15 @@ class DetailReservation extends ResourcePresenter
         $getday = $this->packageDayModel->get_day_by_package($package_reservation)->getResultArray();
         $combinedData = $this->detailPackageModel->getCombinedData($package_reservation);
 
-        $day=max($getday);
-        $daypack=$day['day'];
-        $dayhome=$day['day']-1;
+        if(!empty($getday)){
+            $day=max($getday);
+            $daypack=$day['day'];
+            $dayhome=$day['day']-1;
+        } else {
+            $day=1;
+            $daypack=1;
+            $dayhome=0;
+        }
 
         //data homestay
         $list_unit = $this->unitHomestayModel->get_unit_homestay_all()->getResultArray();
@@ -613,7 +702,7 @@ class DetailReservation extends ResourcePresenter
                 $total_price_homestay = $this->detailReservationModel->get_price_homestay_booking($homestay_id,$unit_type,$unit_number,$id)->getRow();
                 } else if ($datareservation['cancel']=='1'){
                     $unit_booking[] = $this->backupDetailReservationModel->get_unit_homestay_booking_data($date,$homestay_id,$unit_type,$unit_number,$id)->getRowArray();
-                $total_price_homestay = $this->backupDetailReservationModel->get_price_homestay_booking($homestay_id,$unit_type,$unit_number,$id)->getRow();
+                    $total_price_homestay = $this->backupDetailReservationModel->get_price_homestay_booking($homestay_id,$unit_type,$unit_number,$id)->getRow();
                 }
                 
                 $total []= $total_price_homestay->price;
@@ -622,7 +711,7 @@ class DetailReservation extends ResourcePresenter
             $data_price=$total;
 
             $tphom = array_sum($data_price);
-            $tph=$tphom*$dayhome;
+            $tph=$tphom;
             $data_unit_booking=$unit_booking;
 
         } else{
@@ -637,8 +726,16 @@ class DetailReservation extends ResourcePresenter
         $date = date('Y-m-d');
 
         $check_in = $datareservation['check_in'];
-        $totday=max($getday);
-        $day=$totday['day']-1;
+
+        if(!empty($getday)){
+            $totday = max($getday);
+            $day = $totday['day'] - 1;
+        } else {
+            $totday=1;
+            $day=$totday-1;
+        }
+
+
         // Ubah $check_in menjadi objek DateTime untuk mempermudah perhitungan
         $check_in_datetime = new DateTime($check_in);
         
@@ -673,6 +770,39 @@ class DetailReservation extends ResourcePresenter
             $batas_cancel = $batas_cancel_dt->format('Y-m-d H:i:s');
         };
 
+        $name_admin_confirm = $datareservation['admin_confirm'];
+        $getAdminC = $this->accountModel->get_profil_admin($datareservation['admin_confirm'])->getRowArray();
+        if($getAdminC!=null) {
+            $datareservation['name_admin_confirm'] =$getAdminC['username'];
+        } else {
+            $datareservation['name_admin_confirm'] = 'adm';
+        }
+
+        $name_admin_refund = $datareservation['admin_refund'];
+        $getAdminR = $this->accountModel->get_profil_admin($datareservation['admin_refund'])->getRowArray();
+        if($getAdminR!=null) {
+            $datareservation['name_admin_refund'] =$getAdminR['username'];
+        } else {
+            $datareservation['name_admin_refund'] = 'adm';
+        }
+
+        $admin_deposit_check = $datareservation['admin_deposit_check'];
+        $getAdminDP = $this->accountModel->get_profil_admin($datareservation['admin_deposit_check'])->getRowArray();
+        if($getAdminDP!=null) {
+            $datareservation['name_admin_deposit_check'] =$getAdminDP['username'];
+        } else {
+            $datareservation['name_admin_deposit_check'] = 'adm';
+        }
+
+        $admin_payment_check = $datareservation['admin_payment_check'];
+        $getAdminFP= $this->accountModel->get_profil_admin($datareservation['admin_payment_check'])->getRowArray();
+        if($getAdminFP!=null) {
+            $datareservation['name_admin_payment_check'] =$getAdminFP['username'];
+        } else {
+            $datareservation['name_admin_payment_check'] = 'adm';
+        }
+
+        
         $data = [
             //data package
             'data_package' => $package,
@@ -807,7 +937,7 @@ class DetailReservation extends ResourcePresenter
         $updateR = $this->reservationModel->update_cancel($id, $requestData);
 
         if ($updateR) {
-            session()->setFlashdata('success', 'Reservation has been canceled and refund requested');
+            session()->setFlashdata('success', 'Reservation has been canceled and refund requested. Please wait the refund from us');
 
             return redirect()->back();
         } else {
@@ -840,6 +970,7 @@ class DetailReservation extends ResourcePresenter
 
         $requestData = [
             'deposit_check' =>  $request['deposit_check'],
+            'admin_deposit_check' => $request['admin_deposit_check'],
         ];
 
         $updateDR = $this->reservationModel->update_reservation($id, $requestData);
@@ -859,6 +990,7 @@ class DetailReservation extends ResourcePresenter
 
         $requestData = [
             'payment_check' =>  $request['payment_check'],
+            'admin_payment_check' => $request['admin_payment_check'],
         ];
 
         $updateDR = $this->reservationModel->update_reservation($id, $requestData);
@@ -935,9 +1067,15 @@ class DetailReservation extends ResourcePresenter
             $getday = $this->packageDayModel->get_day_by_package($datareservation['package_id'])->getResultArray();
 
 
-            $day=max($getday);
-            $daypack=$day['day'];
-            $dayhome=$day['day']-1;
+            if(!empty($getday)){
+                $day=max($getday);
+                $daypack=$day['day'];
+                $dayhome=$day['day']-1;
+            } else {
+                $day=1;
+                $daypack=1;
+                $dayhome=0;
+            }
             $tph=$data_unit['price'];
 
             $new_price = $datareservation['total_price']+$tph;
@@ -1120,8 +1258,15 @@ class DetailReservation extends ResourcePresenter
             $getday = $this->packageDayModel->get_day_by_package($datareservation['package_id'])->getResultArray();
 
 
-            $day=max($getday);
-            $dayhome=$day['day']-1;
+            if(!empty($getday)){
+                $day=max($getday);
+                $daypack=$day['day'];
+                $dayhome=$day['day']-1;
+            } else {
+                $day=1;
+                $daypack=1;
+                $dayhome=0;
+            }
             $tph=$data_unit['price'];
 
             $new_price = $datareservation['total_price']-$tph;
@@ -1182,8 +1327,16 @@ class DetailReservation extends ResourcePresenter
         $date = date('Y-m-d');
 
         $check_in = $datareservation['check_in'];
-        $totday=max($getday);
-        $day=$totday['day']-1;
+
+        if(!empty($getday)){
+            $totday = max($getday);
+            $day = $totday['day'] - 1;
+        } else {
+            $totday=1;
+            $day=$totday-1;
+        }
+
+
         // Ubah $check_in menjadi objek DateTime untuk mempermudah perhitungan
         $check_in_datetime = new DateTime($check_in);
         if($day=='0'){

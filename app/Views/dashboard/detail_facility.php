@@ -54,7 +54,7 @@
                     <h5 class="card-title">Google Maps</h5>
                 </div>
 
-                <?= $this->include('web/layouts/map-body'); ?>
+                <?= $this->include('web/layouts/map-body-4'); ?>
                 <script>
                     initMap(<?= esc($data['lat']); ?>, <?= esc($data['lng']); ?>)
                 </script>

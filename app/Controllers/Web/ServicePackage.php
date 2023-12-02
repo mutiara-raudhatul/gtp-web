@@ -157,7 +157,7 @@ class ServicePackage extends ResourcePresenter
 
         if ($checkExistingData) {
             // Data sudah ada, set pesan error flash data
-            session()->setFlashdata('failed', 'Service tersebut sudah ada.');
+            session()->setFlashdata('failed', 'This service already exists.');
 
             return redirect()->back()->withInput();
         } else {
@@ -165,7 +165,7 @@ class ServicePackage extends ResourcePresenter
             $addSP = $this->detailServicePackageModel->add_new_detail_service($id, $requestData);
        
             if ($addSP) {
-                session()->setFlashdata('success', 'Service package tersebut berhasil ditambahkan.');
+                session()->setFlashdata('success', 'The service package has been successfully added.');
 
                 return redirect()->back();
             } else {
@@ -188,7 +188,7 @@ class ServicePackage extends ResourcePresenter
         $deleteDSP= $this->detailServicePackageModel->where($array)->delete();
 
         if ($deleteDSP) {
-            session()->setFlashdata('success', 'Service "'.$name.'" Berhasil di Hapus.');
+            session()->setFlashdata('success', 'Service "'.$name.'" Successcully Deleted.');
 
             return redirect()->back();
 

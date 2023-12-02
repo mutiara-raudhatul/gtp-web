@@ -162,7 +162,7 @@ class PackageDay extends ResourcePresenter
 
         if ($checkExistingData) {
             // Data sudah ada, set pesan error flash data
-            session()->setFlashdata('failed', 'Data hari tersebut sudah ada.');
+            session()->setFlashdata('failed', 'The data for that day is already available.');
 
             return redirect()->back()->withInput();
         } else {
@@ -170,7 +170,7 @@ class PackageDay extends ResourcePresenter
             $addPD = $this->packageDayModel->add_new_packageDay($requestData);
 
             if ($addPD) {
-                session()->setFlashdata('success', 'Data hari tersebut sudah ditambahkan.');
+                session()->setFlashdata('success', 'The data for the day has been added.');
 
                 $package = $this->packageModel->get_package_by_id($id)->getRowArray();    
                 $id=$package['id'];
@@ -207,8 +207,7 @@ class PackageDay extends ResourcePresenter
 
         if ($checkExistingData) {
             // Data sudah ada, set pesan error flash data
-            session()->setFlashdata('failed', 'Urutan activity '.$requestData['activity'].' pada hari '.$requestData['day'].' sudah ada');
-
+            session()->setFlashdata('failed', 'Activity sequence '.$requestData['activity'].' on day '.$requestData['day'].' already available');
             return redirect()->back()->withInput();
         } else {
             // Data belum ada, jalankan query insert
@@ -216,7 +215,7 @@ class PackageDay extends ResourcePresenter
 
             if ($addPA) {
                 // return view('dashboard/detail-package-form');
-                session()->setFlashdata('success', 'Data activity tersebut berhasil ditambahkan.');
+                session()->setFlashdata('success', 'The activity data was added successfully.');
 
                 return redirect()->back();
             } else {
@@ -300,7 +299,7 @@ class PackageDay extends ResourcePresenter
             $deletePD= $this->packageDayModel->where($array2)->delete();
 
             if($deletePD){
-                session()->setFlashdata('success', 'Activity "'.$description.'" Berhasil di Hapus.');
+                session()->setFlashdata('success', 'Activity "'.$description.'" Successfully deleted.');
 
                 $package = $this->packageModel->get_package_by_id($package_id)->getRowArray();
                 $package_id=$package['id'];
@@ -341,7 +340,7 @@ class PackageDay extends ResourcePresenter
         $deleteDP= $this->detailPackageModel->where($array)->delete();
 
         if ($deleteDP) {
-            session()->setFlashdata('success', 'Activity "'.$description.'" Berhasil di Hapus.');
+            session()->setFlashdata('success', 'Activity "'.$description.'" Successfully deleted.');
             //jika success
             $package = $this->packageModel->get_package_by_id($package_id)->getRowArray();
 

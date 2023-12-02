@@ -93,7 +93,7 @@ class Facilityhomestay extends ResourcePresenter
 
         if ($checkExistingData) {
             // Data sudah ada, set pesan error flash data
-            session()->setFlashdata('failed', 'Fasilitas Homestay tersebut sudah ada.');
+            session()->setFlashdata('failed', 'Homestay facilities already exist.');
 
             return redirect()->back()->withInput();
         } else {
@@ -101,7 +101,7 @@ class Facilityhomestay extends ResourcePresenter
             $addFH = $this->facilityHomestayDetailModel->add_new_facilityHomestayDetail($requestData);
        
             if ($addFH) {
-                session()->setFlashdata('success', 'Fasilitas Homestay tersebut berhasil ditambahkan.');
+                session()->setFlashdata('success', 'The Homestay facilities have been successfully added.');
 
                 return redirect()->back();
             } else {
@@ -122,7 +122,7 @@ class Facilityhomestay extends ResourcePresenter
         $deleteFHD= $this->facilityHomestayDetailModel->where($array)->delete();
 
         if ($deleteFHD) {
-            session()->setFlashdata('success', 'Fasilitas Homestay "'.$facility_homestay_id.'" Berhasil di Hapus.');
+            session()->setFlashdata('success', 'Homestay facilities "'.$facility_homestay_id.'" successfully deleted.');
 
             return redirect()->back();
 

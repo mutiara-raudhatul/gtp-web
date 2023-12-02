@@ -226,6 +226,11 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], function ($routes)
 
     $routes->post('village', 'Village::getData');
     $routes->post('villages', 'Village::getDataKK');
+    $routes->post('homestay', 'Homestay::getData');
+    $routes->post('culinary', 'CulinaryPlace::getData');
+    $routes->post('souvenir', 'SouvenirPlace::getData');
+    $routes->post('worship', 'WorshipPlace::getData');
+    $routes->post('facility', 'Facility::getData');
 
     $routes->resource('users');
     $routes->resource('connection');

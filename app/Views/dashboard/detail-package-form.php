@@ -133,7 +133,7 @@ $edit = in_array('edit', $uri);
                     <script>
                         Swal.fire({
                             icon: 'success',
-                            title: 'Berhasil!',
+                            title: 'Success!',
                             text: '<?= session('success') ?>',
                         });
                     </script>
@@ -374,7 +374,7 @@ $edit = in_array('edit', $uri);
                                                         <input type="hidden" name="day" value="<?= esc($key['day']); ?>">
                                                         <input type="hidden" name="description" value="<?= esc($key['description']); ?>">
                                                         <input type="hidden" name="_method" value="DELETE">
-                                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('apakah anda yakin?');"><i class="fa fa-trash"></i></button>
+                                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this day?');"><i class="fa fa-trash"></i></button>
                                                     </form>
                                                 </div>
                                             </div>
@@ -411,7 +411,7 @@ $edit = in_array('edit', $uri);
                                                                         <input type="hidden" name="activity" value="<?= esc($value['activity']); ?>">
                                                                         <input type="hidden" name="description" value="<?= esc($value['description']); ?>">
                                                                         <input type="hidden" name="_method" value="DELETE">
-                                                                        <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('apakah anda yakin?');"><i class="fa fa-times"></i></button>
+                                                                        <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Are you sure you want to delete this activity?');"><i class="fa fa-times"></i></button>
                                                                     </form>
                                                                 </div>
                                                             </td> 

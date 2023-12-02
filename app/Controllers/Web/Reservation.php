@@ -8,6 +8,7 @@ use App\Models\UnitHomestayModel;
 use App\Models\PackageModel;
 use App\Models\DetailPackageModel;
 use App\Models\PackageDayModel;
+use App\Models\AccountModel;
 use CodeIgniter\RESTful\ResourcePresenter;
 use CodeIgniter\Files\File;
 use DateTime;
@@ -20,6 +21,7 @@ class Reservation extends ResourcePresenter
     protected $packageModel;
     protected $detailPackageModel;
     protected $packageDayModel;
+    protected $accountModel;
 
 
     /**
@@ -39,6 +41,7 @@ class Reservation extends ResourcePresenter
         $this->unitHomestayModel = new UnitHomestayModel();
         $this->packageModel = new PackageModel();
         $this->packageDayModel = new PackageDayModel();
+        $this->accountModel = new AccountModel();
 
     }
 
@@ -52,24 +55,63 @@ class Reservation extends ResourcePresenter
         $user=user()->username;
         $datareservation = $this->reservationModel->get_list_reservation_by_user($user)->getResultArray();
 
-        // $check_in = $datareservation['check_in'];;;-;
-        // $totday=max($getday);
-        // $day=$totday['day']-1;
-        // // Ubah $check_in menjadi objek DateTime untuk mempermudah perhitungan
-        // $check_in_datetime = new DateTime($check_in);
-        // if($day=='0'){
-        //     $check_out = $check_in_datetime->format('Y-m-d') . ' 18:00:00';
-        // } else {
-        //     // Tambahkan jumlah hari
-        //     $check_in_datetime->modify('+' . $day . ' days');
-        //     // Atur waktu selalu menjadi 12:00:00
-        //     $check_out = $check_in_datetime->format('Y-m-d') . ' 12:00:00';
-        // }
+        foreach ($datareservation as &$item) {
+ 
+            $check_in = $item['check_in'];
+            $getday = $this->packageDayModel->get_day_by_package($item['package_id'])->getResultArray();
+            
+            if(!empty($getday)){
+                $totday = max($getday);
+                $day = $totday['day'] - 1;
+            }
+            // Ubah $check_in menjadi objek DateTime untuk mempermudah perhitungan
+            $check_in_datetime = new DateTime($check_in);
+        
+            if ($day == '0') {
+                $item['check_out'] = $check_in_datetime->format('Y-m-d') . ' 18:00:00';
+            } else {
+                // Tambahkan jumlah hari
+                $check_in_datetime->modify('+' . $day . ' days');
+                // Atur waktu selalu menjadi 12:00:00
+                $item['check_out'] = $check_in_datetime->format('Y-m-d') . ' 12:00:00';
+            }
 
+            $name_admin_confirm = $item['admin_confirm'];
+            $getAdminC = $this->accountModel->get_profil_admin($item['admin_confirm'])->getRowArray();
+            if($getAdminC!=null) {
+                $item['name_admin_confirm'] =$getAdminC['username'];
+            } else {
+                $item['name_admin_confirm'] = 'adm';
+            }
+
+            $name_admin_refund = $item['admin_refund'];
+            $getAdminR = $this->accountModel->get_profil_admin($item['admin_refund'])->getRowArray();
+            if($getAdminR!=null) {
+                $item['name_admin_refund'] =$getAdminR['username'];
+            } else {
+                $item['name_admin_refund'] = 'adm';
+            }
+
+            $admin_deposit_check = $item['admin_deposit_check'];
+            $getAdminDP = $this->accountModel->get_profil_admin($item['admin_deposit_check'])->getRowArray();
+            if($getAdminDP!=null) {
+                $item['name_admin_deposit_check'] =$getAdminDP['username'];
+            } else {
+                $item['name_admin_deposit_check'] = 'adm';
+            }
+
+            $admin_payment_check = $item['admin_payment_check'];
+            $getAdminFP= $this->accountModel->get_profil_admin($item['admin_payment_check'])->getRowArray();
+            if($getAdminFP!=null) {
+                $item['name_admin_payment_check'] =$getAdminFP['username'];
+            } else {
+                $item['name_admin_payment_check'] = 'adm';
+            }
+        }
+        
         $data = [
             'title' => 'Reservation',
-            'data' => $datareservation,
-            // 'check_out' => $check_out
+            'data' => $datareservation
         ];
 
         return view('web/reservation', $data);
@@ -296,10 +338,12 @@ class Reservation extends ResourcePresenter
     {
         $request = $this->request->getPost();
         $date = date('Y-m-d H:i');
-
+        
         $requestData = [
             'deposit_date' => $date,
+            'deposit_check'=> null,
         ];
+
         foreach ($requestData as $key => $value) {
             if(empty($value)) {
                 unset($requestData[$key]);
@@ -313,7 +357,7 @@ class Reservation extends ResourcePresenter
                 $response = [
                     'status' => 200,
                     'message' => [
-                        "Success upload deposit"
+                        "Success upload deposit. Please wait, we will check your the deposit proof"
                     ]
                 ];
                 return redirect()->back();
@@ -356,7 +400,7 @@ class Reservation extends ResourcePresenter
                     $response = [
                         'status' => 200,
                         'message' => [
-                            "Success upload deposit image"
+                            "Success upload deposit image. Please wait, we will check your the deposit proof"
                         ]
                     ];
                     return redirect()->back();
@@ -378,6 +422,8 @@ class Reservation extends ResourcePresenter
                 "Fail upload deposit."
             ]
         ];
+
+        
         return $this->respond($response, 400);
     }
 
@@ -402,7 +448,7 @@ class Reservation extends ResourcePresenter
                 $response = [
                     'status' => 200,
                     'message' => [
-                        "Success upload full payment"
+                        "Success upload full payment. Please wait, we will check your the payment proof"
                     ]
                 ];
                 return redirect()->back();
@@ -445,7 +491,7 @@ class Reservation extends ResourcePresenter
                     $response = [
                         'status' => 200,
                         'message' => [
-                            "Success upload full payment image"
+                            "Success upload full payment image. Please wait, we will check your the payment proof"
                         ]
                     ];
                     return redirect()->back();
@@ -478,6 +524,7 @@ class Reservation extends ResourcePresenter
         $requestData = [
             'refund_date' => $date,
             'admin_refund' => $request['admin_refund'],
+            'refund_check' => null,
         ];
         $img = $this->request->getFile('proof_refund');
 
@@ -487,7 +534,7 @@ class Reservation extends ResourcePresenter
                 $response = [
                     'status' => 200,
                     'message' => [
-                        "Success upload refund"
+                        "Successful upload refund. Please wait, the customer will check your refund proof"
                     ]
                 ];
                 return redirect()->back();
@@ -525,12 +572,12 @@ class Reservation extends ResourcePresenter
                 $user_image->move(FCPATH . 'media/photos/refund');
                 $requestData['proof_refund'] = $user_image->getFilename();
         
-                $query = $this->reservationModel->upload_deposit($id, $requestData);
+                $query = $this->reservationModel->upload_refund($id, $requestData);
                 if ($query) {
                     $response = [
                         'status' => 200,
                         'message' => [
-                            "Success upload proof refund image"
+                            "Successful upload refund. Please wait, the customer will check your refund proof"
                         ]
                     ];
                     return redirect()->back();
@@ -575,7 +622,7 @@ class Reservation extends ResourcePresenter
             $deleteRE= $this->reservationModel->where($array2)->delete();
 
             if($deleteRE){
-                session()->setFlashdata('success', 'Reservation "'.$id.'" Berhasil di Hapus.');
+                session()->setFlashdata('success', 'Reservation "'.$id.'" Deleted Successfully.');
                 return redirect()->back();
             }
         } else {

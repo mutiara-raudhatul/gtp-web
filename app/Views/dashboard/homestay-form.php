@@ -142,7 +142,11 @@ $edit = in_array('edit', $uri);
                                 <input class="form-control" accept="image/*" type="file" name="gallery[]" id="gallery" multiple>
                             </div>
                             <button type="reset" class="btn btn-light-secondary me-1 mb-1">Reset</button>
-                            <button type="submit" class="btn btn-primary me-1 mb-1">Save & Add Facility</button>
+                            <?php if($edit): ?>
+                                <button type="submit" class="btn btn-primary me-1 mb-1">Save Change</button>
+                            <?php else: ?>
+                                <button type="submit" class="btn btn-primary me-1 mb-1">Save & Add Facility</button>
+                            <?php endif; ?>
                         </div>
                     </form>
                 </div>
@@ -206,7 +210,7 @@ $edit = in_array('edit', $uri);
                             <script>
                                 Swal.fire({
                                     icon: 'success',
-                                    title: 'Berhasil!',
+                                    title: 'Success!',
                                     text: '<?= session('success') ?>',
                                 });
                             </script>

@@ -306,7 +306,7 @@ $edit = in_array('edit', $uri);
                                                                 <input type="hidden" name="activity" value="<?= esc($value['activity']); ?>">
                                                                 <input type="hidden" name="description" value="<?= esc($value['description']); ?>">
                                                                 <input type="hidden" name="_method" value="DELETE">
-                                                                <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('apakah anda yakin?');"><i class="material-icons">&#xE872;</i></button>
+                                                                <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Are you sure you delete?');"><i class="material-icons">&#xE872;</i></button>
                                                             </form>
                                                         </div>
                                                     </td> 

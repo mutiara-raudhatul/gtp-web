@@ -402,15 +402,24 @@ $reservationhomestay = in_array('reservationhomestay', $uri);
             if (checkInDate && checkInTime) {
                 const checkInDateTime = new Date(checkInDate + ' ' + checkInTime);
                 const checkOutDateTime = new Date(checkInDateTime);
-                checkOutDateTime.setDate(checkOutDateTime.getDate() + day - 1);
-                const checkOutDate = checkOutDateTime.toISOString().split('T')[0];
-                const checkOutTime = checkOutDateTime.toTimeString().split(' ')[0];
-                $('#check_out').val(checkOutDate);
+                
                 if(day=='1' && checkInTime<'18:00:00'){
+                    checkOutDateTime.setDate(checkOutDateTime.getDate());
+                    const checkOutDate = checkOutDateTime.toISOString().split('T')[0];
+                    const checkOutTime = checkOutDateTime.toTimeString().split(' ')[0];
+                    $('#check_out').val(checkOutDate);
                     $('#time_check_out').val('18:00:00');
                 } else if(day=='1' && checkInTime>'18:00:00'){
+                    checkOutDateTime.setDate(checkOutDateTime.getDate() + day);
+                    const checkOutDate = checkOutDateTime.toISOString().split('T')[0];
+                    const checkOutTime = checkOutDateTime.toTimeString().split(' ')[0];
+                    $('#check_out').val(checkOutDate);
                     $('#time_check_out').val('12:00:00');
                 } else if(day>'1' ){
+                    checkOutDateTime.setDate(checkOutDateTime.getDate() + day);
+                    const checkOutDate = checkOutDateTime.toISOString().split('T')[0];
+                    const checkOutTime = checkOutDateTime.toTimeString().split(' ')[0];
+                    $('#check_out').val(checkOutDate);
                     $('#time_check_out').val('12:00:00');
                 }
             } else {
