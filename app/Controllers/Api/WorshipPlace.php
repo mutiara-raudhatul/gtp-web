@@ -7,7 +7,7 @@ use App\Models\GalleryWorshipPlaceModel;
 use CodeIgniter\API\ResponseTrait;
 use CodeIgniter\RESTful\ResourceController;
 
-class WorshipPlace extends ResourceController
+class Worshipplace extends ResourceController
 {
     use ResponseTrait;
 

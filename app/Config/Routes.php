@@ -93,7 +93,7 @@ $routes->group('web', ['namespace' => 'App\Controllers\Web'], function ($routes)
     $routes->presenter('homestay');
     $routes->presenter('culinaryPlace');
     $routes->presenter('souvenirPlace');
-    $routes->presenter('worshipPlace');
+    $routes->presenter('worshipplace');
     $routes->presenter('servicepackage');
     $routes->resource('servicepackage');
     $routes->post('servicepackage/createservicepackage/(:segment)', 'ServicePackage::createservicepackage/$1');
@@ -227,9 +227,9 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], function ($routes)
     $routes->post('village', 'Village::getData');
     $routes->post('villages', 'Village::getDataKK');
     $routes->post('homestay', 'Homestay::getData');
-    $routes->post('culinary', 'CulinaryPlace::getData');
+    $routes->post('culinary', 'Culinaryplace::getData');
     $routes->post('souvenir', 'SouvenirPlace::getData');
-    $routes->post('worship', 'WorshipPlace::getData');
+    $routes->post('worship', 'Worshipplace::getData');
     $routes->post('facility', 'Facility::getData');
 
     $routes->resource('users');
@@ -256,15 +256,15 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], function ($routes)
     $routes->resource('homestay');
     $routes->post('homestay/findByRadius', 'Homestay::findByRadius');
 
-    $routes->resource('culinaryPlace');
+    $routes->resource('culinaryplace');
     $routes->presenter('culinaryplace');
-    $routes->post('culinaryPlace/findByRadius', 'CulinaryPlace::findByRadius');
+    $routes->post('culinaryplace/findByRadius', 'Culinaryplace::findByRadius');
     $routes->resource('souvenirPlace');
     $routes->presenter('souvenirplace');
     $routes->post('souvenirPlace/findByRadius', 'SouvenirPlace::findByRadius');
-    $routes->resource('worshipPlace');
+    $routes->resource('worshipplace');
     $routes->presenter('worshipplace');
-    $routes->post('worshipPlace/findByRadius', 'WorshipPlace::findByRadius');
+    $routes->post('worshipplace/findByRadius', 'Worshipplace::findByRadius');
 });
 
 /*

@@ -1464,7 +1464,7 @@ function objectInfoWindow(id){
         });
     } else if (id.substring(0,2) === "WP") {
         $.ajax({
-            url: baseUrl + '/api/worshipPlace/' + id,
+            url: baseUrl + '/api/worshipplace/' + id,
             dataType: 'json',
             success: function (response) {
                 let data = response.data;
@@ -1484,7 +1484,7 @@ function objectInfoWindow(id){
                 contentButton =
                     '<br><div class="text-center">' +
                     '<a title="Route" class="btn icon btn-outline-primary mx-1" id="routeInfoWindow" onclick="routeTo('+lat+', '+lng+')"><i class="fa-solid fa-road"></i></a>' +
-                    '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/worshipPlace/'+wpid+'><i class="fa-solid fa-info"></i></a>' +
+                    '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/worshipplace/'+wpid+'><i class="fa-solid fa-info"></i></a>' +
                     '</div>'
 
                 if (currentUrl.includes(id)) {
@@ -1760,7 +1760,7 @@ function objectInfoWindowRoute(id){
         });
     } else if (id.substring(0,2) === "WP") {
         $.ajax({
-            url: baseUrl + '/api/worshipPlace/' + id,
+            url: baseUrl + '/api/worshipplace/' + id,
             dataType: 'json',
             success: function (response) {
                 let data = response.data;
@@ -1780,7 +1780,7 @@ function objectInfoWindowRoute(id){
                 contentButton =
                     '<br><div class="text-center">' +
                     '<a title="Route" class="btn icon btn-outline-primary mx-1" id="routeInfoWindow" onclick="routeTo('+lat+', '+lng+')"><i class="fa-solid fa-road"></i></a>' +
-                    '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/worshipPlace/'+wpid+'><i class="fa-solid fa-info"></i></a>' +
+                    '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/worshipplace/'+wpid+'><i class="fa-solid fa-info"></i></a>' +
                     '</div>'
 
                 if (currentUrl.includes(id)) {
@@ -2158,7 +2158,7 @@ function findExplore(category, radius) {
         });
     } else if (category === 'wp') {
         $.ajax({
-            url: baseUrl + '/api/worshipPlace/findByRadius',
+            url: baseUrl + '/api/worshipplace/findByRadius',
             type: 'POST',
             data: {
                 lat: currentLat,
@@ -2990,13 +2990,13 @@ function showMap(id = null) {
     clearRoute();
 
     if (id == 'cp') {
-        URI = baseUrl + '/api/culinaryPlace'
+        URI = baseUrl + '/api/culinaryplace'
     } else if (id == 'ho') {
         URI = baseUrl + '/api/homestay';
     } else if (id == 'sp') {
         URI = baseUrl + '/api/souvenirPlace'
     } else if (id == 'wp') {
-        URI = baseUrl + '/api/worshipPlace'
+        URI = baseUrl + '/api/worshipplace'
     }
 
     // currentUrl = '';
@@ -3299,7 +3299,7 @@ function deleteObject(id = null, name = null, user = false) {
         apiUri = 'culinaryPlace/'
     } else if (id.substring(0,2) === 'WP') {
         content = 'Worship Place';
-        apiUri = 'worshipPlace/'
+        apiUri = 'worshipplace/'
     } else if (id.substring(0,2) === 'SP') {
         content = 'Souvenir Place';
         apiUri = 'souvenirPlace/'

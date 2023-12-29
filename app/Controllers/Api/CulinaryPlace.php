@@ -7,7 +7,7 @@ use App\Models\GalleryCulinaryPlaceModel;
 use CodeIgniter\API\ResponseTrait;
 use CodeIgniter\RESTful\ResourceController;
 
-class CulinaryPlace extends ResourceController
+class Culinaryplace extends ResourceController
 {
     use ResponseTrait;
 
