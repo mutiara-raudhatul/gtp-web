@@ -159,6 +159,12 @@ $routes->group('dashboard', ['namespace' => 'App\Controllers\Web', 'filter' => '
     $routes->delete('packageday/delete/(:any)', 'Packageday::delete/$1');
     $routes->delete('packageday/deleteday/(:any)', 'Packageday::deleteday/$1');
     
+    // $routes->get('package/edit/(:segment)', 'Packageday::newday/$1');
+    // $routes->post('package/edit/createday/(:segment)', 'Packageday::createday/$1');
+    // $routes->post('package/edit/createactivity/(:segment)', 'Packageday::createactivity/$1');
+    // $routes->delete('package/edit/delete/(:any)', 'Packageday::delete/$1');
+    // $routes->delete('package/edit/deleteday/(:any)', 'Packageday::deleteday/$1');
+
     $routes->post('facilityhomestay/createfacility/(:segment)', 'Facilityhomestay::createfacility/$1');
     $routes->post('facilityhomestay/createfacilityhomestay/(:segment)', 'Facilityhomestay::createfacilityhomestay/$1');
     $routes->delete('facilityhomestay/delete/(:any)', 'Facilityhomestay::delete/$1');

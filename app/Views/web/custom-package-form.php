@@ -236,7 +236,7 @@ $users = in_array('users', $uri);
                                     </tr>
                                     <tr>
                                         <td class="fw-bold">Price</td>
-                                        <td><?= 'Rp ' . number_format(esc($data['price']), 0, ',', '.'); ?> <i class="small"><i style="color: red;">*</i>The admin will adjust the price of this package based on the activities and services added</i></td>
+                                        <td><?= 'Rp ' . number_format(esc($totalPrice), 0, ',', '.'); ?> <i class="small"><i style="color: red;">*</i>The price of this package is based on the activities and services added</i></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -246,7 +246,7 @@ $users = in_array('users', $uri);
             </div>
         </div>      
 
-        <div class="col-md-6 col-12">
+        <div class="col-md-7 col-12">
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title text-center">Activity Your Package</h4>
@@ -257,8 +257,8 @@ $users = in_array('users', $uri);
                     
                     <div class="col-auto ">
                         <div class="btn-group" role="group">
-                            <button type="button" class="btn btn-outline-primary " data-bs-toggle="modal" data-bs-target="#dayModal" data-bs-whatever="@getbootstrap"><i class="fa fa-plus"></i> Day</button>
-                            <button type="button" class="btn btn-outline-info " data-bs-toggle="modal" data-bs-target="#activityModal" data-bs-whatever="@getbootstrap"><i class="fa fa-plus"></i> Activity</button>
+                            <button type="button" class="btn btn-outline-primary " data-bs-toggle="modal" data-bs-target="#dayModal" data-bs-whatever="@getbootstrap"><i class="fa fa-plus"></i> <b>Day</b></button>
+                            <button type="button" class="btn btn-outline-primary " data-bs-toggle="modal" data-bs-target="#activityModal" data-bs-whatever="@getbootstrap"><i class="fa fa-plus"></i> <b>Activity</b></button>
                         </div>
                         <i class="small"><i style="color: red;">*</i>Add activity what you want</i>
                     </div>
@@ -311,97 +311,115 @@ $users = in_array('users', $uri);
                 
                 <!-- Menambahkan Aktivitas -->
                     <div class="col-sm-2 float-end">
-                                            <!-- <button type="button" class="btn btn-info add-new"><i class="fa fa-plus"></i> Activity</button> -->
-                                            <div class="modal fade" id="activityModal" tabindex="-1" aria-labelledby="activityModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h1 class="modal-title fs-5" id="activityModalLabel">Activity Package Day </h1>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
+                        <!-- <button type="button" class="btn btn-info add-new"><i class="fa fa-plus"></i> Activity</button> -->
+                        <div class="modal fade" id="activityModal" tabindex="-1" aria-labelledby="activityModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="activityModalLabel">Activity Package Day </h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
 
-                                                    <form class="row g-3" action="<?= base_url('web/detailreservation/createactivity') . '/' . $data['id']; ?>" method="post" >
-                                                        <div class="modal-body">
-                                                            <div class="card-header">
-                                                                <?php @csrf_field(); ?>
-                                                                <div class="row g-4">
-                                                                    <div class="col-md-12">
-                                                                        <input hidden type="text" class="form-control" id="package" name="package" placeholder="Pxxxxx" disabled value="<?= esc($data['id']) ?>">
-                                                                        <label for="day">Activity Day</label>
-                                                                        <select class="form-select" name="day" required>
-                                                                                <option value="" selected>Select the day</option>
-                                                                            <?php foreach ($day as $item => $keyy) : ?>
-                                                                                <option value="<?= esc($keyy['day']); ?>">Activity Day <?= esc($keyy['day']); ?></option>                                                                
-                                                                            <?php endforeach; ?>
-                                                                        </select>
-                                                                    </div>
-                                                                </div><br>
-                                                                <div class="row g-4">
-                                                                    <div class="col-md-3">
-                                                                        <label for="activity">Activity</label>
-                                                                        <input type="number" min='1' class="form-control" id="activity" name="activity" required>
-                                                                    </div>
-                                                                    <div class="col-md-4">
-                                                                        <label for="activity_type">Activity Type</label>
-                                                                        <select class="form-control" name="activity_type" id="activity_type" required>
-                                                                            <option value="" selected>Select Type</option>
-                                                                            <option value="A">Attraction</option>
-                                                                            <option value="HO">Homestay</option>
-                                                                            <option value="CP">Culinary</option>
-                                                                            <option value="WO">Worship</option>
-                                                                            <option value="SP">Souvenir Place</option>
-                                                                            <option value="FC">Facility</option>
-                                                                            <option value="EV">Event</option>
-                                                                        </select>
-                                                                    </div>
-                                                                    <div class="col-md-5">
-                                                                        <label for="object">Object</label>
-                                                                        <select class="form-control" name="object" id="object" required>
-                                                                            <option value="" selected>Select Object</option>
-                                                                            <?php foreach ($object['attraction'] as $item) : ?>
-                                                                                <option value="<?= esc($item['id']); ?>">[Attraction] <?= esc($item['name']); ?></option>                                                                
-                                                                            <?php endforeach; ?>
-                                                                            <?php foreach ($object['homestay'] as $item) : ?>
-                                                                                <option value="<?= esc($item['id']); ?>">[Homestay] <?= esc($item['name']); ?></option>                                                                
-                                                                            <?php endforeach; ?>
-                                                                            <?php foreach ($object['culinary'] as $item) : ?>
-                                                                                <option value="<?= esc($item['id']); ?>">[Culinary] <?= esc($item['name']); ?></option>                                                                
-                                                                            <?php endforeach; ?>
-                                                                            <?php foreach ($object['worship'] as $item) : ?>
-                                                                                <option value="<?= esc($item['id']); ?>">[Worship] <?= esc($item['name']); ?></option>                                                                
-                                                                            <?php endforeach; ?>
-                                                                            <?php foreach ($object['souvenir'] as $item) : ?>
-                                                                                <option value="<?= esc($item['id']); ?>">[Souvenir] <?= esc($item['name']); ?></option>                                                                
-                                                                            <?php endforeach; ?>
-                                                                            <?php foreach ($object['facility'] as $item) : ?>
-                                                                                <option value="<?= esc($item['id']); ?>">[Facility] <?= esc($item['name']); ?></option>                                                                
-                                                                            <?php endforeach; ?>
-                                                                            <?php foreach ($object['event'] as $item) : ?>
-                                                                                <option value="<?= esc($item['id']); ?>">[Event] <?= esc($item['name']); ?></option>                                                                
-                                                                            <?php endforeach; ?>
-                                                                        </select>                                                                
-                                                                    </div>
-                                                                </div><br>
-                                                                <div class="row g-4">
-                                                                    <div class="col-md-12">
-                                                                        <label for="description_activity">Description</label>
-                                                                        <input type="text" class="form-control" id="description_activity" name="description_activity" required>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
-                                                            <button type="submit" class="btn btn-outline-primary me-1 mb-1"><i class="fa-solid fa-add"></i></button>
-                                                            <button type="reset" class="btn btn-outline-danger me-1 mb-1"><i class="fa-solid fa-trash-can"></i> </button>
-                                                        </div>
-                                                    </form>
-
-
-                                                    </div>
+                                <form class="row g-3" action="<?= base_url('web/detailreservation/createactivity') . '/' . $data['id']; ?>" method="post" >
+                                    <div class="modal-body">
+                                        <div class="card-header">
+                                            <?php @csrf_field(); ?>
+                                            <div class="row g-4">
+                                                <div class="col-md-12">
+                                                    <input hidden type="text" class="form-control" id="package" name="package" placeholder="Pxxxxx" disabled value="<?= esc($data['id']) ?>">
+                                                    <label for="day">Activity Day</label>
+                                                    <select class="form-select" name="day" required>
+                                                            <option value="" selected>Select the day</option>
+                                                        <?php foreach ($day as $item => $keyy) : ?>
+                                                            <option value="<?= esc($keyy['day']); ?>">Activity Day <?= esc($keyy['day']); ?></option>                                                                
+                                                        <?php endforeach; ?>
+                                                    </select>
+                                                </div>
+                                            </div><br>
+                                            <div class="row g-4">
+                                                <div class="col-md-3">
+                                                    <label for="activity">Activity</label>
+                                                    <input type="number" min='1' class="form-control" id="activity" name="activity" required>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="activity_type">Activity Type</label>
+                                                    <select class="form-control" name="activity_type" id="activity_type" required>
+                                                        <option value="" selected>Select Type</option>
+                                                        <option value="A">Attraction</option>
+                                                        <option value="HO">Homestay</option>
+                                                        <option value="CP">Culinary</option>
+                                                        <option value="WO">Worship</option>
+                                                        <option value="SP">Souvenir Place</option>
+                                                        <option value="FC">Facility</option>
+                                                        <option value="EV">Event</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <label for="object">Object</label>
+                                                    <select class="form-control" name="object" id="object">
+                                                        <option disabled selected>Select Object</option>
+                                                        <?php foreach ($object['culinary'] as $item) : ?>
+                                                            <option value="<?= esc($item['id']); ?>">[Culinary] <?= esc($item['name']); ?> - Rp0 -Shopping not include</option>                                                                
+                                                        <?php endforeach; ?>
+                                                        <?php foreach ($object['worship'] as $item) : ?>
+                                                            <option value="<?= esc($item['id']); ?>">[Worship] <?= esc($item['name']); ?> - Rp0 -Shopping not include</option>                                                                
+                                                        <?php endforeach; ?>
+                                                        <?php foreach ($object['souvenir'] as $item) : ?>
+                                                            <option value="<?= esc($item['id']); ?>">[Souvenir] <?= esc($item['name']); ?> - Rp0 -Shopping not include</option>                                                                
+                                                        <?php endforeach; ?>
+                                                        <?php foreach ($object['facility'] as $item) : ?>
+                                                            <option value="<?= esc($item['id']); ?>">
+                                                                [Facility] <?= esc($item['name']); ?> - Rp<?= esc($item['price']); ?>
+                                                                <?php if ($item['category'] == 0): ?>
+                                                                    - Group
+                                                                <?php elseif ($item['category'] == 1): ?>
+                                                                    - Individu
+                                                                <?php endif; ?>
+                                                            </option>                                                                
+                                                        <?php endforeach; ?>
+                                                        <?php foreach ($object['attraction'] as $item) : ?>
+                                                            <option value="<?= esc($item['id']); ?>">
+                                                                [Attraction] <?= esc($item['name']); ?> - Rp<?= esc($item['price']); ?> 
+                                                                <?php if ($item['category'] == 0): ?>
+                                                                    - Group
+                                                                <?php elseif ($item['category'] == 1): ?>
+                                                                    - Individu
+                                                                <?php endif; ?>
+                                                            </option>                                                                
+                                                        <?php endforeach; ?>
+                                                        <?php foreach ($object['event'] as $item) : ?>
+                                                            <option value="<?= esc($item['id']); ?>">
+                                                                [Event] <?= esc($item['name']); ?> - Rp<?= esc($item['price']); ?>
+                                                                <?php if ($item['category'] == 0): ?>
+                                                                    - Group
+                                                                <?php elseif ($item['category'] == 1): ?>
+                                                                    - Individu
+                                                                <?php endif; ?>
+                                                            </option>                                                                
+                                                        <?php endforeach; ?>
+                                                    </select>                                                                 
+                                                </div>
+                                            </div><br>
+                                            <div class="row g-4">
+                                                <div class="col-md-12">
+                                                    <label for="description_activity">Description</label>
+                                                    <input type="text" class="form-control" id="description_activity" name="description_activity" required>
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+                                        <button type="submit" class="btn btn-outline-primary me-1 mb-1"><i class="fa-solid fa-add"></i></button>
+                                        <button type="reset" class="btn btn-outline-danger me-1 mb-1"><i class="fa-solid fa-trash-can"></i> </button>
+                                    </div>
+                                </form>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 <!-- end Menambahkan Aktivitas -->
                     
                     <?php if (isset($day)) : ?>
@@ -437,6 +455,8 @@ $users = in_array('users', $uri);
                                                 <th>Activity Type</th>
                                                 <th>Object</th>
                                                 <th>Description</th>
+                                                <th>Price</th>
+                                                <th>Category</th>
                                                 <th>Actions</th>
                                             </tr>
                                         </thead>
@@ -449,6 +469,16 @@ $users = in_array('users', $uri);
                                                             <td><?= esc($value['activity_type']); ?></td>
                                                             <td><?= esc($value['name']); ?></td>
                                                             <td><?= esc($value['description']); ?></td>
+                                                            <td><?= 'Rp' . number_format(esc($value['price']), 0, ',', '.'); ?> </td>
+                                                            <td>
+                                                                    <?php if ($value['category'] == 0): ?>
+                                                                        Group
+                                                                    <?php elseif ($value['category'] == 1): ?>
+                                                                        Individu
+                                                                    <?php elseif ($value['category'] == 2): ?>
+                                                                        Shopping not include
+                                                                    <?php endif; ?>    
+                                                            </td>
                                                             <td>
                                                                 <!-- <a class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a> -->
                                                                 <!-- <a class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a> -->
@@ -480,7 +510,7 @@ $users = in_array('users', $uri);
             </div>
         </div>
 
-        <div class="col-md-6 col-12">
+        <div class="col-md-5 col-12">
             <!-- Menambahkan Service -->
                             <!-- <button type="button" class="btn btn-info add-new"><i class="fa fa-plus"></i> Activity</button> -->
                             <div class="modal fade" id="detailServicesPackageModal" tabindex="-1" aria-labelledby="detailServicesPackageModalLabel" aria-hidden="true">
@@ -501,7 +531,14 @@ $users = in_array('users', $uri);
                                                         <select class="form-select" name="id_service" required>
                                                                 <option value="" selected>Select the service</option>
                                                                 <?php foreach ($servicelist as $item):?>
-                                                                    <option value="<?= esc($item['id']); ?>"><?= esc($item['name']); ?></option>                                                                
+                                                                    <option value="<?= esc($item['id']); ?>">
+                                                                        <?= esc($item['name']); ?> - <?= 'Rp' . number_format(esc($item['price']), 0, ',', '.'); ?>
+                                                                        <?php if ($item['category'] == 0): ?>
+                                                                            - Group
+                                                                        <?php elseif ($item['category'] == 1): ?>
+                                                                            - Individu
+                                                                        <?php endif; ?>
+                                                                    </option>
                                                                 <?php endforeach; ?>
                                                         </select>
                                                     </div>
@@ -540,7 +577,7 @@ $users = in_array('users', $uri);
                             <div class="form-group mb-4">
                                 <div class="col-auto ">
                                     <div class="btn-group" role="group">
-                                        <button type="button" class="btn btn-outline-info " data-bs-toggle="modal" data-bs-target="#detailServicesPackageModal" data-bs-whatever="@getbootstrap"><i class="fa fa-plus"></i> Add Services Package</button>
+                                        <button type="button" class="btn btn-outline-primary " data-bs-toggle="modal" data-bs-target="#detailServicesPackageModal" data-bs-whatever="@getbootstrap"><i class="fa fa-plus"></i> <b>Add Services Package</b></button>
                                     </div>
                                 </div>
                                 <br>
@@ -553,6 +590,8 @@ $users = in_array('users', $uri);
                                                 <tr>
                                                     <th>No</th>
                                                     <th>Name</th>
+                                                    <th>Price</th>
+                                                    <th>Category</th>
                                                     <th>Actions</th>
                                                 </tr>
                                             </thead>
@@ -564,6 +603,14 @@ $users = in_array('users', $uri);
                                                             <tr>
                                                                 <td><?= esc($i++); ?></td>
                                                                 <td><?= esc($value['name']); ?></td>
+                                                                <td><?= 'Rp' . number_format(esc($value['price']), 0, ',', '.'); ?> </td>
+                                                                <td>
+                                                                    <?php if ($value['category'] == 0): ?>
+                                                                        Group
+                                                                    <?php elseif ($value['category'] == 1): ?>
+                                                                        Individu
+                                                                    <?php endif; ?>
+                                                                </td>
                                                                 <td>
                                                                     <div class="btn-group" role="group" aria-label="Basic example">
                                                                         <!-- <button type="button" class="btn btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap"><i class="material-icons">&#xE254;</i></button>                                                             -->

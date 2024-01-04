@@ -31,7 +31,7 @@ class EventModel extends Model
     {
         $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
         $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.type, {$this->table}.event_date, {$this->table}.description,
-                        {$this->table}.price,{$this->table}.contact_person,{$this->table}.video_url";
+                        {$this->table}.price,{$this->table}.contact_person,{$this->table}.video_url,{$this->table}.category";
         $query = $this->db->table($this->table)
             ->select("{$columns}, {$coords}")
             ->get();
@@ -42,7 +42,7 @@ class EventModel extends Model
     {
         $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
         $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.type, {$this->table}.event_date, {$this->table}.description,
-                        {$this->table}.price,{$this->table}.contact_person,{$this->table}.video_url";
+                        {$this->table}.price,{$this->table}.contact_person,{$this->table}.video_url,{$this->table}.category";
         $geoJson = "ST_AsGeoJSON({$this->table}.geom) AS geoJson";
         // $gtpGeom = "gtp.id = 'GTP01' AND ST_Contains(gtp.geom, {$this->table}.geom)";
         $query = $this->db->table($this->table)
@@ -102,7 +102,7 @@ class EventModel extends Model
     public function get_list_event_api() {
         $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
         $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.type as category, {$this->table}.event_date, {$this->table}.description,
-                        {$this->table}.price,{$this->table}.contact_person,{$this->table}.video_url";
+                        {$this->table}.price,{$this->table}.contact_person,{$this->table}.video_url,{$this->table}.category";
         // $vilGeom = "village.id = '1' AND ST_Contains(village.geom, {$this->table}.geom)";
         $query = $this->db->table($this->table)
             ->select("{$columns}, {$coords}")
@@ -116,7 +116,7 @@ class EventModel extends Model
         // API
         public function get_list_ev_api() {
             $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
-            $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.type as category,{$this->table}.event_date,{$this->table}.description,{$this->table}.price,{$this->table}.contact_person,{$this->table}.video_url";
+            $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.type as category,{$this->table}.event_date,{$this->table}.description,{$this->table}.price,{$this->table}.contact_person,{$this->table}.video_url,{$this->table}.category";
             // $vilGeom = "village.id = '1' AND ST_Contains(village.geom, {$this->table}.geom)";
             $query = $this->db->table($this->table)
                 ->select("{$columns}, {$coords}")

@@ -237,22 +237,22 @@ $edit = in_array('edit', $uri);
                                                                     <select class="form-control" name="object" id="object">
                                                                         <option disabled selected>Select Object</option>
                                                                         <?php foreach ($object['culinary'] as $item) : ?>
-                                                                            <option value="<?= esc($item['id']); ?>">[Culinary] <?= esc($item['name']); ?></option>                                                                
+                                                                            <option value="<?= esc($item['id']); ?>">[Culinary] <?= esc($item['name']); ?> - Rp<?= esc($item['price']); ?></option>                                                                
                                                                         <?php endforeach; ?>
                                                                         <?php foreach ($object['worship'] as $item) : ?>
                                                                             <option value="<?= esc($item['id']); ?>">[Worship] <?= esc($item['name']); ?></option>                                                                
                                                                         <?php endforeach; ?>
                                                                         <?php foreach ($object['souvenir'] as $item) : ?>
-                                                                            <option value="<?= esc($item['id']); ?>">[Souvenir] <?= esc($item['name']); ?></option>                                                                
+                                                                            <option value="<?= esc($item['id']); ?>">[Souvenir] <?= esc($item['name']); ?> - Rp<?= esc($item['price']); ?></option>                                                                
                                                                         <?php endforeach; ?>
                                                                         <?php foreach ($object['facility'] as $item) : ?>
-                                                                            <option value="<?= esc($item['id']); ?>">[Facility] <?= esc($item['name']); ?></option>                                                                
+                                                                            <option value="<?= esc($item['id']); ?>">[Facility] <?= esc($item['name']); ?> </option>                                                                
                                                                         <?php endforeach; ?>
                                                                         <?php foreach ($object['attraction'] as $item) : ?>
-                                                                            <option value="<?= esc($item['id']); ?>">[Attraction] <?= esc($item['name']); ?></option>                                                                
+                                                                            <option value="<?= esc($item['id']); ?>">[Attraction] <?= esc($item['name']); ?> - Rp<?= esc($item['price']); ?></option>                                                                
                                                                         <?php endforeach; ?>
                                                                         <?php foreach ($object['event'] as $item) : ?>
-                                                                            <option value="<?= esc($item['id']); ?>">[Event] <?= esc($item['name']); ?></option>                                                                
+                                                                            <option value="<?= esc($item['id']); ?>">[Event] <?= esc($item['name']); ?> - Rp<?= esc($item['price']); ?></option>                                                                
                                                                         <?php endforeach; ?>
                                                                     </select>                                                                
                                                                 </div>
@@ -306,6 +306,7 @@ $edit = in_array('edit', $uri);
                                                 <th>Activity Type</th>
                                                 <th>Object</th>
                                                 <th>Description</th>
+                                                <th>Price</th>
                                                 <th>Actions</th>
                                             </tr>
                                         </thead>
@@ -318,6 +319,7 @@ $edit = in_array('edit', $uri);
                                                             <td><?= esc($value['activity_type']); ?></td>
                                                             <td><?= esc($value['name']); ?></td>
                                                             <td><?= esc($value['description']); ?></td>
+                                                            <td><?= 'Rp' . number_format(esc($value['price']), 0, ',', '.'); ?> </td>
                                                             <td>
                                                                 <!-- <a class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a> -->
                                                                 <!-- <a class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a> -->

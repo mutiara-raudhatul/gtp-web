@@ -206,7 +206,7 @@ class Package extends ResourcePresenter
             'name' => $request['name'],
             'type_id' => $request['type'],
             'min_capacity' => $request['min_capacity'],
-            'price' => $request['price'],
+            'price' => '0',
             'description' => $request['description'],
             'contact_person' => $request['contact_person'],
         ];
@@ -299,6 +299,69 @@ class Package extends ResourcePresenter
 
         $servicepackage = $this->detailServicePackageModel->get_service_package_detail_by_id($id)->getResultArray();
 
+        //manage activity
+        $package_id=$package['id'];
+        $packageDay = $this->packageDayModel->get_package_day_by_id($package_id)->getResultArray();
+
+        // Count the number of items in $packageDay
+        $packageDayCount = count($packageDay);
+
+        $culinary = $this->culinaryPlaceModel->get_list_cp()->getResultArray();
+        $worship = $this->worshipPlaceModel->get_list_wp()->getResultArray();
+        $facility = $this->facilityModel->get_list_facility()->getResultArray();
+        $souvenir = $this->souvenirPlaceModel->get_list_sp()->getResultArray();
+        $attraction = $this->attractionModel->get_list_attraction()->getResultArray();
+        $event = $this->eventModel->get_list_event()->getResultArray();
+        $homestay = $this->homestayModel->get_list_homestay()->getResultArray();
+
+        $data_object = array_merge($culinary,$worship,$facility,$souvenir,$attraction,$event,$homestay);
+
+        $detailPackage = $this->detailPackageModel->get_detailPackage_by_id($package_id)->getResultArray();
+        
+        $combinedDatanya = $this->detailPackageModel->getCombinedData($package_id);
+
+        // Initialize the total price
+        $totalPrice = 0;
+
+        // Iterate through each item in the combined data
+        foreach ($combinedDatanya as $item) {
+            // Check the 'category' value and multiply the 'price' accordingly
+            if ($item['category'] == 0) {
+                $totalPrice += $item['price'] * 1;
+            } elseif ($item['category'] == 1) {
+                $totalPrice += $item['price'] * $package['min_capacity'];
+            } else {
+                // Handle other category values if needed
+            }
+        }
+
+        foreach ($servicepackage as $item) {
+            // Check the 'category' value and multiply the 'price' accordingly
+            if ($item['status'] == 1 && $item['category'] == 0 ) {
+                $totalPrice += $item['price'] * 1 * $packageDayCount;
+            } elseif ($item['status'] == 1 && $item['category'] == 1) {
+                $totalPrice += $item['price'] * $package['min_capacity'] * $packageDayCount;
+            } else {
+                // Handle other category values if needed
+            }
+        }
+
+        $requestData = [
+            'id' => $package_id,
+            'price' => $totalPrice
+        ];
+        $updatePA = $this->packageModel->update_package($package_id, $requestData);
+
+        $object = [
+            'culinary' => $culinary,
+            'worship' => $worship,
+            'facility' => $facility,
+            'souvenir' => $souvenir,
+            'attraction' => $attraction,
+            'event' => $event,
+            'homestay' => $homestay
+        ];
+
         $data = [
             'title' => 'Package',
             'id' => $id,
@@ -306,7 +369,12 @@ class Package extends ResourcePresenter
             'type' => $type,
             'detailservice' => $servicepackage,
             'service' => $package['datase'],
-            'servicelist' => $servicelist
+            'servicelist' => $servicelist,
+            'day' => $packageDay,
+            'activity' => $detailPackage,
+            'data_package' => $combinedDatanya,
+            'object' => $object,
+            'totalPrice'=> $totalPrice
         ];
         return view('dashboard/package-form', $data);
     }
@@ -608,6 +676,8 @@ class Package extends ResourcePresenter
         $package_id=$package['id'];
         $packageDay = $this->packageDayModel->get_package_day_by_id($package_id)->getResultArray();
 
+        // Count the number of items in $packageDay
+        $packageDayCount = count($packageDay);
 
         $culinary = $this->culinaryPlaceModel->get_list_cp()->getResultArray();
         $worship = $this->worshipPlaceModel->get_list_wp()->getResultArray();
@@ -618,8 +688,39 @@ class Package extends ResourcePresenter
         $homestay = $this->homestayModel->get_list_homestay()->getResultArray();
         $data_object = array_merge($culinary,$worship,$facility,$souvenir,$attraction,$event,$homestay);
         $detailPackage = $this->detailPackageModel->get_detailPackage_by_id($package_id)->getResultArray();
-        $combinedData = $this->detailPackageModel->getCombinedData($package_id);
-            
+        $combinedDatanya = $this->detailPackageModel->getCombinedData($package_id);
+
+        // Initialize the total price
+        $totalPrice = 0;
+
+        // Iterate through each item in the combined data
+        foreach ($combinedDatanya as $item) {
+            // Check the 'category' value and multiply the 'price' accordingly
+            if ($item['category'] == 0) {
+                $totalPrice += $item['price'] * 1;
+            } elseif ($item['category'] == 1) {
+                $totalPrice += $item['price'] * $package['min_capacity'];
+            } else {
+                // Handle other category values if needed
+            }
+        }
+
+        foreach ($servicepackage as $item) {
+            // Check the 'category' value and multiply the 'price' accordingly
+            if ($item['status'] == 1 && $item['category'] == 0 ) {
+                $totalPrice += $item['price'] * 1 * $packageDayCount;
+            } elseif ($item['status'] == 1 && $item['category'] == 1) {
+                $totalPrice += $item['price'] * $package['min_capacity'] * $packageDayCount;
+            } else {
+                // Handle other category values if needed
+            }
+        }
+
+        $requestData = [
+            'price' => $totalPrice,
+        ];
+        $updatePA = $this->packageModel->update_package($package_id, $requestData);
+
         $object = [
             'culinary' => $culinary,
             'worship' => $worship,
@@ -637,11 +738,12 @@ class Package extends ResourcePresenter
             'type' => $type,
             'day' => $packageDay,
             'activity' => $detailPackage,
-            'data_package' => $combinedData,
+            'data_package' => $combinedDatanya,
             'object' => $object,
             'detailservice' => $servicepackage,
             'service' => $datases,
-            'servicelist' => $servicelist
+            'servicelist' => $servicelist,
+            'totalPrice'=> $totalPrice
         ]; 
 // dd($data);
         return view('web/extend-package-form', $data, $object);

@@ -56,6 +56,37 @@ $edit = in_array('edit', $uri);
                                 </select>
                             </fieldset>
                             <div class="form-group mb-4">
+                                <label for="price" class="mb-2">Price</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">Rp </span>
+                                    <input type="number" id="price" class="form-control" name="price" placeholder="Price" aria-label="Price" aria-describedby="price" value="<?= ($edit) ? $data['price'] : old('price'); ?>">
+                                </div>
+                            </div>
+                            <div class="form-group mb-4">
+                                <label for="category">Category</label><br>
+
+                                <?php if($edit): ?>
+                                    <label>
+                                        <input type="radio" name="category" value="'0'" required <?php if($data['category']=="0") echo "checked"; ?>>
+                                        <i class="fa fa-times"></i> Group    
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="category" value="1" required <?php if($data['category']=="1") echo "checked"; ?>>
+                                        <i class="fa fa-check"></i> Individu
+                                    </label>
+                                <?php else: ?>
+                                    <label>
+                                    <input type="radio" name="category" value="'0'" required>
+                                    <i class="fa fa-times"></i> Group    
+                                    </label>
+
+                                    <label>
+                                    <input type="radio" name="category" value="1" required>
+                                    <i class="fa fa-check"></i> Individu
+                                    </label>
+                                <?php endif; ?>                        
+                            </div>
+                            <div class="form-group mb-4">
                                 <label for="gallery" class="form-label">Gallery</label>
                                 <input class="form-control" accept="image/*" type="file" name="gallery[]" id="gallery" multiple>
                             </div>

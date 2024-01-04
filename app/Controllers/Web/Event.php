@@ -109,6 +109,7 @@ class Event extends ResourcePresenter
             'price' => $request['price'],
             'description' => $request['description'],
             'contact_person' => $request['contact_person'],
+            'category' => $request['category']
         ];
         foreach ($requestData as $key => $value) {
             if (empty($value)) {
@@ -191,7 +192,8 @@ class Event extends ResourcePresenter
             'type' => $request['type'],
             'price' => $request['price'],
             'description' => $request['description'],
-            'contact_person' => $request['contact_person']
+            'contact_person' => $request['contact_person'],
+            'category' => $request['category']
         ];
         foreach ($requestData as $key => $value) {
             if (empty($value)) {

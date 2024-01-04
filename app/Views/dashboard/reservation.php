@@ -50,15 +50,7 @@ $users = in_array('users', $uri);
                                                 <td>
                                                     <?php $date = date('Y-m-d H:i');?>
                                                     <?php if($item['status']==null ): ?>    
-                                                        <?php if($item['custom']=='1' ): ?>
-                                                            <?php if($item['response']==null ): ?>
-                                                                <a href="#" class="btn-sm btn-warning float-center"><i>Negotiate</i></a>
-                                                            <?php elseif($item['response']!=null ): ?>
-                                                                <a href="#" class="btn-sm btn-warning float-center"><i>Waiting</i></a>
-                                                            <?php endif; ?>
-                                                        <?php elseif($item['custom']!='1' ): ?>
                                                             <a href="#" class="btn-sm btn-warning float-center"><i>Waiting</i></a>
-                                                        <?php endif; ?>
                                                     <?php elseif($item['status']=='1' ): ?>    
                                                         <?php if($item['cancel']=='0'): ?>
                                                             <?php if($item['proof_of_deposit']==null) :?>
@@ -147,16 +139,7 @@ $users = in_array('users', $uri);
                                                                                             <td>
                                                                                                 <?php $date = date('Y-m-d H:i');?>
                                                                                                 <?php if($item['status']==null ): ?>    
-                                                                                                    <?php if($item['custom']=='1' ): ?>
-                                                                                                        <?php if($item['response']==null ): ?>
-                                                                                                            <a href="#" class="btn-sm btn-warning float-center"><i>Negotiate</i></a>
-                                                                                                        <?php elseif($item['response']!=null ): ?>
-                                                                                                            <a href="#" class="btn-sm btn-warning float-center"><i>Waiting</i></a>
-                                                                                                        <?php endif; ?>
-                                                                                                    <?php elseif($item['custom']!='1' ): ?>
-                                                                                                        <a href="#" class="btn-sm btn-warning float-center"><i>Waiting</i></a>
-                                                                                                    <?php endif; ?>
-                                                                                                <?php elseif($item['status']=='1' ): ?>    
+                                                                                                        <a href="#" class="btn-sm btn-warning float-center"><i>Waiting</i></a>                                                                                                <?php elseif($item['status']=='1' ): ?>    
                                                                                                     <?php if($item['cancel']=='0'): ?>
                                                                                                         <?php if($item['proof_of_deposit']==null) :?>
                                                                                                             <a href="#" class="btn-sm btn-info float-center"><i>Pay deposit!</i></a>

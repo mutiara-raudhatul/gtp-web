@@ -152,7 +152,7 @@ $dashboard = in_array('dashboard', $uri);
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="descriptionHeading">
                                     <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDescription" aria-expanded="true" aria-controls="collapseDescription">
-                                        Description
+                                        <b>Description</b>
                                     </button>
                                 </h2>
                                 <div id="collapseDescription" class="accordion-collapse collapse" aria-labelledby="descriptionHeading">
@@ -167,7 +167,7 @@ $dashboard = in_array('dashboard', $uri);
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="serviceHeading">
                                     <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseService" aria-expanded="true" aria-controls="collapseService">
-                                        Service
+                                        <b>Service</b>
                                     </button>
                                 </h2>
                                 <div id="collapseService" class="accordion-collapse collapse" aria-labelledby="serviceHeading">
@@ -189,7 +189,7 @@ $dashboard = in_array('dashboard', $uri);
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="activityHeading">
                                     <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseActivity" aria-expanded="true" aria-controls="collapseActivity">
-                                        Activity
+                                        <b>Activity</b>
                                     </button>
                                 </h2>
                                 <div id="collapseActivity" class="accordion-collapse collapse" aria-labelledby="activityHeading">
@@ -433,46 +433,6 @@ $dashboard = in_array('dashboard', $uri);
                                     <?php endif; ?>
                                 </tr>
                                 <tr>
-                                    <?php if($data_package['custom']==1 && $data_package['price']==0): ?>
-                                        <i class="btn btn-sm btn-secondary">Please wait, the package price will be confirmed by admin </i>
-                                    <?php elseif($data_package['custom']==1 && $data_package['price']!=0 && $detail['response']==null): ?>
-                                        <p class="btn btn-secondary btn-sm"><i><b>Give your response on the package information that the admin has confirmed</b></i></p>
-                                        <div class="col-auto">
-                                            <button type="button" class="btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#responseModal">
-                                                Send response
-                                            </button>
-                                        </div>
-                                        <br>
-                                        <div class="modal fade" id="responseModal" tabindex="-1" aria-labelledby="responseModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h1 class="modal-title fs-5" id="responseModalLabel">Response About Package</h1>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <div class="card-header">
-                                                            <form class="row g-4" id="responseform" action="<?= base_url('web/detailreservation/saveresponse/').$detail['id']; ?>" method="post" enctype="multipart/form-data">
-                                                                <?php @csrf_field(); ?>
-                                                                <div class="form-group">
-                                                                    <label for="response" class="mb-2">Response</label>
-                                                                    <textarea class="form-control" id="response" name="response" cols="30" rows="5"  placeholder="Give your response about package, after that admin will confirmation accept or reject the reservation" required rows="4"><?= ($edit) ? $data['response'] : old('response'); ?></textarea>
-                                                                </div>                                             
-                                                                <div col="col-md-5 col-12">
-                                                                    <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
-                                                                </div>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    <?php elseif($data_package['custom']==1 && $data_package['price']!=0 && $detail['response']!=null): ?>
-                                        <td>Response about the package </td>
-                                        <td> : <?= $detail['response'];  ?> </td>
-                                    <?php endif; ?>
-                                </tr>
-                                <tr>
                                     <?php if($detail['status']=='1' && $detail['cancel']!=null): ?> 
                                         <td>
                                             <br>
@@ -501,73 +461,65 @@ $dashboard = in_array('dashboard', $uri);
                                 </tr>
                             <?php if(!$addhome):  ?>
                                 <tr>
-                                    <td> Status  </td>
+                                    <td> <b>Status</b></td>
                                     <td>
                                         <?php $date = date('Y-m-d H:i');?>
                                         <?php if($detail['status']==null ): ?>    
-                                            <?php if($detail['custom']=='1' ): ?>
-                                                <?php if($detail['response']==null ): ?>
-                                                    <a href="#" class="btn-sm btn-warning float-center"><i>Negotiate</i></a>
-                                                <?php elseif($detail['response']!=null ): ?>
-                                                    <a href="#" class="btn-sm btn-warning float-center"><i>Waiting</i></a>
-                                                <?php endif; ?>
-                                            <?php elseif($detail['custom']!='1' ): ?>
-                                                <a href="#" class="btn-sm btn-warning float-center"><i>Waiting</i></a>
-                                            <?php endif; ?>
+                                            <a href="#" class="btn-sm btn-warning float-center"><b>Waiting</b></a>
                                         <?php elseif($detail['status']=='1' ): ?>    
                                             <?php if($detail['cancel']=='0'): ?>
                                                 <?php if($detail['proof_of_deposit']==null) :?>
-                                                    <a href="#" class="btn-sm btn-info float-center"><i>Pay deposit!</i></a>
+                                                    <a href="#" class="btn-sm btn-info float-center"><b>Pay deposit!</b></a>
                                             
                                                 <?php elseif($detail['proof_of_deposit']!=null && $detail['proof_of_payment']==null): ?>
                                                     <?php if($detail['deposit_check']==null): ?>
-                                                        <a href="#" class="btn-sm btn-info float-center"><i>Deposit Check</i></a>
+                                                        <a href="#" class="btn-sm btn-info float-center"><b>Deposit Check</b></a>
                                                     <?php elseif($detail['deposit_check']==0): ?>
-                                                        <a href="#" class="btn-sm btn-info float-center"><i>Deposit Incorrect</i></a>
+                                                        <a href="#" class="btn-sm btn-info float-center"><b>Deposit Incorrect</b></a>
                                                     <?php elseif($detail['deposit_check']==1): ?>
-                                                        <a href="#" class="btn-sm btn-info float-center"><i>Pay in full!</i></a>
+                                                        <a href="#" class="btn-sm btn-info float-center"><b>Pay in full!</b></a>
                                                     <?php endif; ?>
 
                                                 <?php elseif($detail['proof_of_deposit']!=null && $detail['proof_of_payment']!=null ):  ?>
                                                     <?php if($detail['payment_check']==null): ?>
-                                                        <a href="#" class="btn-sm btn-info float-center"><i>Payment Check</i></a>
+                                                        <a href="#" class="btn-sm btn-info float-center"><b>Payment Check</b></a>
                                                     <?php elseif($detail['payment_check']==0): ?>
-                                                        <a href="#" class="btn-sm btn-info float-center"><i>Payment Incorrect</i></a>
+                                                        <a href="#" class="btn-sm btn-info float-center"><b>Payment Incorrect</b></a>
                                                     <?php elseif($detail['payment_check']==1): ?>
 
                                                         <?php if($detail['review']==null): ?>
                                                             <?php if($datenow>=$check_out): ?>
-                                                                <a href="#" class="btn-sm btn-dark float-center"><i>Unreviewed</i></a>
+                                                                <a href="#" class="btn-sm btn-dark float-center"><b>Unreviewed</b></a>
                                                             <?php elseif($datenow<$check_out): ?>
-                                                                <a href="#" class="btn-sm btn-dark float-center"><i>Enjoy trip!</i></a>
+                                                                <a href="#" class="btn-sm btn-dark float-center"><b>Enjoy trip!</b></a>
                                                             <?php endif; ?>
                                                         <?php else: ?>
-                                                            <a href="#" class="btn-sm btn-success float-center"><i>Done</i></a>
+                                                            <a href="#" class="btn-sm btn-success float-center"><b>Done</b></a>
                                                         <?php endif; ?>   
 
                                                     <?php endif; ?>       
                                                 <?php endif; ?>
                                             <?php elseif($detail['cancel']=='1'): ?>
                                                 <?php if($detail['account_refund']==null): ?>
-                                                    <a href="#" class="btn-sm btn-secondary float-center"><i>Cancel</i></a>
+                                                    <a href="#" class="btn-sm btn-secondary float-center"><b>Cancel</b></a>
 
                                                 <?php elseif($detail['account_refund']!=null && $detail['proof_refund']==null): ?>
-                                                    <a href="#" class="btn-sm btn-secondary float-center"><i>Cancel & refund</i></a>
+                                                    <a href="#" class="btn-sm btn-secondary float-center"><b>Cancel & refund</b></a>
 
                                                 <?php elseif($detail['account_refund']!=null && $detail['proof_refund']!=null): ?>
                                                     <?php if($detail['refund_check']==null): ?>
-                                                        <a href="#" class="btn-sm btn-info float-center"><i>Refund Check</i></a>
+                                                        <a href="#" class="btn-sm btn-info float-center"><b>Refund Check</b></a>
                                                     <?php elseif($detail['refund_check']==0): ?>
-                                                        <a href="#" class="btn-sm btn-info float-center"><i>Refund Incorrect</i></a>
+                                                        <a href="#" class="btn-sm btn-info float-center"><b>Refund Incorrect</b></a>
                                                     <?php elseif($detail['refund_check']==1): ?>
-                                                        <a href="#" class="btn-sm btn-danger float-center"><i>Refund Success</i></a>
+                                                        <a href="#" class="btn-sm btn-danger float-center"><b>Refund Success</b></a>
                                                     <?php endif; ?>
                                                 <?php endif; ?>
 
                                             <?php endif; ?>
 
                                         <?php elseif($detail['status']==0): ?>    
-                                            <a href="#" class="btn-sm btn-danger float-center"><i>Rejected</i></a>
+                                            <a href="#" class="btn-sm btn-danger float-center"><b>Rejected</b></a>
                                         <?php endif; ?>  
                                     </td>                        
                                 </tr>

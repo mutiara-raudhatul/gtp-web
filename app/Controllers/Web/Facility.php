@@ -97,6 +97,8 @@ class Facility extends ResourcePresenter
             'id' => $id,
             'name' => $request['name'],
             'type_id' => $request['type'],
+            'price' => $request['price'],
+            'category' => $request['category']
         ];
         foreach ($requestData as $key => $value) {
             if (empty($value)) {
@@ -161,7 +163,9 @@ class Facility extends ResourcePresenter
         $requestData = [
             'id' => $id,
             'name' => $request['name'],
-            'type_id' => $request['type']
+            'type_id' => $request['type'],
+            'price' => $request['price'],
+            'category' => $request['category']
         ];
         foreach ($requestData as $key => $value) {
             if (empty($value)) {

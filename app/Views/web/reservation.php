@@ -45,11 +45,11 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Package Name</th>
-                                        <th>Request Date</th>
-                                        <th>Check In</th>
-                                        <th>Status</th>
-                                        <th>Action</th>
+                                        <th style="width: 20%;">Package Name</th>
+                                        <th style="width: 20%;">Request Date</th>
+                                        <th style="width: 20%;">Check In</th>
+                                        <th style="width: 15%;">Status</th>
+                                        <th style="width: 25%;">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody id="table-data">
@@ -64,69 +64,61 @@
                                                 <td>
                                                     <?php $date = date('Y-m-d H:i');?>
                                                     <?php if($item['status']==null ): ?>    
-                                                        <?php if($item['custom']=='1' ): ?>
-                                                            <?php if($item['response']==null ): ?>
-                                                                <a href="#" class="btn-sm btn-warning float-center"><i>Negotiate</i></a>
-                                                            <?php elseif($item['response']!=null ): ?>
-                                                                <a href="#" class="btn-sm btn-warning float-center"><i>Waiting</i></a>
-                                                            <?php endif; ?>
-                                                        <?php elseif($item['custom']!='1' ): ?>
-                                                            <a href="#" class="btn-sm btn-warning float-center"><i>Waiting</i></a>
-                                                        <?php endif; ?>
+                                                            <a href="#" class="btn-sm btn-warning float-center"><b>Waiting</b></a>
                                                     <?php elseif($item['status']=='1' ): ?>    
                                                         <?php if($item['cancel']=='0'): ?>
                                                             <?php if($item['proof_of_deposit']==null) :?>
-                                                                <a href="#" class="btn-sm btn-info float-center"><i>Pay deposit!</i></a>
+                                                                <a href="#" class="btn-sm btn-info float-center"><b>Pay deposit!</b></a>
                                                         
                                                             <?php elseif($item['proof_of_deposit']!=null && $item['proof_of_payment']==null): ?>
                                                                 <?php if($item['deposit_check']==null): ?>
-                                                                    <a href="#" class="btn-sm btn-info float-center"><i>Deposit Check</i></a>
+                                                                    <a href="#" class="btn-sm btn-info float-center"><b>Deposit Check</b></a>
                                                                 <?php elseif($item['deposit_check']==0): ?>
-                                                                    <a href="#" class="btn-sm btn-info float-center"><i>Deposit Incorrect</i></a>
+                                                                    <a href="#" class="btn-sm btn-info float-center"><b>Deposit Incorrect</b></a>
                                                                 <?php elseif($item['deposit_check']==1): ?>
-                                                                    <a href="#" class="btn-sm btn-info float-center"><i>Pay in full!</i></a>
+                                                                    <a href="#" class="btn-sm btn-info float-center"><b>Pay in full!</b></a>
                                                                 <?php endif; ?>
 
                                                             <?php elseif($item['proof_of_deposit']!=null && $item['proof_of_payment']!=null ):  ?>
                                                                 <?php if($item['payment_check']==null): ?>
-                                                                    <a href="#" class="btn-sm btn-info float-center"><i>Payment Check</i></a>
+                                                                    <a href="#" class="btn-sm btn-info float-center"><b>Payment Check</b></a>
                                                                 <?php elseif($item['payment_check']==0): ?>
-                                                                    <a href="#" class="btn-sm btn-info float-center"><i>Payment Incorrect</i></a>
+                                                                    <a href="#" class="btn-sm btn-info float-center"><b>Payment Incorrect</b></a>
                                                                 <?php elseif($item['payment_check']==1): ?>
 
                                                                     <?php if($item['review']==null): ?>
                                                                         <?php if($datenow>=$item['check_out']): ?>
-                                                                            <a href="#" class="btn-sm btn-dark float-center"><i>Unreviewed</i></a>
+                                                                            <a href="#" class="btn-sm btn-dark float-center"><b>Unreviewed</b></a>
                                                                         <?php elseif($datenow<$item['check_out']): ?>
-                                                                            <a href="#" class="btn-sm btn-dark float-center"><i>Enjoy trip!</i></a>
+                                                                            <a href="#" class="btn-sm btn-dark float-center"><b>Enjoy trip!</b></a>
                                                                         <?php endif; ?>
                                                                     <?php else: ?>
-                                                                        <a href="#" class="btn-sm btn-success float-center"><i>Done</i></a>
+                                                                        <a href="#" class="btn-sm btn-success float-center"><b>Done</b></a>
                                                                     <?php endif; ?>   
 
                                                                 <?php endif; ?>       
                                                             <?php endif; ?>
                                                         <?php elseif($item['cancel']=='1'): ?>
                                                             <?php if($item['account_refund']==null): ?>
-                                                                <a href="#" class="btn-sm btn-secondary float-center"><i>Cancel</i></a>
+                                                                <a href="#" class="btn-sm btn-secondary float-center"><b>Cancel</b></a>
 
                                                             <?php elseif($item['account_refund']!=null && $item['proof_refund']==null): ?>
-                                                                <a href="#" class="btn-sm btn-secondary float-center"><i>Cancel & refund</i></a>
+                                                                <a href="#" class="btn-sm btn-secondary float-center"><b>Cancel & refund</b></a>
 
                                                             <?php elseif($item['account_refund']!=null && $item['proof_refund']!=null): ?>
                                                                 <?php if($item['refund_check']==null): ?>
-                                                                    <a href="#" class="btn-sm btn-info float-center"><i>Refund Check</i></a>
+                                                                    <a href="#" class="btn-sm btn-info float-center"><b>Refund Check</b></a>
                                                                 <?php elseif($item['refund_check']==0): ?>
-                                                                    <a href="#" class="btn-sm btn-info float-center"><i>Refund Incorrect</i></a>
+                                                                    <a href="#" class="btn-sm btn-info float-center"><b>Refund Incorrect</b></a>
                                                                 <?php elseif($item['refund_check']==1): ?>
-                                                                    <a href="#" class="btn-sm btn-danger float-center"><i>Refund Success</i></a>
+                                                                    <a href="#" class="btn-sm btn-danger float-center"><b>Refund Success</b></a>
                                                                 <?php endif; ?>
                                                             <?php endif; ?>
 
                                                         <?php endif; ?>
 
                                                     <?php elseif($item['status']==0): ?>    
-                                                        <a href="#" class="btn-sm btn-danger float-center"><i>Rejected</i></a>
+                                                        <a href="#" class="btn-sm btn-danger float-center"><b>Rejected</b></a>
                                                     <?php endif; ?>  
                                                 </td>
                                                 <td>
@@ -171,73 +163,65 @@
                                                                                 <table class="col-12">
                                                                                     <tbody>
                                                                                         <tr>
-                                                                                            <td> Status  </td>
+                                                                                            <td> <b>Status</b>  </td>
                                                                                             <td> :
                                                                                                 <?php $date = date('Y-m-d H:i');?>
                                                                                                 <?php if($item['status']==null ): ?>    
-                                                                                                    <?php if($item['custom']=='1' ): ?>
-                                                                                                        <?php if($item['response']==null ): ?>
-                                                                                                            <a href="#" class="btn-sm btn-warning float-center"><i>Negotiate</i></a>
-                                                                                                        <?php elseif($item['response']!=null ): ?>
-                                                                                                            <a href="#" class="btn-sm btn-warning float-center"><i>Waiting</i></a>
-                                                                                                        <?php endif; ?>
-                                                                                                    <?php elseif($item['custom']!='1' ): ?>
-                                                                                                        <a href="#" class="btn-sm btn-warning float-center"><i>Waiting</i></a>
-                                                                                                    <?php endif; ?>
+                                                                                                        <a href="#" class="btn-sm btn-warning float-center"><b>Waiting</i></a>
                                                                                                 <?php elseif($item['status']=='1' ): ?>    
                                                                                                     <?php if($item['cancel']=='0'): ?>
                                                                                                         <?php if($item['proof_of_deposit']==null) :?>
-                                                                                                            <a href="#" class="btn-sm btn-info float-center"><i>Pay deposit!</i></a>
+                                                                                                            <a href="#" class="btn-sm btn-info float-center"><b>Pay deposit!</i></a>
                                                                                                     
                                                                                                         <?php elseif($item['proof_of_deposit']!=null && $item['proof_of_payment']==null): ?>
                                                                                                             <?php if($item['deposit_check']==null): ?>
-                                                                                                                <a href="#" class="btn-sm btn-info float-center"><i>Deposit Check</i></a>
+                                                                                                                <a href="#" class="btn-sm btn-info float-center"><b>Deposit Check</i></a>
                                                                                                             <?php elseif($item['deposit_check']==0): ?>
-                                                                                                                <a href="#" class="btn-sm btn-info float-center"><i>Deposit Incorrect</i></a>
+                                                                                                                <a href="#" class="btn-sm btn-info float-center"><b>Deposit Incorrect</i></a>
                                                                                                             <?php elseif($item['deposit_check']==1): ?>
-                                                                                                                <a href="#" class="btn-sm btn-info float-center"><i>Pay in full!</i></a>
+                                                                                                                <a href="#" class="btn-sm btn-info float-center"><b>Pay in full!</i></a>
                                                                                                             <?php endif; ?>
 
                                                                                                         <?php elseif($item['proof_of_deposit']!=null && $item['proof_of_payment']!=null ):  ?>
                                                                                                             <?php if($item['payment_check']==null): ?>
-                                                                                                                <a href="#" class="btn-sm btn-info float-center"><i>Payment Check</i></a>
+                                                                                                                <a href="#" class="btn-sm btn-info float-center"><b>Payment Check</i></a>
                                                                                                             <?php elseif($item['payment_check']==0): ?>
-                                                                                                                <a href="#" class="btn-sm btn-info float-center"><i>Payment Incorrect</i></a>
+                                                                                                                <a href="#" class="btn-sm btn-info float-center"><b>Payment Incorrect</i></a>
                                                                                                             <?php elseif($item['payment_check']==1): ?>
 
                                                                                                                 <?php if($item['review']==null): ?>
                                                                                                                     <?php if($datenow>=$item['check_out']): ?>
-                                                                                                                        <a href="#" class="btn-sm btn-dark float-center"><i>Unreviewed</i></a>
+                                                                                                                        <a href="#" class="btn-sm btn-dark float-center"><b>Unreviewed</i></a>
                                                                                                                     <?php elseif($datenow<$item['check_out']): ?>
-                                                                                                                        <a href="#" class="btn-sm btn-dark float-center"><i>Enjoy trip!</i></a>
+                                                                                                                        <a href="#" class="btn-sm btn-dark float-center"><b>Enjoy trip!</i></a>
                                                                                                                     <?php endif; ?>
                                                                                                                 <?php else: ?>
-                                                                                                                    <a href="#" class="btn-sm btn-success float-center"><i>Done</i></a>
+                                                                                                                    <a href="#" class="btn-sm btn-success float-center"><b>Done</i></a>
                                                                                                                 <?php endif; ?>   
 
                                                                                                             <?php endif; ?>       
                                                                                                         <?php endif; ?>
                                                                                                     <?php elseif($item['cancel']=='1'): ?>
                                                                                                         <?php if($item['account_refund']==null): ?>
-                                                                                                            <a href="#" class="btn-sm btn-secondary float-center"><i>Cancel</i></a>
+                                                                                                            <a href="#" class="btn-sm btn-secondary float-center"><b>Cancel</i></a>
 
                                                                                                         <?php elseif($item['account_refund']!=null && $item['proof_refund']==null): ?>
-                                                                                                            <a href="#" class="btn-sm btn-secondary float-center"><i>Cancel & refund</i></a>
+                                                                                                            <a href="#" class="btn-sm btn-secondary float-center"><b>Cancel & refund</i></a>
 
                                                                                                         <?php elseif($item['account_refund']!=null && $item['proof_refund']!=null): ?>
                                                                                                             <?php if($item['refund_check']==null): ?>
-                                                                                                                <a href="#" class="btn-sm btn-info float-center"><i>Refund Check</i></a>
+                                                                                                                <a href="#" class="btn-sm btn-info float-center"><b>Refund Check</i></a>
                                                                                                             <?php elseif($item['refund_check']==0): ?>
-                                                                                                                <a href="#" class="btn-sm btn-info float-center"><i>Refund Incorrect</i></a>
+                                                                                                                <a href="#" class="btn-sm btn-info float-center"><b>Refund Incorrect</i></a>
                                                                                                             <?php elseif($item['refund_check']==1): ?>
-                                                                                                                <a href="#" class="btn-sm btn-danger float-center"><i>Refund Success</i></a>
+                                                                                                                <a href="#" class="btn-sm btn-danger float-center"><b>Refund Success</i></a>
                                                                                                             <?php endif; ?>
                                                                                                         <?php endif; ?>
 
                                                                                                     <?php endif; ?>
 
                                                                                                 <?php elseif($item['status']==0): ?>    
-                                                                                                    <a href="#" class="btn-sm btn-danger float-center"><i>Rejected</i></a>
+                                                                                                    <a href="#" class="btn-sm btn-danger float-center"><b>Rejected</i></a>
                                                                                                 <?php endif; ?>  
                                                                                             </td>                           
                                                                                         </tr>
@@ -386,7 +370,7 @@
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <?php $i++ ?>
+                                                <?php $i++; ?>
                                             </tr>
                                         <?php endforeach; ?>
                                         <script>

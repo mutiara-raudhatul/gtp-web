@@ -313,7 +313,7 @@ class PackageDay extends ResourcePresenter
                     'activity' => $detailPackage
                 ];  
 
-                return redirect()->to(base_url('dashboard/packageday') . '/' . $package_id);
+                return redirect()->back();
             }
         } else {
             $response = [
@@ -361,7 +361,7 @@ class PackageDay extends ResourcePresenter
                 ];  
 
             // endforeach;
-            return redirect()->to(base_url('dashboard/packageday') . '/' . $package_id);
+            return redirect()->back();
 
             // return view('dashboard/detail-package-form', $data, $package, $packageDay, $detailPackage);
 

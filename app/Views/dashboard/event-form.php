@@ -55,6 +55,30 @@ $edit = in_array('edit', $uri);
                                 </div>
                             </div>
                             <div class="form-group mb-4">
+                                <label for="category">Category</label><br>
+
+                                <?php if($edit): ?>
+                                    <label>
+                                        <input type="radio" name="category" value="'0'" required <?php if($data['category']=="0") echo "checked"; ?>>
+                                        <i class="fa fa-times"></i> Group    
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="category" value="1" required <?php if($data['category']=="1") echo "checked"; ?>>
+                                        <i class="fa fa-check"></i> Individu
+                                    </label>
+                                <?php else: ?>
+                                    <label>
+                                    <input type="radio" name="category" value="'0'" required>
+                                    <i class="fa fa-times"></i> Group    
+                                    </label>
+
+                                    <label>
+                                    <input type="radio" name="category" value="1" required>
+                                    <i class="fa fa-check"></i> Individu
+                                    </label>
+                                <?php endif; ?>                        
+                            </div>
+                            <div class="form-group mb-4">
                                 <label for="contact_person" class="mb-2">Contact Person</label>
                                 <input type="tel" id="contact_person" class="form-control" name="contact_person" placeholder="Contact Person" value="<?= ($edit) ? $data['contact_person'] : old('contact_person'); ?>" autocomplete="off">
                             </div>

@@ -27,7 +27,7 @@ class FacilityModel extends Model
     public function get_list_facility()
     {
         $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
-        $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.type_id";
+        $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.type_id, {$this->table}.price,{$this->table}.category";
         $query = $this->db->table($this->table)
             ->select("{$columns}, {$coords}")
             ->get();
@@ -37,7 +37,7 @@ class FacilityModel extends Model
     public function get_facility_by_id($id = null)
     {
         $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
-        $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.type_id";
+        $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.type_id,{$this->table}.price,{$this->table}.category";
         $geoJson = "ST_AsGeoJSON({$this->table}.geom) AS geoJson";
         $query = $this->db->table($this->table)
             ->select("{$columns}, {$coords}, {$geoJson}, facility_type.type")
@@ -99,7 +99,7 @@ class FacilityModel extends Model
                     * cos(radians(ST_X(ST_CENTROID({$this->table}.geom))) - radians({$long})) 
                     + sin(radians({$lat}))* sin(radians(ST_Y(ST_CENTROID({$this->table}.geom))))))";
         $coords = "ST_Y(ST_Centroid({$this->table}.geom)) AS lat, ST_X(ST_Centroid({$this->table}.geom)) AS lng";
-        $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.type_id";
+        $columns = "{$this->table}.id,{$this->table}.name,{$this->table}.type_id,{$this->table}.price,{$this->table}.category";
         $query = $this->db->table($this->table)
             ->select("{$columns}, {$coords}, {$distance} as distance")
             ->where('type_id', $type)

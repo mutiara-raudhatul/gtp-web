@@ -10,7 +10,7 @@ class ServicePackageModel extends Model
     protected $table = 'service_package';
     protected $primaryKey = 'id';
     protected $returnType = 'array';
-    protected $allowedFields    = ['id', 'name'];
+    protected $allowedFields    = ['id', 'name', 'price'];
 
     // Dates
     protected $useTimestamps = true;
@@ -27,7 +27,7 @@ class ServicePackageModel extends Model
     public function get_list_service_package() {
         $query = $this->db->table($this->table)
             ->select("*")
-            ->orderBy('id', 'ASC')
+            ->orderBy('name', 'ASC')
             ->get();
 
         return $query;

@@ -78,9 +78,16 @@ $edit = in_array('edit', $uri);
                                                     <div class="col-md-12">
                                                         <label for="id_service">Service </label>
                                                         <select class="form-select" name="id_service" required>
-                                                                <option value="">Select the service</option>
+                                                                <option value="" selected>Select the service</option>
                                                                 <?php foreach ($servicelist as $item):?>
-                                                                    <option value="<?= esc($item['id']); ?>"><?= esc($item['name']); ?></option>                                                                
+                                                                    <option value="<?= esc($item['id']); ?>">
+                                                                        <?= esc($item['name']); ?> - <?= 'Rp' . number_format(esc($item['price']), 0, ',', '.'); ?>
+                                                                        <?php if ($item['category'] == 0): ?>
+                                                                            - Group
+                                                                        <?php elseif ($item['category'] == 1): ?>
+                                                                            - Individu
+                                                                        <?php endif; ?>
+                                                                    </option>
                                                                 <?php endforeach; ?>
                                                         </select>
                                                     </div>
@@ -112,7 +119,7 @@ $edit = in_array('edit', $uri);
             <!-- end Menambahkan Service -->
 
         <!-- Object Detail Information -->
-        <div class="col-md-6 col-12">
+        <div class="col-md-5 col-12">
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title text-center"><?= $title; ?></h4>
@@ -140,7 +147,7 @@ $edit = in_array('edit', $uri);
                                 <label for="price" class="mb-2">Price</label>
                                 <div class="input-group">
                                     <span class="input-group-text">Rp </span>
-                                    <input type="number" id="price" class="form-control" name="price" placeholder="Price" aria-label="Price" aria-describedby="price" value="<?= ($edit) ? $data['price'] : old('price'); ?>">
+                                    <input readonly type="number" id="price" class="form-control" name="price" placeholder="The price based on the activities and services added" aria-label="Price" aria-describedby="price" value="<?= ($edit) ? $totalPrice : old('price'); ?>">
                                 </div>
                             </div>
                             <div class="form-group mb-4">
@@ -177,130 +184,474 @@ $edit = in_array('edit', $uri);
             </div>
         </div>
 
-        <div class="col-md-6 col-12">
+        <div class="col-md-7 col-12">
             <!-- Services -->
             <?php if(($edit)) : ?>
                 <div class="col-md-12 col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="row align-items-center">
-                            <div class="form-group mb-4">
-                                <div class="col-auto ">
-                                    <div class="btn-group float-right" role="group">
-                                        <button type="button" class="btn btn-outline-primary " data-bs-toggle="modal" data-bs-target="#servicesPackageModal" data-bs-whatever="@getbootstrap"><i class="fa fa-plus"></i> New Services</button>
-                                        <button type="button" class="btn btn-outline-info " data-bs-toggle="modal" data-bs-target="#detailServicesPackageModal" data-bs-whatever="@getbootstrap"><i class="fa fa-plus"></i> Add Services Package</button>
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="row align-items-center">
+                                <div class="form-group mb-4">
+                                    <div class="col-auto ">
+                                        <div class="btn-group float-right" role="group">
+                                            <!-- <button type="button" class="btn btn-outline-primary " data-bs-toggle="modal" data-bs-target="#servicesPackageModal" data-bs-whatever="@getbootstrap"><i class="fa fa-plus"></i> New Services</button> -->
+                                            <button type="button" class="btn btn-outline-primary " data-bs-toggle="modal" data-bs-target="#detailServicesPackageModal" data-bs-whatever="@getbootstrap"><i class="fa fa-plus"></i> <b>Add Services Package</b></button>
+                                        </div>
                                     </div>
-                                </div>
-                                <br>
-                                <?php if(session()->has('success')) : ?>
-                                    <script>
-                                        Swal.fire({
-                                            icon: 'success',
-                                            title: 'Success!',
-                                            text: '<?= session('success') ?>',
-                                        });
-                                    </script>
-                                <?php endif; ?>
+                                    <br>
+                                    <?php if(session()->has('success')) : ?>
+                                        <script>
+                                            Swal.fire({
+                                                icon: 'success',
+                                                title: 'Success!',
+                                                text: '<?= session('success') ?>',
+                                            });
+                                        </script>
+                                    <?php endif; ?>
 
-                                <?php if(session()->has('failed')) : ?>
-                                    <script>
-                                        Swal.fire({
-                                            icon: 'warning',
-                                            title: 'Failed!',
-                                            text: '<?= session('failed') ?>',
-                                        });
-                                    </script>
-                                <?php endif; ?>
+                                    <?php if(session()->has('failed')) : ?>
+                                        <script>
+                                            Swal.fire({
+                                                icon: 'warning',
+                                                title: 'Failed!',
+                                                text: '<?= session('failed') ?>',
+                                            });
+                                        </script>
+                                    <?php endif; ?>
 
-                                <label for="facility" class="mb-2">Services</label>
-                                <div class="table-responsive">
-                                    <div class="table-wrapper">
-                                        <table class="table table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th>No</th>
-                                                    <th>Name</th>
-                                                    <th>Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php if (isset($detailservice)) : ?>
-                                                    <?php $i = 1; ?>
-                                                    <?php foreach ($detailservice as $item => $value) : ?>
-                                                        <?php if ($value['status']=="1") : ?>
-                                                            <tr>
-                                                                <td><?= esc($i++); ?></td>
-                                                                <td><?= esc($value['name']); ?></td>
-                                                                <td>
-                                                                    <div class="btn-group" role="group" aria-label="Basic example">
-                                                                        <form action="<?= base_url('dashboard/servicepackage/delete/').$value['package_id']; ?>" method="post" class="d-inline">
-                                                                            <?= csrf_field(); ?>
-                                                                            <input type="hidden" name="package_id" value="<?= esc($value['package_id']); ?>">
-                                                                            <input type="hidden" name="service_package_id" value="<?= esc($value['service_package_id']); ?>">
-                                                                            <input type="hidden" name="name" value="<?= esc($value['name']); ?>">
-                                                                            <input type="hidden" name="status" value="<?= esc($value['status']); ?>">
-                                                                            <input type="hidden" name="_method" value="DELETE">
-                                                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this service?');"><i class="fa fa-times"></i></button>
-                                                                        </form>
-                                                                    </div>
-                                                                </td> 
-                                                            </tr> 
-                                                        <?php endif; ?>       
-                                                    <?php endforeach; ?>
-                                                <?php endif; ?>
-                                            </tbody>
-                                        </table>
+                                    <label for="facility" class="mb-2">Services</label>
+                                    <div class="table-responsive">
+                                        <div class="table-wrapper">
+                                            <table class="table table-sm">
+                                                <thead>
+                                                    <tr>
+                                                        <th>No</th>
+                                                        <th>Name</th>
+                                                        <th>Price</th>
+                                                        <th>Category</th>
+                                                        <th>Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php if (isset($detailservice)) : ?>
+                                                        <?php $i = 1; ?>
+                                                        <?php foreach ($detailservice as $item => $value) : ?>
+                                                            <?php if ($value['status']=="1") : ?>
+                                                                <tr>
+                                                                    <td><?= esc($i++); ?></td>
+                                                                    <td><?= esc($value['name']); ?></td>
+                                                                    <td><?= 'Rp' . number_format(esc($value['price']), 0, ',', '.'); ?> </td>
+                                                                    <td>
+                                                                        <?php if ($value['category'] == 0): ?>
+                                                                            Group
+                                                                        <?php elseif ($value['category'] == 1): ?>
+                                                                            Individu
+                                                                        <?php endif; ?>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="btn-group" role="group" aria-label="Basic example">
+                                                                            <form action="<?= base_url('dashboard/servicepackage/delete/').$value['package_id']; ?>" method="post" class="d-inline">
+                                                                                <?= csrf_field(); ?>
+                                                                                <input type="hidden" name="package_id" value="<?= esc($value['package_id']); ?>">
+                                                                                <input type="hidden" name="service_package_id" value="<?= esc($value['service_package_id']); ?>">
+                                                                                <input type="hidden" name="name" value="<?= esc($value['name']); ?>">
+                                                                                <input type="hidden" name="status" value="<?= esc($value['status']); ?>">
+                                                                                <input type="hidden" name="_method" value="DELETE">
+                                                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this service?');"><i class="fa fa-times"></i></button>
+                                                                            </form>
+                                                                        </div>
+                                                                    </td> 
+                                                                </tr> 
+                                                            <?php endif; ?>       
+                                                        <?php endforeach; ?>
+                                                    <?php endif; ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
-                                </div>
-    
-    
-                                <label for="facility" class="mb-2">Non-Services</label>
-                                <div class="table-responsive">
-                                    <div class="table-wrapper">
-                                        <table class="table table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th>No</th>
-                                                    <th>Name</th>
-                                                    <th>Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php if (isset($detailservice)) : ?>
-                                                    <?php $i = 1; ?>
-                                                    <?php foreach ($detailservice as $item => $value) : ?>
-                                                        <?php if ($value['status']=="0") : ?>
-                                                            <tr>
-                                                                <td><?= esc($i++); ?></td>
-                                                                <td><?= esc($value['name']); ?></td>
-                                                                <td>
-                                                                    <div class="btn-group" role="group" aria-label="Basic example">
-                                                                        <form action="<?= base_url('dashboard/servicepackage/delete/').$value['package_id']; ?>" method="post" class="d-inline">
-                                                                            <?= csrf_field(); ?>
-                                                                            <input type="hidden" name="package_id" value="<?= esc($value['package_id']); ?>">
-                                                                            <input type="hidden" name="service_package_id" value="<?= esc($value['service_package_id']); ?>">
-                                                                            <input type="hidden" name="name" value="<?= esc($value['name']); ?>">
-                                                                            <input type="hidden" name="status" value="<?= esc($value['status']); ?>">
-                                                                            <input type="hidden" name="_method" value="DELETE">
-                                                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this service?');"><i class="fa fa-times"></i></button>
-                                                                        </form>
-                                                                    </div>
-                                                                </td> 
-                                                            </tr> 
-                                                        <?php endif; ?>
-                                                    <?php endforeach; ?>
-                                                <?php endif; ?>
-                                            </tbody>
-                                        </table>
+        
+        
+                                    <label for="facility" class="mb-2">Non-Services</label>
+                                    <div class="table-responsive">
+                                        <div class="table-wrapper">
+                                            <table class="table table-sm">
+                                                <thead>
+                                                    <tr>
+                                                        <th>No</th>
+                                                        <th>Name</th>
+                                                        <th>Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php if (isset($detailservice)) : ?>
+                                                        <?php $i = 1; ?>
+                                                        <?php foreach ($detailservice as $item => $value) : ?>
+                                                            <?php if ($value['status']=="0") : ?>
+                                                                <tr>
+                                                                    <td><?= esc($i++); ?></td>
+                                                                    <td><?= esc($value['name']); ?></td>
+                                                                    <td>
+                                                                        <div class="btn-group" role="group" aria-label="Basic example">
+                                                                            <form action="<?= base_url('dashboard/servicepackage/delete/').$value['package_id']; ?>" method="post" class="d-inline">
+                                                                                <?= csrf_field(); ?>
+                                                                                <input type="hidden" name="package_id" value="<?= esc($value['package_id']); ?>">
+                                                                                <input type="hidden" name="service_package_id" value="<?= esc($value['service_package_id']); ?>">
+                                                                                <input type="hidden" name="name" value="<?= esc($value['name']); ?>">
+                                                                                <input type="hidden" name="status" value="<?= esc($value['status']); ?>">
+                                                                                <input type="hidden" name="_method" value="DELETE">
+                                                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this service?');"><i class="fa fa-times"></i></button>
+                                                                            </form>
+                                                                        </div>
+                                                                    </td> 
+                                                                </tr> 
+                                                            <?php endif; ?>
+                                                        <?php endforeach; ?>
+                                                    <?php endif; ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>                        
+                                </div>                        
+                            </div>
                         </div>
-                        <?php if($edit) : ?>
-                            <a href="<?= base_url('dashboard/packageday/'); ?>/<?= $data['id']; ?>" class="btn btn-secondary"><i class="fa fa-plus"></i> Manage Activity Package</a>
-                        <?php endif; ?>
                     </div>
                 </div>
+
+                <div class="col-md-12 col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title text-center">Activity</h4>
+                        </div>
+                        <?php if(session()->has('success')) : ?>
+                            <script>
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success!',
+                                    text: '<?= session('success') ?>',
+                                });
+                            </script>
+                        <?php endif; ?>
+
+                        <?php if(session()->has('failed')) : ?>
+                            <script>
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'Failed!',
+                                    text: '<?= session('failed') ?>',
+                                });
+                            </script>
+                        <?php endif; ?>
+
+                        <div class="card-body">
+                    <!-- Menambahkan hari paket -->
+                        
+                        <div class="col-auto ">
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-outline-primary " data-bs-toggle="modal" data-bs-target="#dayModal" data-bs-whatever="@getbootstrap"><i class="fa fa-plus"></i> <b>Day</b></button>
+                                <button type="button" class="btn btn-outline-primary " data-bs-toggle="modal" data-bs-target="#activityModal" data-bs-whatever="@getbootstrap"><i class="fa fa-plus"></i> <b>Activity</b></button>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="dayModal" tabindex="-1" aria-labelledby="dayModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="dayModalLabel">Package Day</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <form class="row g-3" action="<?= base_url('dashboard/packageday/createday') . '/' . $data['id']; ?>" method="post" enctype="multipart/form-data">
+                                    <div class="modal-body">
+                                        <div class="card-header">
+                                            <?php @csrf_field(); ?>
+                                            <h5 class="card-title"><?= esc($data['name']) ?></h5>
+                                            <div class="row g-4">
+                                                <div class="col-md-7">
+                                                    <div class="form-group">
+                                                        <label for="package">Package</label>
+                                                        <input type="text" class="form-control" id="package" name="package" placeholder="Pxxxxx" disabled value="<?= esc($data['id']) ?>">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <label for="day">Day</label>
+                                                        <input type="number" min="1" class="form-control" id="day" name="day" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row g-4">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="description">Description</label>
+                                                        <input type="text" class="form-control" id="description" name="description" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+                                        <button type="submit" class="btn btn-outline-primary me-1 mb-1"><i class="fa-solid fa-add"></i></button>
+                                        <button type="reset" class="btn btn-outline-danger me-1 mb-1"><i class="fa-solid fa-trash-can"></i> </button>
+                                    </div>
+                                </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal fade" id="editdayModal" tabindex="-1" aria-labelledby="dayModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="dayModalLabel">Edit Package Day</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <form class="row g-3" action="<?= base_url('dashboard/packageday/createday') . '/' . $data['id']; ?>" method="post" enctype="multipart/form-data">
+                                    <div class="modal-body">
+                                        <div class="card-header">
+                                            <?php @csrf_field(); ?>
+                                            <h5 class="card-title"><?= esc($data['name']) ?></h5>
+                                            <div class="row g-4">
+                                                <div class="col-md-7">
+                                                    <div class="form-group">
+                                                        <label for="package">Package</label>
+                                                        <input type="text" class="form-control" id="package" name="package" placeholder="Pxxxxx" disabled value="<?= esc($data['id']) ?>">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <label for="day">Day</label>
+                                                        <input type="number" min="1" class="form-control" id="day" name="day" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row g-4">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="description">Description</label>
+                                                        <input type="text" class="form-control" id="description" name="description" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+                                        <button type="submit" class="btn btn-outline-primary me-1 mb-1"><i class="fa-solid fa-add"></i></button>
+                                        <button type="reset" class="btn btn-outline-danger me-1 mb-1"><i class="fa-solid fa-trash-can"></i> </button>
+                                    </div>
+                                </form>
+                                </div>
+                            </div>
+                        </div>
+                    <!-- end menambahkan hari paket -->
+                    
+                    <!-- Menambahkan Aktivitas -->
+                        <div class="col-sm-2 float-end">
+                                                <!-- <button type="button" class="btn btn-info add-new"><i class="fa fa-plus"></i> Activity</button> -->
+                                                <div class="modal fade" id="activityModal" tabindex="-1" aria-labelledby="activityModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h1 class="modal-title fs-5" id="activityModalLabel">Activity Package Day </h1>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+
+                                                        <form class="row g-3" action="<?= base_url('dashboard/packageday/createactivity') . '/' . $data['id']; ?>" method="post" >
+                                                            <div class="modal-body">
+                                                                <div class="card-header">
+                                                                    <?php @csrf_field(); ?>
+                                                                    <div class="row g-4">
+                                                                        <div class="col-md-12">
+                                                                            <input hidden type="text" class="form-control" id="package" name="package" placeholder="Pxxxxx" disabled value="<?= esc($data['id']) ?>">
+                                                                            <label for="day">Activity Day</label>
+                                                                            <select class="form-select" name="day" required>
+                                                                                    <option value="" selected>Select the day</option>
+                                                                                <?php foreach ($day as $item => $keyy) : ?>
+                                                                                    <option value="<?= esc($keyy['day']); ?>">Activity Day <?= esc($keyy['day']); ?></option>                                                                
+                                                                                <?php endforeach; ?>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div><br>
+                                                                    <div class="row g-4">
+                                                                        <div class="col-md-3">
+                                                                            <label for="activity">Activity</label>
+                                                                            <input type="number" min='1' required class="form-control" id="activity" name="activity">
+                                                                        </div>
+                                                                        <div class="col-md-4">
+                                                                            <label for="activity_type">Activity Type</label>
+                                                                            <select class="form-control" name="activity_type" id="activity_type" required>
+                                                                                <option value="" selected>Select Type</option>
+                                                                                <option value="CP">Culinary</option>
+                                                                                <option value="WO">Worship</option>
+                                                                                <option value="SP">Souvenir Place</option>
+                                                                                <option value="HO">Homestay</option>
+                                                                                <option value="FC">Facility</option>
+                                                                                <option value="A">Attraction</option>
+                                                                                <option value="EV">Event</option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="col-md-5">
+                                                                            <label for="object">Object</label>
+                                                                            <select class="form-control" name="object" id="object">
+                                                                                <option disabled selected>Select Object</option>
+                                                                                <?php foreach ($object['culinary'] as $item) : ?>
+                                                                                    <option value="<?= esc($item['id']); ?>">[Culinary] <?= esc($item['name']); ?> - Rp0 -Shopping not include</option>                                                                
+                                                                                <?php endforeach; ?>
+                                                                                <?php foreach ($object['worship'] as $item) : ?>
+                                                                                    <option value="<?= esc($item['id']); ?>">[Worship] <?= esc($item['name']); ?> - Rp0 -Shopping not include</option>                                                                
+                                                                                <?php endforeach; ?>
+                                                                                <?php foreach ($object['souvenir'] as $item) : ?>
+                                                                                    <option value="<?= esc($item['id']); ?>">[Souvenir] <?= esc($item['name']); ?> - Rp0 -Shopping not include</option>                                                                
+                                                                                <?php endforeach; ?>
+                                                                                <?php foreach ($object['facility'] as $item) : ?>
+                                                                                    <option value="<?= esc($item['id']); ?>">
+                                                                                        [Facility] <?= esc($item['name']); ?> - Rp<?= esc($item['price']); ?>
+                                                                                        <?php if ($item['category'] == 0): ?>
+                                                                                            - Group
+                                                                                        <?php elseif ($item['category'] == 1): ?>
+                                                                                            - Individu
+                                                                                        <?php endif; ?>
+                                                                                    </option>                                                                
+                                                                                <?php endforeach; ?>
+                                                                                <?php foreach ($object['attraction'] as $item) : ?>
+                                                                                    <option value="<?= esc($item['id']); ?>">
+                                                                                        [Attraction] <?= esc($item['name']); ?> - Rp<?= esc($item['price']); ?> 
+                                                                                        <?php if ($item['category'] == 0): ?>
+                                                                                            - Group
+                                                                                        <?php elseif ($item['category'] == 1): ?>
+                                                                                            - Individu
+                                                                                        <?php endif; ?>
+                                                                                    </option>                                                                
+                                                                                <?php endforeach; ?>
+                                                                                <?php foreach ($object['event'] as $item) : ?>
+                                                                                    <option value="<?= esc($item['id']); ?>">
+                                                                                        [Event] <?= esc($item['name']); ?> - Rp<?= esc($item['price']); ?>
+                                                                                        <?php if ($item['category'] == 0): ?>
+                                                                                            - Group
+                                                                                        <?php elseif ($item['category'] == 1): ?>
+                                                                                            - Individu
+                                                                                        <?php endif; ?>
+                                                                                    </option>                                                                
+                                                                                <?php endforeach; ?>
+                                                                            </select>                                                              
+                                                                        </div>
+                                                                    </div><br>
+                                                                    <div class="row g-4">
+                                                                        <div class="col-md-12">
+                                                                            <label for="description_activity">Description</label>
+                                                                            <input type="text" class="form-control" id="description_activity" name="description_activity" required>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+                                                                <button type="submit" class="btn btn-outline-primary me-1 mb-1"><i class="fa-solid fa-add"></i></button>
+                                                                <button type="reset" class="btn btn-outline-danger me-1 mb-1"><i class="fa-solid fa-trash-can"></i> </button>
+                                                            </div>
+                                                        </form>
+
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                    <!-- end Menambahkan Aktivitas -->
+
+                            <?php if (session()->getFlashdata('pesan')) : ?>
+                                <div class="alert alert-success col-sm-10 mx-auto" role="alert">
+                                    <?= session()->getFlashdata('pesan'); ?>
+                                </div>
+                            <?php endif;  ?>
+                            
+                            <?php if (isset($day)) : ?>
+                                <?php foreach ($day as $item => $key) : ?>
+                                    <div class="table-responsive">
+                                        <div class="table-wrapper">
+
+                                            <div class="table-title">
+                                                <br>
+                                                <div class="row">
+                                                    <div class="col-sm-10">
+                                                        <b>Day <?= esc($key['day']); ?></b>
+                                                        <p><?= esc($key['description']); ?></p>
+                                                    </div>
+                                                    <div class="col-sm-2 ">
+                                                        <div class="btn-group float-end" role="group" aria-label="Basic example">                                                    
+                                                            <form action="<?= base_url('dashboard/packageday/deleteday/').$key['package_id']; ?>" method="post" class="d-inline">
+                                                                <?= csrf_field(); ?>
+                                                                <input type="hidden" name="package_id" value="<?= esc($key['package_id']); ?>">
+                                                                <input type="hidden" name="day" value="<?= esc($key['day']); ?>">
+                                                                <input type="hidden" name="description" value="<?= esc($key['description']); ?>">
+                                                                <input type="hidden" name="_method" value="DELETE">
+                                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this day?');"><i class="fa fa-trash"></i></button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <table class="table table-sm">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="width: 5%;">No</th>
+                                                        <!-- <th style="width: 10%;">Activity Type</th> -->
+                                                        <th style="width: 20%;">Object</th>
+                                                        <th style="width: 25%;">Description</th>
+                                                        <th style="width: 20%;">Price</th>
+                                                        <th style="width: 10%;">Category</th>
+                                                        <th style="width: 5%;">Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php if (isset($data_package)) : ?>
+                                                        <?php foreach ($data_package as $item => $value) : ?>
+                                                            <?php if ($value['day']==$key['day']) : ?>
+                                                                <tr>
+                                                                    <td><?= esc($value['activity']); ?></td>
+                                                                    <!-- <td><?= esc($value['activity_type']); ?></td> -->
+                                                                    <td><?= esc($value['name']); ?></td>
+                                                                    <td><?= esc($value['description']); ?></td>
+                                                                    <td><?= 'Rp' . number_format(esc($value['price']), 0, ',', '.'); ?> </td>
+                                                                    <td>
+                                                                            <?php if ($value['category'] == 0): ?>
+                                                                                Group
+                                                                            <?php elseif ($value['category'] == 1): ?>
+                                                                                Individu
+                                                                            <?php elseif ($value['category'] == 2): ?>
+                                                                                Shopping not include
+                                                                            <?php endif; ?>    
+                                                                    </td>
+                                                                    <td>
+                                                                        <!-- <a class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a> -->
+                                                                        <!-- <a class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a> -->
+
+                                                                        <div class="btn-group" role="group" aria-label="Basic example">
+                                                                            <form action="<?= base_url('dashboard/packageday/delete/').$value['package_id']; ?>" method="post" class="d-inline">
+                                                                                <?= csrf_field(); ?>
+                                                                                <input type="hidden" name="package_id" value="<?= esc($value['package_id']); ?>">
+                                                                                <input type="hidden" name="day" value="<?= esc($value['day']); ?>">
+                                                                                <input type="hidden" name="activity" value="<?= esc($value['activity']); ?>">
+                                                                                <input type="hidden" name="description" value="<?= esc($value['description']); ?>">
+                                                                                <input type="hidden" name="_method" value="DELETE">
+                                                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this activity?');"><i class="fa fa-times"></i></button>
+                                                                            </form>
+                                                                        </div>
+                                                                    </td> 
+                                                                </tr>  
+                                                            <?php endif; ?>
+                
+                                                        <?php endforeach; ?>
+                                                    <?php endif; ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                            </div>
+                    </div>
+                </div>
+
+                    </div>
                 </div>
             <?php endif; ?>
         </div>

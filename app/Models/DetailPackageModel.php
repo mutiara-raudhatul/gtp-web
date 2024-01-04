@@ -10,7 +10,7 @@ class DetailPackageModel extends Model
     protected $table = 'detail_package';
     // protected $primaryKey = 'id';
     protected $returnType = 'array';
-    protected $allowedFields    = ['package_id','day','activity','activity_type','object_id','description'];
+    protected $allowedFields = ['package_id','day','activity','activity_type','object_id','description'];
 
     // Dates
     protected $useTimestamps = true;
@@ -40,10 +40,10 @@ class DetailPackageModel extends Model
         $culinaryPlaceModel = new CulinaryPlaceModel();
         $souvenirPlaceModel = new SouvenirPlaceModel();
         $worshipPlaceModel = new WorshipPlaceModel();
+        $homestayModel = new HomestayModel();
         $facilityModel = new FacilityModel();
         $attractionModel = new AttractionModel();
         $eventModel = new EventModel();
-        $homestayModel = new HomestayModel();
 
         $culinaryData = $culinaryPlaceModel->select('package_id, day, activity, activity_type, object_id, detail_package.description, name, geom, ST_Y(ST_Centroid(geom)) AS lat, ST_X(ST_Centroid(geom)) AS lng')
         ->join('detail_package', 'detail_package.object_id=culinary_place.id')
@@ -60,28 +60,39 @@ class DetailPackageModel extends Model
         ->where('detail_package.package_id', $package_id)
         ->get()->getResultArray();
 
-        $facilityData = $facilityModel->select('package_id, day, activity, activity_type, object_id, detail_package.description, name, geom, ST_Y(ST_Centroid(geom)) AS lat, ST_X(ST_Centroid(geom)) AS lng')
-        ->join('detail_package', 'detail_package.object_id=facility.id')
-        ->where('detail_package.package_id', $package_id)
-        ->get()->getResultArray();
-
-        $attractionData = $attractionModel->select('package_id, day, activity, activity_type, object_id, detail_package.description, name, geom, ST_Y(ST_Centroid(geom)) AS lat, ST_X(ST_Centroid(geom)) AS lng')
-        ->join('detail_package', 'detail_package.object_id=attraction.id')
-        ->where('detail_package.package_id', $package_id)
-        ->get()->getResultArray();
-
-        $eventData = $eventModel->select('package_id, day, activity, object_id, activity_type, detail_package.description, name, geom, ST_Y(ST_Centroid(geom)) AS lat, ST_X(ST_Centroid(geom)) AS lng')
-        ->join('detail_package', 'detail_package.object_id=event.id')
-        ->where('detail_package.package_id', $package_id)
-        ->get()->getResultArray();
-
         $homestayData = $homestayModel->select('package_id, day, activity, object_id, activity_type, detail_package.description, name, geom, ST_Y(ST_Centroid(geom)) AS lat, ST_X(ST_Centroid(geom)) AS lng')
         ->join('detail_package', 'detail_package.object_id=homestay.id')
         ->where('detail_package.package_id', $package_id)
         ->get()->getResultArray();
 
-        // Gabungkan hasil dari kedua model
-        $combinedData = array_merge($culinaryData, $souvenirData, $worshipData, $facilityData, $attractionData, $eventData, $homestayData);
+        $facilityData = $facilityModel->select('package_id, day, activity, activity_type, object_id, detail_package.description, name, geom, ST_Y(ST_Centroid(geom)) AS lat, ST_X(ST_Centroid(geom)) AS lng, price, category')
+        ->join('detail_package', 'detail_package.object_id=facility.id')
+        ->where('detail_package.package_id', $package_id)
+        ->get()->getResultArray();
+
+        $attractionData = $attractionModel->select('package_id, day, activity, activity_type, object_id, detail_package.description, name, geom, ST_Y(ST_Centroid(geom)) AS lat, ST_X(ST_Centroid(geom)) AS lng, price, category')
+        ->join('detail_package', 'detail_package.object_id=attraction.id')
+        ->where('detail_package.package_id', $package_id)
+        ->get()->getResultArray();
+
+        $eventData = $eventModel->select('package_id, day, activity, object_id, activity_type, detail_package.description, name, geom, ST_Y(ST_Centroid(geom)) AS lat, ST_X(ST_Centroid(geom)) AS lng, price, category')
+        ->join('detail_package', 'detail_package.object_id=event.id')
+        ->where('detail_package.package_id', $package_id)
+        ->get()->getResultArray();
+
+        // Gabungkan hasil dari model
+        $combinedData1 = array_merge($culinaryData, $souvenirData, $worshipData, $homestayData);
+
+        // Gabungkan hasil dari  model
+        $combinedData2 = array_merge($facilityData, $attractionData, $eventData);
+
+        // Tambahkan kolom price dan category dengan nilai default
+        foreach ($combinedData1 as &$item) {
+            $item['price'] = 0;
+            $item['category'] = 2;
+        }
+
+        $combinedData = array_merge($combinedData1, $combinedData2);
 
         usort($combinedData, function($a, $b) {
             $dayComparison = strcmp($a['day'], $b['day']);
@@ -95,7 +106,6 @@ class DetailPackageModel extends Model
 
         return $combinedData;
     }
-
 
 //   ---  
     public function get_day_by_package($package_id)
@@ -124,7 +134,7 @@ class DetailPackageModel extends Model
     {
         $culinaryPlaceModel = new CulinaryPlaceModel();
 
-        $culinary_place = $culinaryPlaceModel->select('package_id, day, activity, activity_type, object_id, detail_package.description, name, geom, ST_Y(ST_Centroid(geom)) AS lat, ST_X(ST_Centroid(geom)) AS lng')
+        $culinary_place = $culinaryPlaceModel->select('package_id, day, activity, activity_type, object_id, detail_package.description, name, price, geom, ST_Y(ST_Centroid(geom)) AS lat, ST_X(ST_Centroid(geom)) AS lng')
         ->join('detail_package', 'detail_package.object_id=culinary_place.id')
         ->where('detail_package.package_id', $package_id)
         ->get()->getResultArray();
@@ -148,7 +158,7 @@ class DetailPackageModel extends Model
     {
         $souvenirPlaceModel = new SouvenirPlaceModel();
 
-        $souvenir_place = $souvenirPlaceModel->select('package_id, day, activity, activity_type, object_id, detail_package.description, name, geom, ST_Y(ST_Centroid(geom)) AS lat, ST_X(ST_Centroid(geom)) AS lng')
+        $souvenir_place = $souvenirPlaceModel->select('package_id, day, activity, activity_type, object_id, detail_package.description, name, price, geom, ST_Y(ST_Centroid(geom)) AS lat, ST_X(ST_Centroid(geom)) AS lng')
         ->join('detail_package', 'detail_package.object_id=souvenir_place.id')
         ->where('detail_package.package_id', $package_id)
         ->get()->getResultArray();
@@ -160,7 +170,7 @@ class DetailPackageModel extends Model
     {
         $attractionModel = new AttractionModel();
 
-        $attraction = $attractionModel->select('package_id, day, activity, activity_type, object_id, detail_package.description, name, geom, ST_Y(ST_Centroid(geom)) AS lat, ST_X(ST_Centroid(geom)) AS lng')
+        $attraction = $attractionModel->select('package_id, day, activity, activity_type, object_id, detail_package.description, name, price, geom, ST_Y(ST_Centroid(geom)) AS lat, ST_X(ST_Centroid(geom)) AS lng')
         ->join('detail_package', 'detail_package.object_id=attraction.id')
         ->where('detail_package.package_id', $package_id)
         ->get()->getResultArray();

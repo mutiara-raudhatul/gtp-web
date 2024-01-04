@@ -39,6 +39,37 @@ $edit = in_array('edit', $uri);
                                 <label for="name" class="mb-2">Service Package Name</label>
                                 <input type="text" id="name" class="form-control" name="name" placeholder="Service Package Name" value="<?= ($edit) ? $data['name'] : old('name'); ?>" required>
                             </div>
+                            <div class="form-group mb-4">
+                                <label for="price" class="mb-2">Price</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">Rp </span>
+                                    <input type="number" id="price" class="form-control" name="price" placeholder="Price" aria-label="Price" aria-describedby="price" value="<?= ($edit) ? $data['price'] : old('price'); ?>">
+                                </div>
+                            </div>
+                            <div class="form-group mb-4">
+                                <label for="category">Category</label><br>
+
+                                <?php if($edit): ?>
+                                    <label>
+                                        <input type="radio" name="category" value="'0'" required <?php if($data['category']=="0") echo "checked"; ?>>
+                                        <i class="fa fa-times"></i> Group    
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="category" value="1" required <?php if($data['category']=="1") echo "checked"; ?>>
+                                        <i class="fa fa-check"></i> Individu
+                                    </label>
+                                <?php else: ?>
+                                    <label>
+                                    <input type="radio" name="category" value="'0'" required>
+                                    <i class="fa fa-times"></i> Group    
+                                    </label>
+
+                                    <label>
+                                    <input type="radio" name="category" value="1" required>
+                                    <i class="fa fa-check"></i> Individu
+                                    </label>
+                                <?php endif; ?>                        
+                            </div>
                             <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
                             <button type="reset" class="btn btn-light-secondary me-1 mb-1">Reset</button>
                         </div>

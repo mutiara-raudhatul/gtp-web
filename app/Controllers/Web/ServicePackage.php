@@ -85,6 +85,8 @@ class ServicePackage extends ResourcePresenter
         $requestData = [
             'id' => $id,
             'name' => $request['name'],
+            'price' => $request['price'],
+            'category' => $request['category']
         ];
 
         foreach ($requestData as $key => $value) {
@@ -126,6 +128,8 @@ class ServicePackage extends ResourcePresenter
         $requestData = [
             'id' => $id,
             'name' => $request['name'],
+            'price' => $request['price'],
+            'category' => $request['category']
         ];
 
         foreach ($requestData as $key => $value) {

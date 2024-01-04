@@ -142,7 +142,7 @@ $reservationhomestay = in_array('reservationhomestay', $uri);
                         </div>
                         <div class="form-group mb-2">
                             <label for="note" class="mb-2">Note</label>
-                            <textarea class="form-control" id="note" name="note" placeholder="Make requests that you want to be on the reservation record, such as the proposed food menu and activity" required rows="4"><?= ($edit) ? $data['note'] : old('note'); ?></textarea>
+                            <textarea class="form-control" id="note" name="note" placeholder="Make requests that you want to be on the reservation record" required rows="4"><?= ($edit) ? $data['note'] : old('note'); ?></textarea>
                         </div>
                         <div class="form-group">
                             <label for="price">Price Package</label>

@@ -362,27 +362,14 @@ $addhome = in_array('addhome', $uri);
                 <div class="card-header">
                     <h4 class="card-title text-center">Payment</h4>
                     <?php if (in_groups(['admin']) || in_groups(['master'])) : ?>
-                        <?php if($data_package['custom']==='1') : ?>
-                            <?php if(($detail['status'])==null && ($data_package['custom'])==1 && ($detail['response'])==null && ($data_package['price'])==0): ?>
-                                <i class="btn-sm btn-secondary">Complete the customized package data before confirming</i>
-                            <?php elseif(($detail['status'])==null && ($data_package['custom'])==1 && ($detail['response'])==null && ($data_package['price'])!=0): ?>
-                                <i class="btn-sm btn-secondary">Please wait for customer response about the package</i>    
-                            <?php elseif(($detail['status'])==null && ($detail['response'])!=null): ?>
+                            <?php if(($detail['status'])==null): ?>
                                 <div class="col-auto">
                                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmModal">
                                         <i class="fa-solid fa-envelope me-3"></i>Confirmation
                                     </button> 
                                 </div>
                             <?php endif; ?>
-                        <?php else: ?>
-                            <div class="col-auto">
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmModal">
-                                    <i class="fa-solid fa-envelope me-3"></i>Confirmation
-                                </button> 
-                            </div>
-                        <?php endif; ?>
                     <?php endif; ?>
-
 
                     <br>
                     <?php if (($detail['status'])!=null) : ?>
@@ -467,15 +454,7 @@ $addhome = in_array('addhome', $uri);
                                     <td>
                                         <?php $date = date('Y-m-d H:i');?>
                                         <?php if($detail['status']==null ): ?>    
-                                            <?php if($detail['custom']=='1' ): ?>
-                                                <?php if($detail['response']==null ): ?>
-                                                    <a href="#" class="btn-sm btn-warning float-center"><i>Negotiate</i></a>
-                                                <?php elseif($detail['response']!=null ): ?>
-                                                    <a href="#" class="btn-sm btn-warning float-center"><i>Waiting</i></a>
-                                                <?php endif; ?>
-                                            <?php elseif($detail['custom']!='1' ): ?>
                                                 <a href="#" class="btn-sm btn-warning float-center"><i>Waiting</i></a>
-                                            <?php endif; ?>
                                         <?php elseif($detail['status']=='1' ): ?>    
                                             <?php if($detail['cancel']=='0'): ?>
                                                 <?php if($detail['proof_of_deposit']==null) :?>

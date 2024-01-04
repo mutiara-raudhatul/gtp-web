@@ -30,6 +30,20 @@
                                         <td class="fw-bold">Name</td>
                                         <td><?= esc($data['name']); ?></td>
                                     </tr>
+                                    <tr>
+                                        <td class="fw-bold">Price </td>
+                                        <td><?= 'Rp' . number_format(esc($data['price']), 0, ',', '.'); ?> </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Category </td>
+                                        <td>
+                                            <?php if ($data['category'] == 0): ?>
+                                                Group
+                                            <?php elseif ($data['category'] == 1): ?>
+                                                Individu
+                                            <?php endif; ?>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>

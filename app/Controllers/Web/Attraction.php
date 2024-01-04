@@ -93,7 +93,8 @@ class Attraction extends ResourcePresenter
             'name' => $request['name'],
             'type' => $request['type'],
             'price' => $request['price'],
-            'description' => $request['description']
+            'description' => $request['description'],
+            'category' => $request['category']
         ];
         foreach ($requestData as $key => $value) {
             if (empty($value)) {
