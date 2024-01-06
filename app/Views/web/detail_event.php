@@ -28,12 +28,26 @@
                                         <td><?= esc($data['type']); ?></td>
                                     </tr>
                                     <tr>
+                                        <td class="fw-bold">Event Date</td>
+                                        <td><?= date('d F Y', strtotime($data['event_date'])); ?></td>
+                                    </tr>
+                                    <tr>
                                         <td class="fw-bold">Contact Person</td>
                                         <td><?= esc($data['contact_person']); ?></td>
                                     </tr>
                                     <tr>
                                         <td class="fw-bold">Price</td>
                                         <td><?= 'Rp ' . number_format(esc($data['price']), 0, ',', '.'); ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Category </td>
+                                        <td>
+                                            <?php if ($data['category'] == 0): ?>
+                                                Group
+                                            <?php elseif ($data['category'] == 1): ?>
+                                                Individu
+                                            <?php endif; ?>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>

@@ -167,7 +167,7 @@ class Package extends ResourceController
         $getday = $this->packageDayModel->get_list_package_day($id)->getResultArray();
 
         $combinedData = $this->detailPackageModel->getCombinedData($id);
-        $routeData = $this->detailPackageModel->getRouteData();
+        // $routeData = $this->detailPackageModel->getRouteData();
 
         $review = $this->reservationModel->getReview($id)->getResultArray();
         $rating = $this->reservationModel->getRating($id)->getRowArray();
@@ -179,7 +179,7 @@ class Package extends ResourceController
             'serviceexclude' => $serviceexclude,
             'day'=> $getday,
             'activity' => $combinedData,
-            'route' => $routeData,
+            // 'route' => $routeData,
             'review'=>$review,
             'rating'=>$rating,
             'folder' => 'package'
