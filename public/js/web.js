@@ -1431,7 +1431,7 @@ function objectInfoWindow(id){
 
     else if (id.substring(0,2) === "SP") {
         $.ajax({
-            url: baseUrl + '/api/souvenirPlace/' + id,
+            url: baseUrl + '/api/souvenirplace/' + id,
             dataType: 'json',
             success: function (response) {
                 let data = response.data;
@@ -1451,7 +1451,7 @@ function objectInfoWindow(id){
                 contentButton =
                     '<br><div class="text-center">' +
                     '<a title="Route" class="btn icon btn-outline-primary mx-1" id="routeInfoWindow" onclick="routeTo('+lat+', '+lng+')"><i class="fa-solid fa-road"></i></a>' +
-                    '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/souvenirPlace/'+spid+'><i class="fa-solid fa-info"></i></a>' +
+                    '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/souvenirplace/'+spid+'><i class="fa-solid fa-info"></i></a>' +
                     '</div>'
 
                 if (currentUrl.includes(id)) {
@@ -1727,7 +1727,7 @@ function objectInfoWindowRoute(id){
 
     else if (id.substring(0,2) === "SP") {
         $.ajax({
-            url: baseUrl + '/api/souvenirPlace/' + id,
+            url: baseUrl + '/api/souvenirplace/' + id,
             dataType: 'json',
             success: function (response) {
                 let data = response.data;
@@ -1743,11 +1743,11 @@ function objectInfoWindowRoute(id){
                     '<p class="fw-bold fs-6">'+ name +'</p> <br>' +
                     '<p><i class="fa-solid fa-address-book"></i> '+ contact +'</p>' +
                     '<p><i class="fa-solid fa-map-pin"></i> '+ address +'</p>' +
-                    '</div>';
+                    '</div>'; 
                 contentButton =
                     '<br><div class="text-center">' +
                     '<a title="Route" class="btn icon btn-outline-primary mx-1" id="routeInfoWindow" onclick="routeTo('+lat+', '+lng+')"><i class="fa-solid fa-road"></i></a>' +
-                    '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/souvenirPlace/'+spid+'><i class="fa-solid fa-info"></i></a>' +
+                    '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/souvenirplace/'+spid+'><i class="fa-solid fa-info"></i></a>' +
                     '</div>'
 
                 if (currentUrl.includes(id)) {
@@ -2144,7 +2144,7 @@ function findExplore(category, radius) {
         });
     } else if (category === 'sp') {
         $.ajax({
-            url: baseUrl + '/api/souvenirPlace/findByRadius',
+            url: baseUrl + '/api/souvenirplace/findByRadius',
             type: 'POST',
             data: {
                 lat: currentLat,
@@ -2994,7 +2994,7 @@ function showMap(id = null) {
     } else if (id == 'ho') {
         URI = baseUrl + '/api/homestay';
     } else if (id == 'sp') {
-        URI = baseUrl + '/api/souvenirPlace'
+        URI = baseUrl + '/api/souvenirplace'
     } else if (id == 'wp') {
         URI = baseUrl + '/api/worshipplace'
     }
@@ -3302,7 +3302,7 @@ function deleteObject(id = null, name = null, user = false) {
         apiUri = 'worshipplace/'
     } else if (id.substring(0,2) === 'SP') {
         content = 'Souvenir Place';
-        apiUri = 'souvenirPlace/'
+        apiUri = 'souvenirplace/'
     } else if (id.substring(0,1) === 'S') {
         content = 'Service Package';
         apiUri = 'servicepackage/'
