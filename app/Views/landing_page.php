@@ -155,26 +155,30 @@
                         Desa Wisata <br><span class="text-primary">GTP Ulakan</span>
                     </h1>
                     <p class="mb-4">
-                        Nagari ulakan, secara geografis memiliki potensi alam pesisir pantai dengan estuarianya atau dalam bahasa lokal dinamai talao,
-                        berhasil menyulap lahan tidur seluas 15 hektar menjadi sebuah destinasi desa wisata dengan konsep community based ecotourism.
-                        Kawasan ini diberi nama Green Talao Park dengan mengusung tema ekowisata dan edukasi dengan keunikan daya tarik, berupa
-                        tracking talao/mangrove sepanjang 1,8 km yang merupakan treking terpanjang di Sumatera Barat.
-                        Tak hanya sebagai tempat rekreasi, Green Talao Park juga menyajikan berbagai event dan paket wisata,
-                        mulai dari paket kearifan lokal, konservasi, landscape alam, wisata pulau serta wisata kuliner.
-                        Selain itu, kawasan ini juga terintegrasi langsung dengan pusat pariwisata religi di sumatera barat melalui situs budaya non benda yang diberikan oleh pemerintah,
-                        yaitu makam Syekh Burhanudin, seorang ulama besar penyiar agama islam di ranah minang dan kawasan Taman Wisata Pulau (TWP) Pieh.
+                        Nagari Ulakan, geographically has natural coastal potential with its estuary or 
+                        in local language it is called Talao, has succeeded in turning 15 hectares of 
+                        unused land into a tourist village destination with the concept of community based 
+                        ecotourism. This area is named Green Talao Park with the theme of ecotourism and 
+                        education with a unique attraction, in the form of a 1.8 km long talao/mangrove 
+                        tracking track, which is the longest trekking in West Sumatra. Not only as 
+                        a recreation area, Green Talao Park also offers various events and tour packages,
+                        ranging from local wisdom packages, conservation, natural landscapes, island tours 
+                        and culinary tours. Apart from that, this area is also directly integrated with 
+                        the center of religious tourism in West Sumatra through intangible cultural sites 
+                        provided by the government, namely the tomb of Sheikh Burhanudin, a great Islamic 
+                        preacher in the Minang area and the Pieh Island Tourism Park (TWP) area.
                     </p>
                     <h5 class="mb-3">
-                        <i class="far fa-check-circle text-primary me-3"></i>Wisata Alam
+                        <i class="far fa-check-circle text-primary me-3"></i>Natural Tourism
                     </h5>
                     <h5 class="mb-3">
-                        <i class="far fa-check-circle text-primary me-3"></i>Wisata Budaya
+                        <i class="far fa-check-circle text-primary me-3"></i>Cultural Tourism
                     </h5>
                     <h5 class="mb-3">
-                        <i class="far fa-check-circle text-primary me-3"></i>Wisata Edukasi
+                        <i class="far fa-check-circle text-primary me-3"></i>Educational Tourism
                     </h5>
                     <h5 class="mb-3">
-                        <i class="far fa-check-circle text-primary me-3"></i>Wisata Kuliner
+                        <i class="far fa-check-circle text-primary me-3"></i>Culinary Tourism
                     </h5>
                     <a class="btn btn-primary py-3 px-5 mt-3" href="/web">Explore</a>
                 </div>
@@ -195,12 +199,12 @@
                 <div class="col-md-4 col-lg-4 text-center wow fadeIn" data-wow-delay="0.1s">
                     <img src="<?= base_url('media/photos/landing-page/trophy.png'); ?>" alt="" style="filter: invert(100%); max-width: 4em" class="mb-3">
                     <h1 class="text-white mb-2" data-toggle="counter-up">300</h1>
-                    <p class="text-white mb-0">Besar ADWI 2021</p>
+                    <p class="text-white mb-0">Top ADWI 2021</p>
                 </div>
                 <div class="col-md-4 col-lg-4 text-center wow fadeIn" data-wow-delay="0.1s">
                     <img src="<?= base_url('media/photos/landing-page/trophy.png'); ?>" alt="" style="filter: invert(100%); max-width: 4em" class="mb-3">
                     <h1 class="text-white mb-2" data-toggle="counter-up">50</h1>
-                    <p class="text-white mb-0">Besar ADWI 2022</p>
+                    <p class="text-white mb-0">Top ADWI 2022</p>
                 </div>
                 <div class="col-md-4 col-lg-4 text-center wow fadeIn" data-wow-delay="0.3s">
                     <img src="<?= base_url('media/photos/landing-page/trophy.png'); ?>" alt="" style="filter: invert(100%); max-width: 5em">

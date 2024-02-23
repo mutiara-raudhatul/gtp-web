@@ -107,6 +107,7 @@ class Event extends ResourcePresenter
             'name' => $request['name'],
             'type' => $request['type'],
             'price' => $request['price'],
+            'event_date' => $request['event_date'],
             'description' => $request['description'],
             'contact_person' => $request['contact_person'],
             'category' => $request['category']
@@ -191,6 +192,7 @@ class Event extends ResourcePresenter
             'name' => $request['name'],
             'type' => $request['type'],
             'price' => $request['price'],
+            'event_date' => $request['event_date'],
             'description' => $request['description'],
             'contact_person' => $request['contact_person'],
             'category' => $request['category']

@@ -16,7 +16,7 @@ use App\Models\UnitHomestayModel;
 use App\Models\PackageModel;
 use App\Models\PackageDayModel;
 use App\Models\DetailPackageModel;
-use App\Models\detailServicePackageModel;
+use App\Models\DetailServicePackageModel;
 
 use App\Models\CulinaryPlaceModel;
 use App\Models\WorshipPlaceModel;

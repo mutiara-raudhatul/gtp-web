@@ -491,7 +491,7 @@ $edit = in_array('edit', $uri);
                                                                         </div>
                                                                         <div class="col-md-5">
                                                                             <label for="object">Object</label>
-                                                                            <select class="form-control" name="object" id="object">
+                                                                            <select class="form-control" name="object" id="object" required>
                                                                                 <option disabled selected>Select Object</option>
                                                                                 <?php foreach ($object['culinary'] as $item) : ?>
                                                                                     <option value="<?= esc($item['id']); ?>">[Culinary] <?= esc($item['name']); ?> - Rp0 -Shopping not include</option>                                                                

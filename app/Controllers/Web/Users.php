@@ -157,36 +157,36 @@ class Users extends ResourcePresenter
         }
     }
 
-    public function createservicepackage($id)
-    {
-        $request = $this->request->getPost();
+    // public function createservicepackage($id)
+    // {
+    //     $request = $this->request->getPost();
 
-        $requestData = [
-            'service_package_id' => $request['id_service'],
-            'status' => $request['status_service'],
-            'package_id' => $id,
-        ];
+    //     $requestData = [
+    //         'service_package_id' => $request['id_service'],
+    //         'status' => $request['status_service'],
+    //         'package_id' => $id,
+    //     ];
 
-        $checkExistingData = $this->detailServicePackageModel->checkIfDataExists($requestData);
+    //     $checkExistingData = $this->detailServicePackageModel->checkIfDataExists($requestData);
 
-        if ($checkExistingData) {
-            // Data sudah ada, set pesan error flash data
-            session()->setFlashdata('failed', 'Service is available.');
+    //     if ($checkExistingData) {
+    //         // Data sudah ada, set pesan error flash data
+    //         session()->setFlashdata('failed', 'Service is available.');
 
-            return redirect()->back()->withInput();
-        } else {
-            // Data belum ada, jalankan query insert
-            $addSP = $this->detailServicePackageModel->add_new_detail_service($id, $requestData);
+    //         return redirect()->back()->withInput();
+    //     } else {
+    //         // Data belum ada, jalankan query insert
+    //         $addSP = $this->detailServicePackageModel->add_new_detail_service($id, $requestData);
        
-            if ($addSP) {
-                session()->setFlashdata('success', 'Service package added successfully.');
+    //         if ($addSP) {
+    //             session()->setFlashdata('success', 'Service package added successfully.');
 
-                return redirect()->back();
-            } else {
-                return redirect()->back()->withInput();
-            }
-        }
-    }
+    //             return redirect()->back();
+    //         } else {
+    //             return redirect()->back()->withInput();
+    //         }
+    //     }
+    // }
 
     public function delete($id=null)
     {

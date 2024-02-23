@@ -48,6 +48,10 @@ $edit = in_array('edit', $uri);
                                 <input type="text" id="type" class="form-control" name="type" placeholder="Event Type" value="<?= ($edit) ? $data['type'] : old('type'); ?>" required autocomplete="off">
                             </div>
                             <div class="form-group mb-4">
+                                <label for="event_date">Event Date</label>
+                                <input type="date" id="event_date" name="event_date" min="<?php echo date('Y-m-d'); ?>" class="form-control" value="<?= ($edit) ? $data['event_date'] : old('event_date'); ?>" required>
+                            </div>
+                            <div class="form-group mb-4">
                                 <label for="price" class="mb-2">Price</label>
                                 <div class="input-group">
                                     <span class="input-group-text">Rp </span>
