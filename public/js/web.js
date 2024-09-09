@@ -1396,7 +1396,7 @@ function objectInfoWindow(id){
         });
     } else if (id.substring(0,2) === "CP") {
         $.ajax({
-            url: baseUrl + '/api/culinaryPlace/' + id,
+            url: baseUrl + '/api/culinaryplace/' + id,
             dataType: 'json',
             success: function (response) {
                 let data = response.data;
@@ -1451,7 +1451,7 @@ function objectInfoWindow(id){
                 contentButton =
                     '<br><div class="text-center">' +
                     '<a title="Route" class="btn icon btn-outline-primary mx-1" id="routeInfoWindow" onclick="routeTo('+lat+', '+lng+')"><i class="fa-solid fa-road"></i></a>' +
-                    '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/souvenirplace/'+spid+'><i class="fa-solid fa-info"></i></a>' +
+                    '<a title="Info" class="btn icon btn-outline-primary mx-1" target="_blank" id="infoInfoWindow" href='+baseUrl+'/web/souvenirPlace/'+spid+'><i class="fa-solid fa-info"></i></a>' +
                     '</div>'
 
                 if (currentUrl.includes(id)) {
